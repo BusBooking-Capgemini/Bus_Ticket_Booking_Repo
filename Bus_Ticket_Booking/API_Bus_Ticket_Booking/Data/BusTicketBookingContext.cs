@@ -9,9 +9,7 @@ namespace API_Bus_Ticket_Booking.Data;
 public partial class BusTicketBookingContext : DbContext
 {
     public BusTicketBookingContext(DbContextOptions<BusTicketBookingContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Address> Addresses { get; set; }
 
@@ -44,19 +42,15 @@ public partial class BusTicketBookingContext : DbContext
             entity.ToTable("addresses");
 
             entity.Property(e => e.AddressId).HasColumnName("address_id");
-            entity.Property(e => e.Address1)
+            entity
+                .Property(e => e.Address1)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("address");
-            entity.Property(e => e.City)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("city");
-            entity.Property(e => e.State)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("state");
-            entity.Property(e => e.ZipCode)
+            entity.Property(e => e.City).HasMaxLength(255).IsUnicode(false).HasColumnName("city");
+            entity.Property(e => e.State).HasMaxLength(255).IsUnicode(false).HasColumnName("state");
+            entity
+                .Property(e => e.ZipCode)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("zip_code");
@@ -69,22 +63,14 @@ public partial class BusTicketBookingContext : DbContext
             entity.ToTable("agencies");
 
             entity.Property(e => e.AgencyId).HasColumnName("agency_id");
-            entity.Property(e => e.ContactPersonName)
+            entity
+                .Property(e => e.ContactPersonName)
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("contact_person_name");
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("email");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("name");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("phone");
+            entity.Property(e => e.Email).HasMaxLength(255).IsUnicode(false).HasColumnName("email");
+            entity.Property(e => e.Name).HasMaxLength(255).IsUnicode(false).HasColumnName("name");
+            entity.Property(e => e.Phone).HasMaxLength(15).IsUnicode(false).HasColumnName("phone");
         });
 
         modelBuilder.Entity<AgencyOffice>(entity =>
@@ -96,25 +82,32 @@ public partial class BusTicketBookingContext : DbContext
             entity.Property(e => e.OfficeId).HasColumnName("office_id");
             entity.Property(e => e.AgencyId).HasColumnName("agency_id");
             entity.Property(e => e.OfficeAddressId).HasColumnName("office_address_id");
-            entity.Property(e => e.OfficeContactNumber)
+            entity
+                .Property(e => e.OfficeContactNumber)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("office_contact_number");
-            entity.Property(e => e.OfficeContactPersonName)
+            entity
+                .Property(e => e.OfficeContactPersonName)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("office_contact_person_name");
-            entity.Property(e => e.OfficeMail)
+            entity
+                .Property(e => e.OfficeMail)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("office_mail");
 
-            entity.HasOne(d => d.Agency).WithMany(p => p.AgencyOffices)
+            entity
+                .HasOne(d => d.Agency)
+                .WithMany(p => p.AgencyOffices)
                 .HasForeignKey(d => d.AgencyId)
                 .HasConstraintName("FK_agency_offices_agency");
 
-            entity.HasOne(d => d.OfficeAddress).WithMany(p => p.AgencyOffices)
+            entity
+                .HasOne(d => d.OfficeAddress)
+                .WithMany(p => p.AgencyOffices)
                 .HasForeignKey(d => d.OfficeAddressId)
                 .HasConstraintName("FK_agency_offices_address");
         });
@@ -127,13 +120,16 @@ public partial class BusTicketBookingContext : DbContext
 
             entity.Property(e => e.BookingId).HasColumnName("booking_id");
             entity.Property(e => e.SeatNumber).HasColumnName("seat_number");
-            entity.Property(e => e.Status)
+            entity
+                .Property(e => e.Status)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.TripId).HasColumnName("trip_id");
 
-            entity.HasOne(d => d.Trip).WithMany(p => p.Bookings)
+            entity
+                .HasOne(d => d.Trip)
+                .WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.TripId)
                 .HasConstraintName("FK_bookings_trip");
         });
@@ -147,16 +143,16 @@ public partial class BusTicketBookingContext : DbContext
             entity.Property(e => e.BusId).HasColumnName("bus_id");
             entity.Property(e => e.Capacity).HasColumnName("capacity");
             entity.Property(e => e.OfficeId).HasColumnName("office_id");
-            entity.Property(e => e.RegistrationNumber)
+            entity
+                .Property(e => e.RegistrationNumber)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("registration_number");
-            entity.Property(e => e.Type)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("type");
+            entity.Property(e => e.Type).HasMaxLength(30).IsUnicode(false).HasColumnName("type");
 
-            entity.HasOne(d => d.Office).WithMany(p => p.Buses)
+            entity
+                .HasOne(d => d.Office)
+                .WithMany(p => p.Buses)
                 .HasForeignKey(d => d.OfficeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_buses_office");
@@ -170,20 +166,13 @@ public partial class BusTicketBookingContext : DbContext
 
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
             entity.Property(e => e.AddressId).HasColumnName("address_id");
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("email");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("name");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("phone");
+            entity.Property(e => e.Email).HasMaxLength(255).IsUnicode(false).HasColumnName("email");
+            entity.Property(e => e.Name).HasMaxLength(255).IsUnicode(false).HasColumnName("name");
+            entity.Property(e => e.Phone).HasMaxLength(15).IsUnicode(false).HasColumnName("phone");
 
-            entity.HasOne(d => d.Address).WithMany(p => p.Customers)
+            entity
+                .HasOne(d => d.Address)
+                .WithMany(p => p.Customers)
                 .HasForeignKey(d => d.AddressId)
                 .HasConstraintName("FK_customers_address");
         });
@@ -196,25 +185,24 @@ public partial class BusTicketBookingContext : DbContext
 
             entity.Property(e => e.DriverId).HasColumnName("driver_id");
             entity.Property(e => e.AddressId).HasColumnName("address_id");
-            entity.Property(e => e.LicenseNumber)
+            entity
+                .Property(e => e.LicenseNumber)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("license_number");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("name");
+            entity.Property(e => e.Name).HasMaxLength(255).IsUnicode(false).HasColumnName("name");
             entity.Property(e => e.OfficeId).HasColumnName("office_id");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("phone");
+            entity.Property(e => e.Phone).HasMaxLength(15).IsUnicode(false).HasColumnName("phone");
 
-            entity.HasOne(d => d.Address).WithMany(p => p.Drivers)
+            entity
+                .HasOne(d => d.Address)
+                .WithMany(p => p.Drivers)
                 .HasForeignKey(d => d.AddressId)
                 .HasConstraintName("FK_drivers_address");
 
-            entity.HasOne(d => d.Office).WithMany(p => p.Drivers)
+            entity
+                .HasOne(d => d.Office)
+                .WithMany(p => p.Drivers)
                 .HasForeignKey(d => d.OfficeId)
                 .HasConstraintName("FK_drivers_office");
         });
@@ -226,25 +214,29 @@ public partial class BusTicketBookingContext : DbContext
             entity.ToTable("payments");
 
             entity.Property(e => e.PaymentId).HasColumnName("payment_id");
-            entity.Property(e => e.Amount)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("amount");
+            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)").HasColumnName("amount");
             entity.Property(e => e.BookingId).HasColumnName("booking_id");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
-            entity.Property(e => e.PaymentDate)
+            entity
+                .Property(e => e.PaymentDate)
                 .HasColumnType("datetime")
                 .HasColumnName("payment_date");
-            entity.Property(e => e.PaymentStatus)
+            entity
+                .Property(e => e.PaymentStatus)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("payment_status");
 
-            entity.HasOne(d => d.Booking).WithMany(p => p.Payments)
+            entity
+                .HasOne(d => d.Booking)
+                .WithMany(p => p.Payments)
                 .HasForeignKey(d => d.BookingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_payments_booking");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Payments)
+            entity
+                .HasOne(d => d.Customer)
+                .WithMany(p => p.Payments)
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK_payments_customer");
         });
@@ -255,25 +247,26 @@ public partial class BusTicketBookingContext : DbContext
 
             entity.ToTable("reviews");
 
-            entity.Property(e => e.ReviewId)
-                .ValueGeneratedNever()
-                .HasColumnName("review_id");
-            entity.Property(e => e.Comment)
-                .IsUnicode(false)
-                .HasColumnName("comment");
+            entity.Property(e => e.ReviewId).ValueGeneratedNever().HasColumnName("review_id");
+            entity.Property(e => e.Comment).IsUnicode(false).HasColumnName("comment");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
             entity.Property(e => e.Rating).HasColumnName("rating");
-            entity.Property(e => e.ReviewDate)
+            entity
+                .Property(e => e.ReviewDate)
                 .HasColumnType("datetime")
                 .HasColumnName("review_date");
             entity.Property(e => e.TripId).HasColumnName("trip_id");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Reviews)
+            entity
+                .HasOne(d => d.Customer)
+                .WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_reviews_customer");
 
-            entity.HasOne(d => d.Trip).WithMany(p => p.Reviews)
+            entity
+                .HasOne(d => d.Trip)
+                .WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.TripId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_reviews_trip");
@@ -288,11 +281,13 @@ public partial class BusTicketBookingContext : DbContext
             entity.Property(e => e.RouteId).HasColumnName("route_id");
             entity.Property(e => e.BreakPoints).HasColumnName("break_points");
             entity.Property(e => e.Duration).HasColumnName("duration");
-            entity.Property(e => e.FromCity)
+            entity
+                .Property(e => e.FromCity)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("from_city");
-            entity.Property(e => e.ToCity)
+            entity
+                .Property(e => e.ToCity)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("to_city");
@@ -305,42 +300,48 @@ public partial class BusTicketBookingContext : DbContext
             entity.ToTable("trips");
 
             entity.Property(e => e.TripId).HasColumnName("trip_id");
-            entity.Property(e => e.ArrivalTime)
+            entity
+                .Property(e => e.ArrivalTime)
                 .HasColumnType("datetime")
                 .HasColumnName("arrival_time");
             entity.Property(e => e.AvailableSeats).HasColumnName("available_seats");
             entity.Property(e => e.BoardingAddressId).HasColumnName("boarding_address_id");
             entity.Property(e => e.BusId).HasColumnName("bus_id");
-            entity.Property(e => e.DepartureTime)
+            entity
+                .Property(e => e.DepartureTime)
                 .HasColumnType("datetime")
                 .HasColumnName("departure_time");
             entity.Property(e => e.Driver1DriverId).HasColumnName("driver1_driver_id");
             entity.Property(e => e.Driver2DriverId).HasColumnName("driver2_driver_id");
             entity.Property(e => e.DroppingAddressId).HasColumnName("dropping_address_id");
-            entity.Property(e => e.Fare)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("fare");
+            entity.Property(e => e.Fare).HasColumnType("decimal(10, 2)").HasColumnName("fare");
             entity.Property(e => e.RouteId).HasColumnName("route_id");
-            entity.Property(e => e.TripDate)
-                .HasColumnType("datetime")
-                .HasColumnName("trip_date");
+            entity.Property(e => e.TripDate).HasColumnType("datetime").HasColumnName("trip_date");
 
-            entity.HasOne(d => d.Bus).WithMany(p => p.Trips)
+            entity
+                .HasOne(d => d.Bus)
+                .WithMany(p => p.Trips)
                 .HasForeignKey(d => d.BusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_trips_bus");
 
-            entity.HasOne(d => d.Driver1Driver).WithMany(p => p.TripDriver1Drivers)
+            entity
+                .HasOne(d => d.Driver1Driver)
+                .WithMany(p => p.TripDriver1Drivers)
                 .HasForeignKey(d => d.Driver1DriverId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_trips_driver1");
 
-            entity.HasOne(d => d.Driver2Driver).WithMany(p => p.TripDriver2Drivers)
+            entity
+                .HasOne(d => d.Driver2Driver)
+                .WithMany(p => p.TripDriver2Drivers)
                 .HasForeignKey(d => d.Driver2DriverId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_trips_driver2");
 
-            entity.HasOne(d => d.Route).WithMany(p => p.Trips)
+            entity
+                .HasOne(d => d.Route)
+                .WithMany(p => p.Trips)
                 .HasForeignKey(d => d.RouteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_trips_route");
