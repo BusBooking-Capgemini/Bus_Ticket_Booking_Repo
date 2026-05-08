@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("0a81ce15-76e5-4b53-b91d-9a2066ec25d6")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("API_Bus_Ticket_Booking")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad69645a8136dadebfbb3bfa7c93ed4179706b04")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f080284c6c7f306ee279d9c30ccd926d282d1da7")]
 [assembly: System.Reflection.AssemblyProductAttribute("API_Bus_Ticket_Booking")]
 [assembly: System.Reflection.AssemblyTitleAttribute("API_Bus_Ticket_Booking")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
