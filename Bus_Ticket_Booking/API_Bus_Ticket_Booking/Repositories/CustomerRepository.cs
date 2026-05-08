@@ -28,23 +28,27 @@ public class CustomerRepository : ICustomerRepository
             .FirstOrDefaultAsync(c => c.Email == email);
     }
 
-    public async Task<bool> ExistsAsync(int customerId) {
+    public async Task<bool> ExistsAsync(int customerId)
+    {
         return await _context.Customers.AnyAsync(c => c.CustomerId == customerId);
-     }
+    }
 
-    public async Task<Customer> CreateAsync(Customer customer) {
+    public async Task<Customer> CreateAsync(Customer customer)
+    {
         _context.Customers.Add(customer);
         await _context.SaveChangesAsync();
         return customer;
-     }
+    }
 
-    public async Task UpdateAsync(Customer customer) { 
+    public async Task UpdateAsync(Customer customer)
+    {
         _context.Customers.Update(customer);
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Customer customer) { 
-        await _context.Customers.Remove(customer);
+    public async Task DeleteAsync(Customer customer)
+    {
+        _context.Customers.Remove(customer);
         await _context.SaveChangesAsync();
     }
 }

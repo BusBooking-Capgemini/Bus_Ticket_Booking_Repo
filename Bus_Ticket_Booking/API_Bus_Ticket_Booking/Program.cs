@@ -23,13 +23,21 @@ public class Program
         // AutoMapper
         builder.Services.AddAutoMapper(typeof(Program));
 
-        // Add services to the container.
+        // Repositories
         builder.Services.AddScoped<IBusRepository, BusRepository>();
         builder.Services.AddScoped<IDriverRepository, DriverRepository>();
+        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+        builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+        builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+        builder.Services.AddScoped<ITripRepository, TripRepository>();
 
         // Services
         builder.Services.AddScoped<IBusService, BusService>();
         builder.Services.AddScoped<IDriverService, DriverService>();
+        builder.Services.AddScoped<ICustomerService, CustomerService>();
+        builder.Services.AddScoped<IBookingService, BookingService>();
+        builder.Services.AddScoped<IReviewService, ReviewService>();
+        builder.Services.AddScoped<ITripService, TripService>();
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
