@@ -211,3 +211,4 @@ FakesAssemblies/
 
 **/bin/
 **/obj/
+.env

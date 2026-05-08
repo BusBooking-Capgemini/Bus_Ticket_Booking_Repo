@@ -1,3 +1,7 @@
+using API_Bus_Ticket_Booking.Data;
+using API_Bus_Ticket_Booking.Models;
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_Bus_Ticket_Booking
 {
@@ -5,7 +9,13 @@ namespace API_Bus_Ticket_Booking
     {
         public static void Main(string[] args)
         {
+            Env.Load();
+
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            );
 
             // Add services to the container.
 
@@ -26,7 +36,6 @@ namespace API_Bus_Ticket_Booking
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
