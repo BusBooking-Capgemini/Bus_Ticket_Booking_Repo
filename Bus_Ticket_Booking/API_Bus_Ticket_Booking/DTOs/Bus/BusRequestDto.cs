@@ -1,3 +1,5 @@
+namespace API_Bus_Ticket_Booking.DTOs.Bus;
+
 public class BusRequestDto
 {
     public int OfficeId { get; set; }

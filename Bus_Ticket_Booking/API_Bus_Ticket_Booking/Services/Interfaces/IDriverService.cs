@@ -1,3 +1,6 @@
+using API_Bus_Ticket_Booking.DTOs.Driver;
+using API_Bus_Ticket_Booking.Repositories.Interfaces;
+
 public interface IDriverService
 {
     Task<IEnumerable<DriverResponseDto>> GetAllDriversAsync();

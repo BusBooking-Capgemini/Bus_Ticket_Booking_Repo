@@ -1,4 +1,4 @@
-namespace API_Bus_Ticket_Booking.DTOs;
+namespace API_Bus_Ticket_Booking.DTOs.Booking;
 
 public class BookingResponseDto
 {

@@ -6,12 +6,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- AutoMapper -->
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+
+    <!-- Environment Variables -->
     <PackageReference Include="DotNetEnv" Version="3.2.0" />
+
+    <!-- Entity Framework Core -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
+
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+
+    <!-- Swagger -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

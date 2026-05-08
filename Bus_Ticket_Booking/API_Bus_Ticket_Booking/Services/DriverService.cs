@@ -1,13 +1,17 @@
 using API_Bus_Ticket_Booking.Data;
+using API_Bus_Ticket_Booking.DTOs.Driver;
 using API_Bus_Ticket_Booking.Models;
+using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using AutoMapper;
 
+namespace Api_Bus_Ticket_Booking.Services;
 
 public class DriverService : IDriverService
 {
     private readonly IDriverRepository _repo;
     private readonly IMapper _mapper;
     private readonly BusTicketBookingContext _context;
+
     public DriverService(IDriverRepository repo, IMapper mapper, BusTicketBookingContext context)
     {
         _repo = repo;
@@ -59,7 +63,7 @@ public class DriverService : IDriverService
             Address1 = dto.Address,
             City = dto.City,
             State = dto.State,
-            ZipCode = dto.ZipCode
+            ZipCode = dto.ZipCode,
         };
         _context.Addresses.Add(address);
         await _context.SaveChangesAsync();
@@ -82,11 +86,12 @@ public class DriverService : IDriverService
             Address1 = dto.Address,
             City = dto.City,
             State = dto.State,
-            ZipCode = dto.ZipCode
+            ZipCode = dto.ZipCode,
         };
 
         var updated = await _repo.UpdateAsync(id, driver);
-        if (updated == null) return null;
+        if (updated == null)
+            return null;
 
         var result = await _repo.GetByIdAsync(updated.DriverId);
         return _mapper.Map<DriverResponseDto>(result!);
@@ -96,7 +101,7 @@ public class DriverService : IDriverService
     {
         return await _repo.DeleteAsync(id);
     }
-    
+
     public async Task<int> GetDriverCountByOfficeAsync(int officeId)
     {
         return await _repo.GetTotalDriverCountByOfficeAsync(officeId);

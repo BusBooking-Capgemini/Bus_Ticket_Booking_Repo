@@ -1,5 +1,7 @@
 using API_Bus_Ticket_Booking.Models;
 
+namespace API_Bus_Ticket_Booking.Repositories.Interfaces;
+
 public interface IDriverRepository
 {
     Task<IEnumerable<Driver>> GetAllAsync();

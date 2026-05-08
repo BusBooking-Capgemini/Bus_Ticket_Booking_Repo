@@ -1,7 +1,9 @@
 using API_Bus_Ticket_Booking.Data;
 using API_Bus_Ticket_Booking.Models;
+using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
+namespace API_Bus_Ticket_Booking.Repositories;
 
 public class DriverRepository : IDriverRepository
 {
@@ -14,24 +16,21 @@ public class DriverRepository : IDriverRepository
 
     public async Task<IEnumerable<Driver>> GetAllAsync()
     {
-        return await _context.Drivers
-            .Include(d => d.Office)
-            .Include(d => d.Address)
-            .ToListAsync();
+        return await _context.Drivers.Include(d => d.Office).Include(d => d.Address).ToListAsync();
     }
 
     public async Task<Driver?> GetByIdAsync(int id)
     {
-        return await _context.Drivers
-            .Include(d => d.Office)
+        return await _context
+            .Drivers.Include(d => d.Office)
             .Include(d => d.Address)
             .FirstOrDefaultAsync(d => d.DriverId == id);
     }
 
     public async Task<IEnumerable<Driver>> GetByOfficeIdAsync(int officeId)
     {
-        return await _context.Drivers
-            .Include(d => d.Office)
+        return await _context
+            .Drivers.Include(d => d.Office)
             .Include(d => d.Address)
             .Where(d => d.OfficeId == officeId)
             .ToListAsync();
@@ -39,25 +38,25 @@ public class DriverRepository : IDriverRepository
 
     public async Task<Driver?> GetByLicenseNumberAsync(string licenseNumber)
     {
-        return await _context.Drivers
-            .Include(d => d.Office)
+        return await _context
+            .Drivers.Include(d => d.Office)
             .Include(d => d.Address)
             .FirstOrDefaultAsync(d => d.LicenseNumber == licenseNumber);
     }
 
     public async Task<IEnumerable<Driver>> GetByNameAsync(string name)
     {
-        return await _context.Drivers
-            .Include(d => d.Office)
+        return await _context
+            .Drivers.Include(d => d.Office)
             .Include(d => d.Address)
             .Where(d => d.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
     }
-    
+
     public async Task<IEnumerable<Driver>> GetByCityAsync(string city)
     {
-        return await _context.Drivers
-            .Include(d => d.Office)
+        return await _context
+            .Drivers.Include(d => d.Office)
             .Include(d => d.Address)
             .Where(d => d.Address != null && d.Address.City.ToLower() == city.ToLower())
             .ToListAsync();
@@ -72,11 +71,12 @@ public class DriverRepository : IDriverRepository
 
     public async Task<Driver?> UpdateAsync(int id, Driver driver)
     {
-        var existing = await _context.Drivers
-            .Include(d => d.Address)
+        var existing = await _context
+            .Drivers.Include(d => d.Address)
             .FirstOrDefaultAsync(d => d.DriverId == id);
 
-        if (existing == null) return null;
+        if (existing == null)
+            return null;
 
         existing.LicenseNumber = driver.LicenseNumber;
         existing.Name = driver.Name;
@@ -98,7 +98,8 @@ public class DriverRepository : IDriverRepository
     public async Task<bool> DeleteAsync(int id)
     {
         var driver = await _context.Drivers.FindAsync(id);
-        if (driver == null) return false;
+        if (driver == null)
+            return false;
 
         _context.Drivers.Remove(driver);
         await _context.SaveChangesAsync();

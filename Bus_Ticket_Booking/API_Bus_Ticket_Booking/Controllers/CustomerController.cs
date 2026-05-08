@@ -1,5 +1,7 @@
 using API_Bus_Ticket_Booking.Data;
-using API_Bus_Ticket_Booking.DTOs;
+using API_Bus_Ticket_Booking.DTOs.Booking;
+using API_Bus_Ticket_Booking.DTOs.Customer;
+using API_Bus_Ticket_Booking.DTOs.Review;
 using API_Bus_Ticket_Booking.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +12,9 @@ namespace API_Bus_Ticket_Booking.Controllers;
 [Route("api/customers")]
 public class CustomerController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly BusTicketBookingContext _context;
 
-    public CustomerController(AppDbContext context)
+    public CustomerController(BusTicketBookingContext context)
     {
         _context = context;
     }

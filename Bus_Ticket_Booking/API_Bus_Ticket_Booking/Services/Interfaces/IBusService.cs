@@ -1,3 +1,7 @@
+using API_Bus_Ticket_Booking.DTOs.Bus;
+
+namespace API_Bus_Ticket_Booking.Services.Interfaces;
+
 public interface IBusService
 {
     Task<IEnumerable<BusResponseDto>> GetAllBusesAsync();

@@ -1,4 +1,7 @@
 using API_Bus_Ticket_Booking.Models;
+
+namespace API_Bus_Ticket_Booking.Repositories.Interfaces;
+
 public interface IBusRepository
 {
     Task<IEnumerable<Bus>> GetAllAsync();

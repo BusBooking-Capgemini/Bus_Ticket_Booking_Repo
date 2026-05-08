@@ -1,6 +1,11 @@
+using API_Bus_Ticket_Booking.DTOs.Bus;
+using API_Bus_Ticket_Booking.Mappings;
 using API_Bus_Ticket_Booking.Models;
+using API_Bus_Ticket_Booking.Repositories.Interfaces;
+using API_Bus_Ticket_Booking.Services.Interfaces;
 using AutoMapper;
 
+namespace API_Bus_Ticket_Booking.Services;
 
 public class BusService : IBusService
 {
@@ -56,19 +61,22 @@ public class BusService : IBusService
         var result = await _repo.GetByIdAsync(created.BusId);
         return _mapper.Map<BusResponseDto>(result!);
     }
+
     public async Task<BusResponseDto?> UpdateBusAsync(int id, BusRequestDto dto)
     {
         var bus = _mapper.Map<Bus>(dto);
         var updated = await _repo.UpdateAsync(id, bus);
-        if (updated == null) return null;
+        if (updated == null)
+            return null;
         var result = await _repo.GetByIdAsync(updated.BusId);
         return _mapper.Map<BusResponseDto>(result!);
     }
+
     public async Task<bool> DeleteBusAsync(int id)
     {
         return await _repo.DeleteAsync(id);
     }
-    
+
     public async Task<int> GetBusCountByOfficeAsync(int officeId)
     {
         return await _repo.GetTotalBusCountByOfficeAsync(officeId);

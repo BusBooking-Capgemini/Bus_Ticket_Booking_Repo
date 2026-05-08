@@ -1,9 +1,12 @@
 using API_Bus_Ticket_Booking.Data;
-using API_Bus_Ticket_Booking.Models;
+using API_Bus_Ticket_Booking.Repositories;
+using API_Bus_Ticket_Booking.Repositories.Interfaces;
+using Api_Bus_Ticket_Booking.Services;
+using API_Bus_Ticket_Booking.Services;
+using API_Bus_Ticket_Booking.Services.Interfaces;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-
-var app = builder.Build();
+using Microsoft.Extensions.DependencyInjection;
 
 public class Program
 {
@@ -13,7 +16,7 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
+        builder.Services.AddDbContext<BusTicketBookingContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
         );
 
