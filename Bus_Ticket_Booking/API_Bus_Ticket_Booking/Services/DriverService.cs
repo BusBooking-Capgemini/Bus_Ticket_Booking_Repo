@@ -4,7 +4,7 @@ using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using AutoMapper;
 
-namespace Api_Bus_Ticket_Booking.Services;
+namespace API_Bus_Ticket_Booking.Services;
 
 public class DriverService : IDriverService
 {

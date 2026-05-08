@@ -6,34 +6,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- AutoMapper -->
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-
-    <!-- Environment Variables -->
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="DotNetEnv" Version="3.2.0" />
-
-    <!-- Entity Framework Core -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
-
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.24" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.24" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.24" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.24" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.24">
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-
-    <!-- Swagger -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Data\" />
-    <Folder Include="Middleware\" />
-    <Folder Include="Mappings\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Exception\" />
-    <Folder Include="Services\" />
-    <Folder Include="Validators\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,6 @@
 using API_Bus_Ticket_Booking.Data;
 using API_Bus_Ticket_Booking.Repositories;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
-using Api_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using DotNetEnv;
@@ -24,6 +23,8 @@ public class Program
         builder.Services.AddAutoMapper(typeof(Program));
 
         // Repositories
+        builder.Services.AddScoped<IAgencyRepository, AgencyRepository>();
+        builder.Services.AddScoped<IOfficeRepository, OfficeRepository>();
         builder.Services.AddScoped<IBusRepository, BusRepository>();
         builder.Services.AddScoped<IDriverRepository, DriverRepository>();
         builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -32,6 +33,8 @@ public class Program
         builder.Services.AddScoped<ITripRepository, TripRepository>();
 
         // Services
+        builder.Services.AddScoped<IAgencyService, AgencyService>();
+        builder.Services.AddScoped<IOfficeService, OfficeService>();
         builder.Services.AddScoped<IBusService, BusService>();
         builder.Services.AddScoped<IDriverService, DriverService>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
