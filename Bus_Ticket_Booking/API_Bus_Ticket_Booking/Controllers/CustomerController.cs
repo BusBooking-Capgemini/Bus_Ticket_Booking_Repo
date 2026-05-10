@@ -2,7 +2,6 @@ using API_Bus_Ticket_Booking.Data;
 using API_Bus_Ticket_Booking.DTOs.Booking;
 using API_Bus_Ticket_Booking.DTOs.Customer;
 using API_Bus_Ticket_Booking.DTOs.Review;
-using API_Bus_Ticket_Booking.DTOs.Trip;
 using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -17,19 +16,31 @@ public class CustomerController : ControllerBase
     private readonly ICustomerService _customerService;
     private readonly IBookingService _bookingService;
     private readonly IReviewService _reviewService;
-    private readonly ITripService _tripService;
+
+    // private readonly ITripService _tripService;
+
+    // public CustomerController(
+    //     ICustomerService customerService,
+    //     IBookingService bookingService,
+    //     IReviewService reviewService,
+    //     ITripService tripService
+    // )
+    // {
+    //     _customerService = customerService;
+    //     _bookingService = bookingService;
+    //     _reviewService = reviewService;
+    //     _tripService = tripService;
+    // }
 
     public CustomerController(
         ICustomerService customerService,
         IBookingService bookingService,
-        IReviewService reviewService,
-        ITripService tripService
+        IReviewService reviewService
     )
     {
         _customerService = customerService;
         _bookingService = bookingService;
         _reviewService = reviewService;
-        _tripService = tripService;
     }
 
     // ───────────────────────────────────────────────────
@@ -76,28 +87,28 @@ public class CustomerController : ControllerBase
     // ───────────────────────────────────────────────────
 
     // GET /api/customers/trips/search?fromCity=Delhi&toCity=Mumbai&tripDate=2025-06-01&minSeats=2&maxFare=500
-    [HttpGet("trips/search")]
-    public async Task<IActionResult> SearchTrips([FromQuery] TripSearchDto filters)
-    {
-        var trips = await _tripService.SearchTripsAsync(filters);
-        return Ok(trips);
-    }
+    // [HttpGet("trips/search")]
+    // public async Task<IActionResult> SearchTrips([FromQuery] TripSearchDto filters)
+    // {
+    //     var trips = await _tripService.SearchTripsAsync(filters);
+    //     return Ok(trips);
+    // }
 
     // GET /api/customers/trips/upcoming
-    [HttpGet("trips/upcoming")]
-    public async Task<IActionResult> GetUpcomingTrips()
-    {
-        var trips = await _tripService.GetUpcomingTripsAsync();
-        return Ok(trips);
-    }
+    // [HttpGet("trips/upcoming")]
+    // public async Task<IActionResult> GetUpcomingTrips()
+    // {
+    //     var trips = await _tripService.GetUpcomingTripsAsync();
+    //     return Ok(trips);
+    // }
 
     // GET /api/customers/trips/{tripId}
-    [HttpGet("trips/{tripId}")]
-    public async Task<IActionResult> GetTripDetails(int tripId)
-    {
-        var trip = await _tripService.GetTripDetailsAsync(tripId);
-        return trip == null ? NotFound() : Ok(trip);
-    }
+    // [HttpGet("trips/{tripId}")]
+    // public async Task<IActionResult> GetTripDetails(int tripId)
+    // {
+    //     var trip = await _tripService.GetTripDetailsAsync(tripId);
+    //     return trip == null ? NotFound() : Ok(trip);
+    // }
 
     // GET /api/customers/trips/{tripId}/seats
     [HttpGet("trips/{tripId}/seats")]
@@ -108,12 +119,12 @@ public class CustomerController : ControllerBase
     }
 
     // GET /api/customers/trips/route/{routeId}
-    [HttpGet("trips/route/{routeId}")]
-    public async Task<IActionResult> GetTripsByRoute(int routeId)
-    {
-        var trips = await _tripService.GetTripsByRouteAsync(routeId);
-        return Ok(trips);
-    }
+    // [HttpGet("trips/route/{routeId}")]
+    // public async Task<IActionResult> GetTripsByRoute(int routeId)
+    // {
+    //     var trips = await _tripService.GetTripsByRouteAsync(routeId);
+    //     return Ok(trips);
+    // }
 
     // ───────────────────────────────────────────────────
     // BOOKINGS
