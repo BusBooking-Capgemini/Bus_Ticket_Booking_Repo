@@ -30,18 +30,10 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
 
         Task<int> GetActiveBookingsByOfficeAsync(int officeId);
 
-        Task<int> GetCancelledBookingsByOfficeAsync(int officeId);
-
-        Task<int> GetCompletedBookingsByOfficeAsync(int officeId);
-
         // Dashboard - Agency
         Task<int> GetTotalBookingsByAgencyAsync(int agencyId);
 
         Task<int> GetActiveBookingsByAgencyAsync(int agencyId);
-
-        Task<int> GetCancelledBookingsByAgencyAsync(int agencyId);
-
-        Task<int> GetCompletedBookingsByAgencyAsync(int agencyId);
 
         // Analytics
         Task<double> GetOccupancyRateByOfficeAsync(int officeId);

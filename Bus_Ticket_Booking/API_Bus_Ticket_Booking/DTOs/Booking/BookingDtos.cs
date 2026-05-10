@@ -23,16 +23,10 @@
         public int TotalBookings { get; set; }
 
         public int ActiveBookings { get; set; }
-
-        public int CancelledBookings { get; set; }
-
-        public int CompletedBookings { get; set; }
     }
 
     public class BookingAnalyticsDto
     {
-        public double CancellationRate { get; set; }
-
         public double OccupancyRate { get; set; }
 
         public int MostBookedTripId { get; set; }

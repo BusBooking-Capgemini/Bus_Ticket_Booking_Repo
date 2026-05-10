@@ -69,7 +69,6 @@ namespace API_Bus_Ticket_Booking.Services
                 }
             }
 
-
             await _bookingRepository.CancelBookingAsync(booking);
         }
 
@@ -129,11 +128,7 @@ namespace API_Bus_Ticket_Booking.Services
 
                     ActiveBookings =
                         await _bookingRepository
-                            .GetActiveBookingsByOfficeAsync(officeId.Value),
-
-                    CancelledBookings = 0,
-
-                    CompletedBookings = 0
+                            .GetActiveBookingsByOfficeAsync(officeId.Value)
                 };
             }
 
@@ -145,11 +140,7 @@ namespace API_Bus_Ticket_Booking.Services
 
                 ActiveBookings =
                     await _bookingRepository
-                        .GetActiveBookingsByAgencyAsync(agencyId),
-
-                CancelledBookings = 0,
-
-                CompletedBookings = 0
+                        .GetActiveBookingsByAgencyAsync(agencyId)
             };
         }
 
@@ -158,10 +149,6 @@ namespace API_Bus_Ticket_Booking.Services
             int agencyId,
             int? officeId)
         {
-            int totalBookings;
-
-            int cancelledBookings = 0;
-
             double occupancyRate;
 
             int mostBookedTripId;
@@ -170,10 +157,6 @@ namespace API_Bus_Ticket_Booking.Services
 
             if (officeId.HasValue)
             {
-                totalBookings =
-                    await _bookingRepository
-                        .GetTotalBookingsByOfficeAsync(officeId.Value);
-
                 occupancyRate =
                     await _bookingRepository
                         .GetOccupancyRateByOfficeAsync(officeId.Value);
@@ -188,10 +171,6 @@ namespace API_Bus_Ticket_Booking.Services
             }
             else
             {
-                totalBookings =
-                    await _bookingRepository
-                        .GetTotalBookingsByAgencyAsync(agencyId);
-
                 occupancyRate =
                     await _bookingRepository
                         .GetOccupancyRateByAgencyAsync(agencyId);
@@ -205,18 +184,8 @@ namespace API_Bus_Ticket_Booking.Services
                         .GetMostPopularRouteByAgencyAsync(agencyId);
             }
 
-            double cancellationRate = 0;
-
-            if (totalBookings > 0)
-            {
-                cancellationRate =
-                    ((double)cancelledBookings / totalBookings) * 100;
-            }
-
             return new BookingAnalyticsDto
             {
-                CancellationRate = cancellationRate,
-
                 OccupancyRate = occupancyRate,
 
                 MostBookedTripId = mostBookedTripId,

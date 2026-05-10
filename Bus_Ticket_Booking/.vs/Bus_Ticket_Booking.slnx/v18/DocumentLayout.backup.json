@@ -1,0 +1,190 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\services\\bookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\services\\bookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\dtos\\booking\\bookingdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\dtos\\booking\\bookingdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\repositories\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\repositories\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\repositories\\interfaces\\ibookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\repositories\\interfaces\\ibookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\controllers\\bookingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\controllers\\bookingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\services\\interfaces\\ibookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\services\\interfaces\\ibookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\repositories\\paymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\repositories\\paymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\repositories\\interfaces\\ipaymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\repositories\\interfaces\\ipaymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\services\\paymentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\services\\paymentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\.env||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\.env||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BookingDtos.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\DTOs\\Booking\\BookingDtos.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\DTOs\\Booking\\BookingDtos.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\DTOs\\Booking\\BookingDtos.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\DTOs\\Booking\\BookingDtos.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAUwCEAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:39:03.362Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BookingController.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Controllers\\BookingController.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Controllers\\BookingController.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Controllers\\BookingController.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Controllers\\BookingController.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAAwG8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:36:13.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BookingService.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Services\\BookingService.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Services\\BookingService.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Services\\BookingService.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Services\\BookingService.cs",
+              "ViewState": "AgIAAK8AAAAAAAAAAAAQwMQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:26:17.147Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IBookingService.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Services\\Interfaces\\IBookingService.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Services\\Interfaces\\IBookingService.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Services\\Interfaces\\IBookingService.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Services\\Interfaces\\IBookingService.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAiwBoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:25:36.578Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PaymentRepository.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\PaymentRepository.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Repositories\\PaymentRepository.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\PaymentRepository.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Repositories\\PaymentRepository.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:25:28.206Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BookingRepository.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\BookingRepository.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Repositories\\BookingRepository.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\BookingRepository.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Repositories\\BookingRepository.cs",
+              "ViewState": "AgIAABcBAAAAAAAAAAAQwCwBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:23:57.05Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IBookingRepository.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAQwDUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:10:26.17Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IPaymentRepository.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IPaymentRepository.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IPaymentRepository.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IPaymentRepository.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Repositories\\Interfaces\\IPaymentRepository.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAA7wEQAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:13:38.573Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "PaymentService.cs",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Services\\PaymentService.cs",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\Services\\PaymentService.cs",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\Services\\PaymentService.cs",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\Services\\PaymentService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T05:10:21.382Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": ".env",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\.env",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\.env",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\.env",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\.env",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-09T13:48:15.471Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -65,7 +65,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Include(p => p.Booking)
                 .ThenInclude(b => b.Trip)
                 .Where(p => p.CustomerId == customerId)
-                .Select(p => p.Booking)
+                .Select(p => p.Booking!)
                 .Where(b => b.Status == "Booked")
                 .ToListAsync();
         }
@@ -79,6 +79,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
                     b.Trip.Bus.OfficeId == officeId)
                 .ToListAsync();
         }
@@ -93,6 +94,8 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
+                    b.Trip.Bus.Office != null &&
                     b.Trip.Bus.Office.AgencyId == agencyId)
                 .ToListAsync();
         }
@@ -133,6 +136,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .CountAsync(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
                     b.Trip.Bus.OfficeId == officeId);
         }
 
@@ -142,17 +146,8 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .CountAsync(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
                     b.Trip.Bus.OfficeId == officeId);
-        }
-
-        public async Task<int> GetCancelledBookingsByOfficeAsync(int officeId)
-        {
-            return 0;
-        }
-
-        public async Task<int> GetCompletedBookingsByOfficeAsync(int officeId)
-        {
-            return 0;
         }
 
         // Dashboard - Agency
@@ -163,6 +158,8 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .CountAsync(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
+                    b.Trip.Bus.Office != null &&
                     b.Trip.Bus.Office.AgencyId == agencyId);
         }
 
@@ -172,17 +169,9 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .CountAsync(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
+                    b.Trip.Bus.Office != null &&
                     b.Trip.Bus.Office.AgencyId == agencyId);
-        }
-
-        public async Task<int> GetCancelledBookingsByAgencyAsync(int agencyId)
-        {
-            return 0;
-        }
-
-        public async Task<int> GetCompletedBookingsByAgencyAsync(int agencyId)
-        {
-            return 0;
         }
 
         // Analytics
@@ -191,7 +180,7 @@ namespace API_Bus_Ticket_Booking.Repositories
         {
             var trips = await _context.Trips
                 .Include(t => t.Bus)
-                .Where(t => t.Bus.OfficeId == officeId)
+                .Where(t => t.Bus != null && t.Bus.OfficeId == officeId)
                 .ToListAsync();
 
             if (!trips.Any())
@@ -199,10 +188,10 @@ namespace API_Bus_Ticket_Booking.Repositories
                 return 0;
             }
 
-            double totalCapacity = trips.Sum(t => t.Bus.Capacity);
+            double totalCapacity = trips.Sum(t => t.Bus!.Capacity);
 
             double bookedSeats = trips.Sum(t =>
-                t.Bus.Capacity - t.AvailableSeats);
+                t.Bus!.Capacity - t.AvailableSeats);
 
             return (bookedSeats / totalCapacity) * 100;
         }
@@ -211,7 +200,11 @@ namespace API_Bus_Ticket_Booking.Repositories
         {
             var trips = await _context.Trips
                 .Include(t => t.Bus)
-                .Where(t => t.Bus.Office.AgencyId == agencyId)
+                .ThenInclude(b => b.Office)
+                .Where(t =>
+                    t.Bus != null &&
+                    t.Bus.Office != null &&
+                    t.Bus.Office.AgencyId == agencyId)
                 .ToListAsync();
 
             if (!trips.Any())
@@ -219,10 +212,10 @@ namespace API_Bus_Ticket_Booking.Repositories
                 return 0;
             }
 
-            double totalCapacity = trips.Sum(t => t.Bus.Capacity);
+            double totalCapacity = trips.Sum(t => t.Bus!.Capacity);
 
             double bookedSeats = trips.Sum(t =>
-                t.Bus.Capacity - t.AvailableSeats);
+                t.Bus!.Capacity - t.AvailableSeats);
 
             return (bookedSeats / totalCapacity) * 100;
         }
@@ -233,6 +226,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
                     b.Trip.Bus.OfficeId == officeId)
                 .GroupBy(b => b.TripId)
                 .OrderByDescending(g => g.Count())
@@ -248,6 +242,8 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Bus != null &&
+                    b.Trip.Bus.Office != null &&
                     b.Trip.Bus.Office.AgencyId == agencyId)
                 .GroupBy(b => b.TripId)
                 .OrderByDescending(g => g.Count())
@@ -263,9 +259,12 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Route != null &&
+                    b.Trip.Bus != null &&
                     b.Trip.Bus.OfficeId == officeId)
                 .GroupBy(b =>
-                    b.Trip.Route.FromCity + " - " + b.Trip.Route.ToCity)
+                    b.Trip!.Route!.FromCity + " - " +
+                    b.Trip.Route.ToCity)
                 .OrderByDescending(g => g.Count())
                 .Select(g => g.Key)
                 .FirstOrDefaultAsync();
@@ -279,9 +278,13 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
+                    b.Trip.Route != null &&
+                    b.Trip.Bus != null &&
+                    b.Trip.Bus.Office != null &&
                     b.Trip.Bus.Office.AgencyId == agencyId)
                 .GroupBy(b =>
-                    b.Trip.Route.FromCity + " - " + b.Trip.Route.ToCity)
+                    b.Trip!.Route!.FromCity + " - " +
+                    b.Trip.Route.ToCity)
                 .OrderByDescending(g => g.Count())
                 .Select(g => g.Key)
                 .FirstOrDefaultAsync();

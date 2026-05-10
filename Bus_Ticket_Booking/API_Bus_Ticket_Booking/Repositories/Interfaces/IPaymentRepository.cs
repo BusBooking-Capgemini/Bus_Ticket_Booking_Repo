@@ -21,17 +21,12 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
 
         // Payment By Booking
         Task<Payment?> GetPaymentByBookingIdAsync(int bookingId);
-
-      
-        // GLOBAL REVENUE
         
         Task<decimal> GetTotalRevenueAsync();
 
         Task<decimal> GetTodayRevenueAsync();
 
         Task<decimal> GetMonthlyRevenueAsync();
-
-        // OFFICE REVENUE
 
         Task<decimal> GetTotalRevenueByOfficeAsync(int officeId);
 
@@ -40,7 +35,6 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
         Task<decimal> GetMonthlyRevenueByOfficeAsync(int officeId);
 
      
-        // AGENCY REVENUE
 
         Task<decimal> GetTotalRevenueByAgencyAsync(int agencyId);
 
@@ -48,25 +42,21 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
 
         Task<decimal> GetMonthlyRevenueByAgencyAsync(int agencyId);
 
-        // GLOBAL PAYMENT COUNTS
 
         Task<int> GetSuccessfulPaymentsCountAsync();
 
         Task<int> GetFailedPaymentsCountAsync();
 
-        // OFFICE PAYMENT COUNTS
 
         Task<int> GetSuccessfulPaymentsByOfficeAsync(int officeId);
 
         Task<int> GetFailedPaymentsByOfficeAsync(int officeId);
 
-        // AGENCY PAYMENT COUNTS
 
         Task<int> GetSuccessfulPaymentsByAgencyAsync(int agencyId);
 
         Task<int> GetFailedPaymentsByAgencyAsync(int agencyId);
 
-        // ANALYTICS
 
         Task<decimal> GetAveragePaymentAmountByOfficeAsync(int officeId);
 
