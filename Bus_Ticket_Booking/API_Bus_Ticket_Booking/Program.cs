@@ -1,3 +1,4 @@
+
 using API_Bus_Ticket_Booking.Data;
 using API_Bus_Ticket_Booking.Repositories;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
@@ -5,7 +6,10 @@ using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using API_Bus_Ticket_Booking.Middleware;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
+using DotNetEnv;
 
 public class Program
 {
@@ -29,6 +33,7 @@ public class Program
         builder.Services.AddScoped<IDriverRepository, DriverRepository>();
         builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
         builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
         builder.Services.AddScoped<ITripRepository, TripRepository>();
 
@@ -39,6 +44,7 @@ public class Program
         builder.Services.AddScoped<IDriverService, DriverService>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<IBookingService, BookingService>();
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<ITripService, TripService>();
 
@@ -57,6 +63,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseMiddleware<ExceptionMiddleware>();
 
         app.UseAuthorization();
 

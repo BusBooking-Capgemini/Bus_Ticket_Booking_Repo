@@ -8,6 +8,8 @@ namespace API_Bus_Ticket_Booking.Data;
 
 public partial class BusTicketBookingContext : DbContext
 {
+    public BusTicketBookingContext() 
+    { }
     public BusTicketBookingContext(DbContextOptions<BusTicketBookingContext> options)
         : base(options) { }
 
