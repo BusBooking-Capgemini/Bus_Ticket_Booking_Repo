@@ -1,14 +1,14 @@
-
 using API_Bus_Ticket_Booking.Data;
+using API_Bus_Ticket_Booking.Middleware;
 using API_Bus_Ticket_Booking.Repositories;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using AutoMapper;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using API_Bus_Ticket_Booking.Middleware;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
+
 //using DotNetEnv;
 
 public class Program

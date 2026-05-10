@@ -1,6 +1,6 @@
 namespace API_Bus_Ticket_Booking.DTOs.Booking;
 
-public class BookingResponseDto
+public class BookingResponseForCustomerDto
 {
     public int BookingId { get; set; }
     public int TripId { get; set; }
