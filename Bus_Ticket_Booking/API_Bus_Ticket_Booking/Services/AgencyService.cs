@@ -2,7 +2,7 @@
 using API_Bus_Ticket_Booking.Data;
 using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.DTOs.Agency;
-using API_Bus_Ticket_Booking.Exception;
+using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using AutoMapper;

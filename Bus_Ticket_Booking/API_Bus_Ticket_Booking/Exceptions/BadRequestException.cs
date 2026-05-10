@@ -1,6 +1,6 @@
 ﻿namespace API_Bus_Ticket_Booking.Exceptions
 {
-    public class BadRequestException:Exception
+    public class BadRequestException: Exception
     {
         public BadRequestException()
         {

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using API_Bus_Ticket_Booking.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
-using DotNetEnv;
+//using DotNetEnv;
 
 public class Program
 {
