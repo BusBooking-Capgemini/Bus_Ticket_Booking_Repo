@@ -1,3 +1,5 @@
+using API_Bus_Ticket_Booking.Data;
+using API_Bus_Ticket_Booking.Helpers.JWT;
 using API_Bus_Ticket_Booking.Middleware;
 
 using API_Bus_Ticket_Booking.Repositories;
@@ -6,15 +8,19 @@ using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 
-using API_Bus_Ticket_Booking.Data;
+using DotNetEnv;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Microsoft.EntityFrameworkCore;
 
-using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 
-using FluentValidation.AspNetCore;
+using Microsoft.OpenApi.Models;
 
-using DotNetEnv;
+using System.Text;
 
 namespace API_Bus_Ticket_Booking
 {
@@ -26,32 +32,135 @@ namespace API_Bus_Ticket_Booking
 
             var builder = WebApplication.CreateBuilder(args);
 
-            // Connection String From .env
+            // CONNECTION STRING
             var connectionString =
                 Environment.GetEnvironmentVariable(
                     "DB_CONNECTION_STRING");
 
-            // DbContext
-            builder.Services.AddDbContext<BusTicketBookingContext>(
-                options =>
-                    options.UseSqlServer(connectionString));
+            // JWT SETTINGS
+            var jwtKey =
+                Environment.GetEnvironmentVariable(
+                    "JWT_KEY");
 
-            // Controllers
+            var jwtIssuer =
+                Environment.GetEnvironmentVariable(
+                    "JWT_ISSUER");
+
+            var jwtAudience =
+                Environment.GetEnvironmentVariable(
+                    "JWT_AUDIENCE");
+
+            // DB CONTEXT
+            builder.Services.AddDbContext<
+                BusTicketBookingContext>(
+                options =>
+                    options.UseSqlServer(
+                        connectionString));
+
+            // CONTROLLERS
             builder.Services.AddControllers();
 
-            builder.Services.AddFluentValidationAutoValidation();
+            // FLUENT VALIDATION
+            builder.Services
+                .AddFluentValidationAutoValidation();
 
-            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+            builder.Services
+                .AddValidatorsFromAssemblyContaining<
+                    Program>();
 
-            // Swagger
+            // AUTOMAPPER
+            builder.Services.AddAutoMapper(
+                typeof(Program));
+
+            // JWT AUTHENTICATION
+            builder.Services
+                .AddAuthentication(
+                    JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+
+                            ValidateAudience = true,
+
+                            ValidateLifetime = true,
+
+                            ValidateIssuerSigningKey = true,
+
+                            ValidIssuer = jwtIssuer,
+
+                            ValidAudience = jwtAudience,
+
+                            IssuerSigningKey =
+                                new SymmetricSecurityKey(
+                                    Encoding.UTF8.GetBytes(
+                                        jwtKey!))
+                        };
+                });
+
+            // AUTHORIZATION
+            builder.Services.AddAuthorization();
+
+            // SWAGGER
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
+                        Title =
+                            "Bus Ticket Booking API",
 
-            // AutoMapper
-            builder.Services.AddAutoMapper(typeof(Program));
+                        Version = "v1"
+                    });
 
-            // Repository Dependency Injection
+                // JWT SWAGGER SUPPORT
+                options.AddSecurityDefinition(
+                    "Bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        Name = "Authorization",
+
+                        Type = SecuritySchemeType.Http,
+
+                        Scheme = "bearer",
+
+                        BearerFormat = "JWT",
+
+                        In = ParameterLocation.Header,
+
+                        Description =
+                            "Enter Token Like: Bearer {token}"
+                    });
+
+                options.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference =
+                                    new OpenApiReference
+                                    {
+                                        Type =
+                                            ReferenceType
+                                                .SecurityScheme,
+
+                                        Id = "Bearer"
+                                    }
+                            },
+
+                            Array.Empty<string>()
+                        }
+                    });
+            });
+
+            // REPOSITORY DEPENDENCY INJECTION
+
             builder.Services.AddScoped<
                 IBookingRepository,
                 BookingRepository>();
@@ -60,7 +169,12 @@ namespace API_Bus_Ticket_Booking
                 IPaymentRepository,
                 PaymentRepository>();
 
-            // Service Dependency Injection
+            builder.Services.AddScoped<
+                IAuthRepository,
+                AuthRepository>();
+
+            // SERVICE DEPENDENCY INJECTION
+
             builder.Services.AddScoped<
                 IBookingService,
                 BookingService>();
@@ -69,9 +183,17 @@ namespace API_Bus_Ticket_Booking
                 IPaymentService,
                 PaymentService>();
 
+            builder.Services.AddScoped<
+                IAuthService,
+                AuthService>();
+
+            // JWT HELPER
+            builder.Services.AddScoped<
+                JwtHelper>();
+
             var app = builder.Build();
 
-            // Swagger
+            // SWAGGER
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -79,13 +201,19 @@ namespace API_Bus_Ticket_Booking
                 app.UseSwaggerUI();
             }
 
-            // Global Exception Middleware
-            app.UseMiddleware<ExceptionMiddleware>();
+            // GLOBAL EXCEPTION MIDDLEWARE
+            app.UseMiddleware<
+                ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
+            // AUTHENTICATION
+            app.UseAuthentication();
+
+            // AUTHORIZATION
             app.UseAuthorization();
 
+            // MAP CONTROLLERS
             app.MapControllers();
 
             app.Run();
