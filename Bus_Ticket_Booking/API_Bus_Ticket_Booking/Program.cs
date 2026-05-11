@@ -6,10 +6,10 @@ using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using AutoMapper;
 using DotNetEnv;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
-//using DotNetEnv;
 
 public class Program
 {
@@ -49,6 +49,11 @@ public class Program
         builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<IRouteService, RouteService>();
         builder.Services.AddScoped<ITripService, TripService>();
+
+        // Validators
+        builder.Services.AddFluentValidationAutoValidation();
+        // Only need to register once, it will automatically regsiter all other validators.
+        builder.Services.AddValidatorsFromAssemblyContaining<CustomerCreateDtoValidator>();
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
