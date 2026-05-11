@@ -55,6 +55,7 @@ namespace API_Bus_Ticket_Booking.Repositories
         {
             return await _context.Bookings
                 .Include(b => b.Trip)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
         }
 
@@ -62,11 +63,10 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<IEnumerable<Booking>> GetCustomerBookingsAsync(int customerId)
         {
             return await _context.Payments
-                .Include(p => p.Booking)
-                .ThenInclude(b => b.Trip)
                 .Where(p => p.CustomerId == customerId)
                 .Select(p => p.Booking!)
                 .Where(b => b.Status == "Booked")
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -74,13 +74,12 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<IEnumerable<Booking>> GetOfficeBookingsAsync(int officeId)
         {
             return await _context.Bookings
-                .Include(b => b.Trip)
-                .ThenInclude(t => t.Bus)
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
                     b.Trip.Bus != null &&
                     b.Trip.Bus.OfficeId == officeId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -88,15 +87,13 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<IEnumerable<Booking>> GetAgencyBookingsAsync(int agencyId)
         {
             return await _context.Bookings
-                .Include(b => b.Trip)
-                .ThenInclude(t => t.Bus)
-                .ThenInclude(bus => bus.Office)
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
                     b.Trip.Bus != null &&
                     b.Trip.Bus.Office != null &&
                     b.Trip.Bus.Office.AgencyId == agencyId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -107,6 +104,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.TripId == tripId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -142,12 +140,7 @@ namespace API_Bus_Ticket_Booking.Repositories
 
         public async Task<int> GetActiveBookingsByOfficeAsync(int officeId)
         {
-            return await _context.Bookings
-                .CountAsync(b =>
-                    b.Status == "Booked" &&
-                    b.Trip != null &&
-                    b.Trip.Bus != null &&
-                    b.Trip.Bus.OfficeId == officeId);
+            return await GetTotalBookingsByOfficeAsync(officeId);
         }
 
         // Dashboard - Agency
@@ -165,13 +158,7 @@ namespace API_Bus_Ticket_Booking.Repositories
 
         public async Task<int> GetActiveBookingsByAgencyAsync(int agencyId)
         {
-            return await _context.Bookings
-                .CountAsync(b =>
-                    b.Status == "Booked" &&
-                    b.Trip != null &&
-                    b.Trip.Bus != null &&
-                    b.Trip.Bus.Office != null &&
-                    b.Trip.Bus.Office.AgencyId == agencyId);
+            return await GetTotalBookingsByAgencyAsync(agencyId);
         }
 
         // Analytics
@@ -179,8 +166,10 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<double> GetOccupancyRateByOfficeAsync(int officeId)
         {
             var trips = await _context.Trips
-                .Include(t => t.Bus)
-                .Where(t => t.Bus != null && t.Bus.OfficeId == officeId)
+                .Where(t =>
+                    t.Bus != null &&
+                    t.Bus.OfficeId == officeId)
+                .AsNoTracking()
                 .ToListAsync();
 
             if (!trips.Any())
@@ -199,12 +188,11 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<double> GetOccupancyRateByAgencyAsync(int agencyId)
         {
             var trips = await _context.Trips
-                .Include(t => t.Bus)
-                .ThenInclude(b => b.Office)
                 .Where(t =>
                     t.Bus != null &&
                     t.Bus.Office != null &&
                     t.Bus.Office.AgencyId == agencyId)
+                .AsNoTracking()
                 .ToListAsync();
 
             if (!trips.Any())

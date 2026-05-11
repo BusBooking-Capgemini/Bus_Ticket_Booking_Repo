@@ -29,6 +29,7 @@ namespace API_Bus_Ticket_Booking.Repositories
         {
             return await _context.Payments
                 .Include(p => p.Booking)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.PaymentId == paymentId);
         }
 
@@ -36,8 +37,8 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<IEnumerable<Payment>> GetCustomerPaymentsAsync(int customerId)
         {
             return await _context.Payments
-                .Include(p => p.Booking)
                 .Where(p => p.CustomerId == customerId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -45,12 +46,12 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<IEnumerable<Payment>> GetOfficePaymentsAsync(int officeId)
         {
             return await _context.Payments
-                .Include(p => p.Booking)
-                .ThenInclude(b => b.Trip)
-                .ThenInclude(t => t.Bus)
                 .Where(p =>
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -58,13 +59,13 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<IEnumerable<Payment>> GetAgencyPaymentsAsync(int agencyId)
         {
             return await _context.Payments
-                .Include(p => p.Booking)
-                .ThenInclude(b => b.Trip)
-                .ThenInclude(t => t.Bus)
-                .ThenInclude(bus => bus.Office)
                 .Where(p =>
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -117,7 +118,9 @@ namespace API_Bus_Ticket_Booking.Repositories
             return await _context.Payments
                 .Where(p =>
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId)
                 .SumAsync(p => p.Amount ?? 0);
         }
@@ -131,7 +134,9 @@ namespace API_Bus_Ticket_Booking.Repositories
                     p.PaymentDate.HasValue &&
                     p.PaymentDate.Value.Date == today &&
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId)
                 .SumAsync(p => p.Amount ?? 0);
         }
@@ -147,12 +152,13 @@ namespace API_Bus_Ticket_Booking.Repositories
                     p.PaymentDate.Value.Month == currentMonth &&
                     p.PaymentDate.Value.Year == currentYear &&
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId)
                 .SumAsync(p => p.Amount ?? 0);
         }
 
-       
         // AGENCY REVENUE
 
         public async Task<decimal> GetTotalRevenueByAgencyAsync(int agencyId)
@@ -160,7 +166,10 @@ namespace API_Bus_Ticket_Booking.Repositories
             return await _context.Payments
                 .Where(p =>
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId)
                 .SumAsync(p => p.Amount ?? 0);
         }
@@ -174,7 +183,10 @@ namespace API_Bus_Ticket_Booking.Repositories
                     p.PaymentDate.HasValue &&
                     p.PaymentDate.Value.Date == today &&
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId)
                 .SumAsync(p => p.Amount ?? 0);
         }
@@ -190,7 +202,10 @@ namespace API_Bus_Ticket_Booking.Repositories
                     p.PaymentDate.Value.Month == currentMonth &&
                     p.PaymentDate.Value.Year == currentYear &&
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId)
                 .SumAsync(p => p.Amount ?? 0);
         }
@@ -209,7 +224,6 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .CountAsync(p => p.PaymentStatus == "Failed");
         }
 
-
         // OFFICE PAYMENT COUNTS
 
         public async Task<int> GetSuccessfulPaymentsByOfficeAsync(int officeId)
@@ -217,7 +231,9 @@ namespace API_Bus_Ticket_Booking.Repositories
             return await _context.Payments
                 .CountAsync(p =>
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId);
         }
 
@@ -226,20 +242,23 @@ namespace API_Bus_Ticket_Booking.Repositories
             return await _context.Payments
                 .CountAsync(p =>
                     p.PaymentStatus == "Failed" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId);
         }
 
-
         // AGENCY PAYMENT COUNTS
-
 
         public async Task<int> GetSuccessfulPaymentsByAgencyAsync(int agencyId)
         {
             return await _context.Payments
                 .CountAsync(p =>
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId);
         }
 
@@ -248,10 +267,12 @@ namespace API_Bus_Ticket_Booking.Repositories
             return await _context.Payments
                 .CountAsync(p =>
                     p.PaymentStatus == "Failed" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId);
         }
-
 
         // ANALYTICS
 
@@ -260,7 +281,9 @@ namespace API_Bus_Ticket_Booking.Repositories
             return await _context.Payments
                 .Where(p =>
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId)
                 .AverageAsync(p => p.Amount ?? 0);
         }
@@ -270,7 +293,10 @@ namespace API_Bus_Ticket_Booking.Repositories
             return await _context.Payments
                 .Where(p =>
                     p.PaymentStatus == "Success" &&
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId)
                 .AverageAsync(p => p.Amount ?? 0);
         }
@@ -279,10 +305,13 @@ namespace API_Bus_Ticket_Booking.Repositories
         {
             var route = await _context.Payments
                 .Where(p =>
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Route != null &&
+                    p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.OfficeId == officeId)
                 .GroupBy(p =>
-                    p.Booking.Trip.Route.FromCity + " - " +
+                    p.Booking!.Trip!.Route!.FromCity + " - " +
                     p.Booking.Trip.Route.ToCity)
                 .OrderByDescending(g => g.Sum(x => x.Amount ?? 0))
                 .Select(g => g.Key)
@@ -295,10 +324,14 @@ namespace API_Bus_Ticket_Booking.Repositories
         {
             var route = await _context.Payments
                 .Where(p =>
+                    p.Booking != null &&
                     p.Booking.Trip != null &&
+                    p.Booking.Trip.Route != null &&
+                    p.Booking.Trip.Bus != null &&
+                    p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId)
                 .GroupBy(p =>
-                    p.Booking.Trip.Route.FromCity + " - " +
+                    p.Booking!.Trip!.Route!.FromCity + " - " +
                     p.Booking.Trip.Route.ToCity)
                 .OrderByDescending(g => g.Sum(x => x.Amount ?? 0))
                 .Select(g => g.Key)

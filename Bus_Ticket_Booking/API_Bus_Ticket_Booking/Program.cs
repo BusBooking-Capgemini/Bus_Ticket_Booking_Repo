@@ -10,7 +10,9 @@ using API_Bus_Ticket_Booking.Data;
 
 using Microsoft.EntityFrameworkCore;
 
-using AutoMapper;
+using FluentValidation;
+
+using FluentValidation.AspNetCore;
 
 using DotNetEnv;
 
@@ -24,20 +26,22 @@ namespace API_Bus_Ticket_Booking
 
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
-            var server = Environment.GetEnvironmentVariable("DB_SERVER");
-            var database = Environment.GetEnvironmentVariable("DB_NAME");
-            var trustedConnection = Environment.GetEnvironmentVariable("DB_TRUSTED_CONNECTION");
-            var trustCertificate = Environment.GetEnvironmentVariable("DB_TRUST_SERVER_CERTIFICATE");
-
+            // Connection String From .env
             var connectionString =
-                $"Server={server};Database={database};Trusted_Connection={trustedConnection};TrustServerCertificate={trustCertificate};";
+                Environment.GetEnvironmentVariable(
+                    "DB_CONNECTION_STRING");
 
-            builder.Services.AddDbContext<BusTicketBookingContext>(options =>
-                options.UseSqlServer(connectionString));
+            // DbContext
+            builder.Services.AddDbContext<BusTicketBookingContext>(
+                options =>
+                    options.UseSqlServer(connectionString));
 
+            // Controllers
             builder.Services.AddControllers();
+
+            builder.Services.AddFluentValidationAutoValidation();
+
+            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
             // Swagger
             builder.Services.AddEndpointsApiExplorer();
@@ -47,22 +51,27 @@ namespace API_Bus_Ticket_Booking
             // AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));
 
-            
-
             // Repository Dependency Injection
-            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddScoped<
+                IBookingRepository,
+                BookingRepository>();
 
-            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<
+                IPaymentRepository,
+                PaymentRepository>();
 
             // Service Dependency Injection
-            builder.Services.AddScoped<IBookingService, BookingService>();
+            builder.Services.AddScoped<
+                IBookingService,
+                BookingService>();
 
-            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<
+                IPaymentService,
+                PaymentService>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-
+            // Swagger
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -70,10 +79,10 @@ namespace API_Bus_Ticket_Booking
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
-
             // Global Exception Middleware
             app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseHttpsRedirection();
 
             app.UseAuthorization();
 

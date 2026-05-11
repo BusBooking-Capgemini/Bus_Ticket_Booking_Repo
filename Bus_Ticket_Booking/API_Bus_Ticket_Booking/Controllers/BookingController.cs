@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
 {
-    [Route("api/bookings")]
+    [Route("api/booking")]
     [ApiController]
     public class BookingController : ControllerBase
     {
@@ -16,33 +16,31 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Create Booking
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateBooking(
             [FromBody] CreateBookingDto dto)
         {
             var result =
                 await _bookingService.CreateBookingAsync(dto);
 
-            return CreatedAtAction(
-                nameof(GetBookingById),
-                new { bookingId = result.BookingId },
-                result);
+            return Ok(result);
         }
 
         // Cancel Booking
-        [HttpPut("{bookingId}/cancel")]
+        [HttpPut("cancel/{bookingId}")]
         public async Task<IActionResult> CancelBooking(int bookingId)
         {
             await _bookingService.CancelBookingAsync(bookingId);
 
             return Ok(new
             {
+                success = true,
                 message = "Booking cancelled successfully"
             });
         }
 
         // Get Booking By Id
-        [HttpGet("{bookingId}")]
+        [HttpGet("get-by-id/{bookingId}")]
         public async Task<IActionResult> GetBookingById(int bookingId)
         {
             var result =
@@ -52,7 +50,7 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Customer Bookings
-        [HttpGet("customer/{customerId}")]
+        [HttpGet("customer-bookings/{customerId}")]
         public async Task<IActionResult> GetCustomerBookings(int customerId)
         {
             var result =
@@ -62,7 +60,7 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Office Bookings
-        [HttpGet("office/{officeId}")]
+        [HttpGet("office-bookings/{officeId}")]
         public async Task<IActionResult> GetOfficeBookings(int officeId)
         {
             var result =
@@ -72,7 +70,7 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Agency Bookings
-        [HttpGet("agency/{agencyId}")]
+        [HttpGet("agency-bookings/{agencyId}")]
         public async Task<IActionResult> GetAgencyBookings(int agencyId)
         {
             var result =

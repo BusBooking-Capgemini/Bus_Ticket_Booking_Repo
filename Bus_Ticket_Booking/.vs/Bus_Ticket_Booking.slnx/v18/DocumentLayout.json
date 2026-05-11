@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|e:\\bus_ticket_booking_repo\\bus_ticket_booking\\api_bus_ticket_booking\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{35DC7860-C4AB-B681-B4B8-678B2E253B50}|API_Bus_Ticket_Booking\\API_Bus_Ticket_Booking.csproj|solutionrelative:api_bus_ticket_booking\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\.gitignore",
+              "RelativeDocumentMoniker": "API_Bus_Ticket_Booking\\.gitignore",
+              "ToolTip": "E:\\Bus_Ticket_Booking_Repo\\Bus_Ticket_Booking\\API_Bus_Ticket_Booking\\.gitignore",
+              "RelativeToolTip": "API_Bus_Ticket_Booking\\.gitignore",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAABsAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-11T15:41:29.786Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

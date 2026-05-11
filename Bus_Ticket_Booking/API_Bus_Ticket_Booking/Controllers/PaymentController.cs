@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
 {
-    [Route("api/payments")]
+    [Route("api/payment")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
@@ -16,21 +16,18 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Create Payment
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreatePayment(
             [FromBody] CreatePaymentDto dto)
         {
             var result =
                 await _paymentService.CreatePaymentAsync(dto);
 
-            return CreatedAtAction(
-                nameof(GetPaymentById),
-                new { paymentId = result.PaymentId },
-                result);
+            return Ok(result);
         }
 
         // Get Payment By Id
-        [HttpGet("{paymentId}")]
+        [HttpGet("get-by-id/{paymentId}")]
         public async Task<IActionResult> GetPaymentById(int paymentId)
         {
             var result =
@@ -40,7 +37,7 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Customer Payments
-        [HttpGet("customer/{customerId}")]
+        [HttpGet("customer-payments/{customerId}")]
         public async Task<IActionResult> GetCustomerPayments(int customerId)
         {
             var result =
@@ -50,7 +47,7 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Office Payments
-        [HttpGet("office/{officeId}")]
+        [HttpGet("office-payments/{officeId}")]
         public async Task<IActionResult> GetOfficePayments(int officeId)
         {
             var result =
@@ -60,7 +57,7 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // Agency Payments
-        [HttpGet("agency/{agencyId}")]
+        [HttpGet("agency-payments/{agencyId}")]
         public async Task<IActionResult> GetAgencyPayments(int agencyId)
         {
             var result =
