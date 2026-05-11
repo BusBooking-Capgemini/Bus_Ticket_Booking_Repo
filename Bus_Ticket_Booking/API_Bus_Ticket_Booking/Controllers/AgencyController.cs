@@ -22,7 +22,13 @@ namespace API_Bus_Ticket_Booking.Controllers
         {
             var result = await _service.GetAllAsync();
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Agencies retrieved successfully",
+                count = result.Count(),
+                data = result
+            });
         }
 
         // 2. GET agency by id
@@ -31,20 +37,24 @@ namespace API_Bus_Ticket_Booking.Controllers
         {
             var result = await _service.GetByIdAsync(id);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Agency retrieved successfully",
+                data = result
+            });
         }
 
         // 3. PUT update agency
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(
-            int id,
-            [FromBody] AgencyRequestDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] AgencyRequestDto dto)
         {
             await _service.UpdateAsync(id, dto);
 
             return Ok(new
             {
-                Message = "Agency updated successfully"
+                success = true,
+                message = "Agency updated successfully"
             });
         }
 
@@ -56,7 +66,8 @@ namespace API_Bus_Ticket_Booking.Controllers
 
             return Ok(new
             {
-                Message = "Agency deleted successfully"
+                success = true,
+                message = "Agency deleted successfully"
             });
         }
 
@@ -64,90 +75,109 @@ namespace API_Bus_Ticket_Booking.Controllers
         [HttpGet("{id}/offices")]
         public async Task<IActionResult> GetAgencyOffices(int id)
         {
-            var result =
-                await _service.GetAgencyOfficesAsync(id);
+            var result = await _service.GetAgencyOfficesAsync(id);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Agency offices retrieved successfully",
+                count = result.Count(),
+                data = result
+            });
         }
 
         // 6. GET agency summary
         [HttpGet("{id}/summary")]
         public async Task<IActionResult> GetAgencySummary(int id)
         {
-            var result =
-                await _service.GetAgencySummaryAsync(id);
+            var result = await _service.GetAgencySummaryAsync(id);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Agency summary retrieved successfully",
+                data = result
+            });
         }
 
         // 7. GET office bookings by agency
         [HttpGet("{agencyId}/offices/{officeId}/bookings")]
-        public async Task<IActionResult> GetOfficeBookings(
-            int agencyId,
-            int officeId)
+        public async Task<IActionResult> GetOfficeBookings(int agencyId, int officeId)
         {
             var result =
-                await _service.GetOfficeBookingsAsync(
-                    agencyId,
-                    officeId);
+                await _service.GetOfficeBookingsAsync(agencyId, officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Office bookings retrieved successfully",
+                count = result.Count(),
+                data = result
+            });
         }
 
         // 8. GET office payments by agency
         [HttpGet("{agencyId}/offices/{officeId}/payments")]
-        public async Task<IActionResult> GetOfficePayments(
-            int agencyId,
-            int officeId)
+        public async Task<IActionResult> GetOfficePayments(int agencyId, int officeId)
         {
             var result =
-                await _service.GetOfficePaymentsAsync(
-                    agencyId,
-                    officeId);
+                await _service.GetOfficePaymentsAsync(agencyId, officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Office payments retrieved successfully",
+                count = result.Count(),
+                data = result
+            });
         }
 
         // 9. GET office trips by agency
         [HttpGet("{agencyId}/offices/{officeId}/trips")]
-        public async Task<IActionResult> GetOfficeTrips(
-            int agencyId,
-            int officeId)
+        public async Task<IActionResult> GetOfficeTrips(int agencyId, int officeId)
         {
             var result =
-                await _service.GetOfficeTripsAsync(
-                    agencyId,
-                    officeId);
+                await _service.GetOfficeTripsAsync(agencyId, officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Office trips retrieved successfully",
+                count = result.Count(),
+                data = result
+            });
         }
 
         // 10. GET office buses by agency
         [HttpGet("{agencyId}/offices/{officeId}/buses")]
-        public async Task<IActionResult> GetOfficeBuses(
-            int agencyId,
-            int officeId)
+        public async Task<IActionResult> GetOfficeBuses(int agencyId, int officeId)
         {
             var result =
-                await _service.GetOfficeBusesAsync(
-                    agencyId,
-                    officeId);
+                await _service.GetOfficeBusesAsync(agencyId, officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Office buses retrieved successfully",
+                count = result.Count(),
+                data = result
+            });
         }
 
         // 11. GET office drivers by agency
         [HttpGet("{agencyId}/offices/{officeId}/drivers")]
-        public async Task<IActionResult> GetOfficeDrivers(
-            int agencyId,
-            int officeId)
+        public async Task<IActionResult> GetOfficeDrivers(int agencyId, int officeId)
         {
             var result =
-                await _service.GetOfficeDriversAsync(
-                    agencyId,
-                    officeId);
+                await _service.GetOfficeDriversAsync(agencyId, officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message = "Office drivers retrieved successfully",
+                count = result.Count(),
+                data = result
+            });
         }
     }
 }

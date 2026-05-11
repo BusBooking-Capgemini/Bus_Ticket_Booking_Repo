@@ -28,8 +28,7 @@ namespace API_Bus_Ticket_Booking.Validators.Agency
                 .NotEmpty()
                 .WithMessage("Phone number is required")
                 .Matches(@"^[0-9]{10,15}$")
-                .WithMessage(
-                    "Phone number must contain only digits");
+                .WithMessage("Phone number must contain only digits");
         }
     }
 }

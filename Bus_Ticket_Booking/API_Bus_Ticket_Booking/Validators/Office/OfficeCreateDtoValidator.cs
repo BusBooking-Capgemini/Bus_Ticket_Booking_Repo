@@ -20,16 +20,14 @@ namespace API_Bus_Ticket_Booking.Validators.Office
 
             RuleFor(x => x.OfficeContactPersonName)
                 .NotEmpty()
-                .WithMessage(
-                    "Office contact person name is required")
+                .WithMessage("Office contact person name is required")
                 .MaximumLength(50);
 
             RuleFor(x => x.OfficeContactNumber)
                 .NotEmpty()
                 .WithMessage("Office contact number is required")
                 .Matches(@"^[0-9]{10}$")
-                .WithMessage(
-                    "Office contact number must be 10 digits");
+                .WithMessage("Office contact number must be 10 digits");
 
             RuleFor(x => x.OfficeAddressId)
                 .GreaterThan(0)

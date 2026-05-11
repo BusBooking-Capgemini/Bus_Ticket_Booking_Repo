@@ -8,12 +8,9 @@ namespace API_Bus_Ticket_Booking.Services.Interfaces
 
         Task<OfficeResponseDto> GetByIdAsync(int id);
 
-        Task<OfficeResponseDto> CreateAsync(
-            OfficeRequestDto dto);
+        Task<OfficeResponseDto> CreateAsync(OfficeRequestDto dto);
 
-        Task UpdateAsync(
-            int id,
-            OfficeRequestDto dto);
+        Task UpdateAsync(int id, OfficeRequestDto dto);
 
         Task DeleteAsync(int id);
 

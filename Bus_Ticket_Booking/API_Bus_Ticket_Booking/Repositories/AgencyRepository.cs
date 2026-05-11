@@ -46,9 +46,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Booking>> GetOfficeBookingsAsync(
-            int agencyId,
-            int officeId)
+        public async Task<IEnumerable<Booking>> GetOfficeBookingsAsync(int agencyId, int officeId)
         {
             return await _context.Bookings
                 .Where(x =>
@@ -57,9 +55,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Payment>> GetOfficePaymentsAsync(
-            int agencyId,
-            int officeId)
+        public async Task<IEnumerable<Payment>> GetOfficePaymentsAsync(int agencyId, int officeId)
         {
             return await _context.Payments
                 .Where(x =>
@@ -68,9 +64,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Trip>> GetOfficeTripsAsync(
-            int agencyId,
-            int officeId)
+        public async Task<IEnumerable<Trip>> GetOfficeTripsAsync(int agencyId, int officeId)
         {
             return await _context.Trips
                 .Where(x =>
@@ -79,9 +73,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Bus>> GetOfficeBusesAsync(
-            int agencyId,
-            int officeId)
+        public async Task<IEnumerable<Bus>> GetOfficeBusesAsync(int agencyId, int officeId)
         {
             return await _context.Buses
                 .Where(x =>
@@ -90,9 +82,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Driver>> GetOfficeDriversAsync(
-            int agencyId,
-            int officeId)
+        public async Task<IEnumerable<Driver>> GetOfficeDriversAsync(int agencyId, int officeId)
         {
             return await _context.Drivers
                 .Where(x =>

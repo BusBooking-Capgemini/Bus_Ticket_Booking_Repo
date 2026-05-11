@@ -33,32 +33,36 @@ namespace API_Bus_Ticket_Booking.Middleware
         {
             context.Response.ContentType = "application/json";
 
-            var response = new { success = false, message = exception.Message };
-
             switch (exception)
             {
                 case NotFoundException:
-                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    context.Response.StatusCode =
+                        (int)HttpStatusCode.NotFound;
                     break;
 
                 case BadRequestException:
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.StatusCode =
+                        (int)HttpStatusCode.BadRequest;
                     break;
 
                 case ValidationException:
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.StatusCode =
+                        (int)HttpStatusCode.BadRequest;
                     break;
 
                 case ConflictException:
-                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                    context.Response.StatusCode =
+                        (int)HttpStatusCode.Conflict;
                     break;
 
                 case UnauthorizedException:
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    context.Response.StatusCode =
+                        (int)HttpStatusCode.Unauthorized;
                     break;
 
                 case ForbiddenException:
-                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    context.Response.StatusCode =
+                        (int)HttpStatusCode.Forbidden;
                     break;
 
                 case BusinessException:
@@ -66,11 +70,20 @@ namespace API_Bus_Ticket_Booking.Middleware
                     break;
 
                 default:
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.StatusCode =
+                        (int)HttpStatusCode.InternalServerError;
                     break;
             }
 
-            var jsonResponse = JsonSerializer.Serialize(response);
+            var response = new
+            {
+                success = false,
+                statusCode = context.Response.StatusCode,
+                message = exception.Message
+            };
+
+            var jsonResponse =
+                JsonSerializer.Serialize(response);
 
             await context.Response.WriteAsync(jsonResponse);
         }

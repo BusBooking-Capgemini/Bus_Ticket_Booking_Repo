@@ -5,8 +5,6 @@ using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace API_Bus_Ticket_Booking.Services
 {
@@ -29,6 +27,9 @@ namespace API_Bus_Ticket_Booking.Services
         {
             var offices = await _repository.GetAllAsync();
 
+            if (!offices.Any())
+                throw new NotFoundException("No offices found");
+
             return _mapper.Map<IEnumerable<OfficeResponseDto>>(offices);
         }
 
@@ -42,8 +43,7 @@ namespace API_Bus_Ticket_Booking.Services
             return _mapper.Map<OfficeResponseDto>(office);
         }
 
-        public async Task<OfficeResponseDto> CreateAsync(
-    OfficeRequestDto dto)
+        public async Task<OfficeResponseDto> CreateAsync(OfficeRequestDto dto)
         {
             var agency = await _context.Agencies.FindAsync(dto.AgencyId);
 
@@ -54,6 +54,11 @@ namespace API_Bus_Ticket_Booking.Services
 
             if (address == null)
                 throw new NotFoundException("Address not found");
+
+            var existingOffice = await _repository.GetAllAsync();
+
+            if (existingOffice.Any(x => x.OfficeMail == dto.OfficeMail))
+                throw new ConflictException("Office email already exists");
 
             var office = _mapper.Map<AgencyOffice>(dto);
 
@@ -76,9 +81,7 @@ namespace API_Bus_Ticket_Booking.Services
 
             office.OfficeMail = dto.OfficeMail;
             office.OfficeContactPersonName = dto.OfficeContactPersonName;
-
             office.OfficeContactNumber = dto.OfficeContactNumber;
-
             office.OfficeAddressId = dto.OfficeAddressId;
 
             await _repository.UpdateAsync(office);
@@ -96,6 +99,11 @@ namespace API_Bus_Ticket_Booking.Services
 
         public async Task<object> GetSummaryAsync(int officeId)
         {
+            var office = await _repository.GetByIdAsync(officeId);
+
+            if (office == null)
+                throw new NotFoundException("Office not found");
+
             var buses = await _repository.GetBusesAsync(officeId);
 
             var drivers = await _repository.GetDriversAsync(officeId);
@@ -110,59 +118,104 @@ namespace API_Bus_Ticket_Booking.Services
 
         public async Task<IEnumerable<object>> GetBusesAsync(int officeId)
         {
-            return (await _repository.GetBusesAsync(officeId))
-                .Select(x => new
-                {
-                    x.BusId,
-                    x.RegistrationNumber,
-                    x.Capacity,
-                    x.Type
-                });
+            var office = await _repository.GetByIdAsync(officeId);
+
+            if (office == null)
+                throw new NotFoundException("Office not found");
+
+            var buses = await _repository.GetBusesAsync(officeId);
+
+            if (!buses.Any())
+                throw new NotFoundException("No buses found");
+
+            return buses.Select(x => new
+            {
+                x.BusId,
+                x.RegistrationNumber,
+                x.Capacity,
+                x.Type
+            });
         }
 
         public async Task<IEnumerable<object>> GetDriversAsync(int officeId)
         {
-            return (await _repository.GetDriversAsync(officeId))
-                .Select(x => new
-                {
-                    x.DriverId,
-                    x.Name,
-                    x.Phone
-                });
+            var office = await _repository.GetByIdAsync(officeId);
+
+            if (office == null)
+                throw new NotFoundException("Office not found");
+
+            var drivers = await _repository.GetDriversAsync(officeId);
+
+            if (!drivers.Any())
+                throw new NotFoundException("No drivers found");
+
+            return drivers.Select(x => new
+            {
+                x.DriverId,
+                x.Name,
+                x.Phone
+            });
         }
 
         public async Task<IEnumerable<object>> GetTripsAsync(int officeId)
         {
-            return (await _repository.GetTripsAsync(officeId))
-                .Select(x => new
-                {
-                    x.TripId,
-                    x.DepartureTime,
-                    x.ArrivalTime,
-                    x.Fare
-                });
+            var office = await _repository.GetByIdAsync(officeId);
+
+            if (office == null)
+                throw new NotFoundException("Office not found");
+
+            var trips = await _repository.GetTripsAsync(officeId);
+
+            if (!trips.Any())
+                throw new NotFoundException("No trips found");
+
+            return trips.Select(x => new
+            {
+                x.TripId,
+                x.DepartureTime,
+                x.ArrivalTime,
+                x.Fare
+            });
         }
 
         public async Task<IEnumerable<object>> GetBookingsAsync(int officeId)
         {
-            return (await _repository.GetBookingsAsync(officeId))
-                .Select(x => new
-                {
-                    x.BookingId,
-                    x.SeatNumber,
-                    x.Status
-                });
+            var office = await _repository.GetByIdAsync(officeId);
+
+            if (office == null)
+                throw new NotFoundException("Office not found");
+
+            var bookings = await _repository.GetBookingsAsync(officeId);
+
+            if (!bookings.Any())
+                throw new NotFoundException("No bookings found");
+
+            return bookings.Select(x => new
+            {
+                x.BookingId,
+                x.SeatNumber,
+                x.Status
+            });
         }
 
         public async Task<IEnumerable<object>> GetPaymentsAsync(int officeId)
         {
-            return (await _repository.GetPaymentsAsync(officeId))
-                .Select(x => new
-                {
-                    x.PaymentId,
-                    x.Amount,
-                    x.PaymentStatus
-                });
+            var office = await _repository.GetByIdAsync(officeId);
+
+            if (office == null)
+                throw new NotFoundException("Office not found");
+
+            var payments = await _repository.GetPaymentsAsync(officeId);
+
+            if (!payments.Any())
+                throw new NotFoundException("No payments found");
+
+            return payments.Select(x => new
+            {
+                x.PaymentId,
+                x.Amount,
+                x.PaymentStatus
+            });
         }
     }
 }
