@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/agencies")]
     [ApiController]
     public class AgencyController : ControllerBase
     {
@@ -34,7 +34,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             return Ok(result);
         }
 
-        // 3. PUT update own agency
+        // 3. PUT update agency
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -48,7 +48,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 4. DELETE own agency
+        // 4. DELETE agency
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -60,7 +60,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 5. GET agency offices
+        // 5. GET all offices by agency
         [HttpGet("{id}/offices")]
         public async Task<IActionResult> GetAgencyOffices(int id)
         {
@@ -80,8 +80,8 @@ namespace API_Bus_Ticket_Booking.Controllers
             return Ok(result);
         }
 
-        // 7. GET office bookings
-        [HttpGet("{agencyId}/office/{officeId}/bookings")]
+        // 7. GET office bookings by agency
+        [HttpGet("{agencyId}/offices/{officeId}/bookings")]
         public async Task<IActionResult> GetOfficeBookings(
             int agencyId,
             int officeId)
@@ -94,8 +94,8 @@ namespace API_Bus_Ticket_Booking.Controllers
             return Ok(result);
         }
 
-        // 8. GET office payments
-        [HttpGet("{agencyId}/office/{officeId}/payments")]
+        // 8. GET office payments by agency
+        [HttpGet("{agencyId}/offices/{officeId}/payments")]
         public async Task<IActionResult> GetOfficePayments(
             int agencyId,
             int officeId)
@@ -108,8 +108,8 @@ namespace API_Bus_Ticket_Booking.Controllers
             return Ok(result);
         }
 
-        // 9. GET office trips
-        [HttpGet("{agencyId}/office/{officeId}/trips")]
+        // 9. GET office trips by agency
+        [HttpGet("{agencyId}/offices/{officeId}/trips")]
         public async Task<IActionResult> GetOfficeTrips(
             int agencyId,
             int officeId)
@@ -122,8 +122,8 @@ namespace API_Bus_Ticket_Booking.Controllers
             return Ok(result);
         }
 
-        // 10. GET office buses
-        [HttpGet("{agencyId}/office/{officeId}/buses")]
+        // 10. GET office buses by agency
+        [HttpGet("{agencyId}/offices/{officeId}/buses")]
         public async Task<IActionResult> GetOfficeBuses(
             int agencyId,
             int officeId)
@@ -136,8 +136,8 @@ namespace API_Bus_Ticket_Booking.Controllers
             return Ok(result);
         }
 
-        // 11. GET office drivers
-        [HttpGet("{agencyId}/office/{officeId}/drivers")]
+        // 11. GET office drivers by agency
+        [HttpGet("{agencyId}/offices/{officeId}/drivers")]
         public async Task<IActionResult> GetOfficeDrivers(
             int agencyId,
             int officeId)
