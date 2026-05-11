@@ -4,7 +4,7 @@ using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 
-namespace API_Bus_Ticket_Booking.Services.Implementations
+namespace API_Bus_Ticket_Booking.Services
 {
     public class RouteService : IRouteService
     {

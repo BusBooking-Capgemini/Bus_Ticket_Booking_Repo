@@ -4,6 +4,7 @@ using API_Bus_Ticket_Booking.Repositories;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using API_Bus_Ticket_Booking.Validators;
 using AutoMapper;
 using DotNetEnv;
 using FluentValidation;

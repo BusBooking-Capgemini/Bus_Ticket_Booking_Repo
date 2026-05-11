@@ -7,9 +7,9 @@ namespace API_Bus_Ticket_Booking.Repositories
 {
     public class RouteRepository : IRouteRepository
     {
-        private readonly AppDbContext _context;
+        private readonly BusTicketBookingContext _context;
 
-        public RouteRepository(AppDbContext context)
+        public RouteRepository(BusTicketBookingContext context)
         {
             _context = context;
         }
