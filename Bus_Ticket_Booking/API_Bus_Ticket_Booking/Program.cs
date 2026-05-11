@@ -35,6 +35,8 @@ public class Program
         builder.Services.AddScoped<IBookingRepository, BookingRepository>();
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+        builder.Services.AddScoped<IRouteRepository, RouteRepository>();
+        builder.Services.AddScoped<ITripRepository, TripRepository>();
 
         // Services
         builder.Services.AddScoped<IAgencyService, AgencyService>();
@@ -45,6 +47,8 @@ public class Program
         builder.Services.AddScoped<IBookingService, BookingService>();
         builder.Services.AddScoped<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IReviewService, ReviewService>();
+        builder.Services.AddScoped<IRouteService, RouteService>();
+        builder.Services.AddScoped<ITripService, TripService>();
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

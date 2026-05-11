@@ -38,7 +38,10 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         [HttpGet("search")]
         [AllowAnonymous]
-        public async Task<IActionResult> Search([FromQuery] string fromCity, [FromQuery] string toCity)
+        public async Task<IActionResult> Search(
+            [FromQuery] string fromCity,
+            [FromQuery] string toCity
+        )
         {
             if (string.IsNullOrWhiteSpace(fromCity) || string.IsNullOrWhiteSpace(toCity))
             {
