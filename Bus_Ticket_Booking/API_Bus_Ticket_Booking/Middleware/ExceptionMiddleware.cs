@@ -1,6 +1,6 @@
-﻿using API_Bus_Ticket_Booking.Exceptions;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
+using API_Bus_Ticket_Booking.Exceptions;
 
 namespace API_Bus_Ticket_Booking.Middleware
 {
@@ -9,8 +9,7 @@ namespace API_Bus_Ticket_Booking.Middleware
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
 
-        public ExceptionMiddleware(RequestDelegate next,
-            ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -30,47 +29,36 @@ namespace API_Bus_Ticket_Booking.Middleware
             }
         }
 
-        private static async Task HandleExceptionAsync(HttpContext context,
-            Exception exception)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
 
-            var response = new
-            {
-                success = false,
-                message = exception.Message
-            };
+            var response = new { success = false, message = exception.Message };
 
             switch (exception)
             {
                 case NotFoundException:
-                    context.Response.StatusCode =
-                        (int)HttpStatusCode.NotFound;
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
 
                 case BadRequestException:
-                    context.Response.StatusCode =
-                        (int)HttpStatusCode.BadRequest;
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
 
                 case ValidationException:
-                    context.Response.StatusCode =
-                        (int)HttpStatusCode.BadRequest;
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
 
                 case ConflictException:
-                    context.Response.StatusCode =
-                        (int)HttpStatusCode.Conflict;
+                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
                     break;
 
                 case UnauthorizedException:
-                    context.Response.StatusCode =
-                        (int)HttpStatusCode.Unauthorized;
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     break;
 
                 case ForbiddenException:
-                    context.Response.StatusCode =
-                        (int)HttpStatusCode.Forbidden;
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     break;
 
                 case BusinessException:
@@ -78,8 +66,7 @@ namespace API_Bus_Ticket_Booking.Middleware
                     break;
 
                 default:
-                    context.Response.StatusCode =
-                        (int)HttpStatusCode.InternalServerError;
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }
 
