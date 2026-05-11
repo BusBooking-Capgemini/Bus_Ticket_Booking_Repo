@@ -28,8 +28,6 @@ public class BusController : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _service.GetBusByIdAsync(id);
-        if (result == null)
-            return NotFound($"Bus with ID {id} not found.");
         return Ok(result);
     }
 
@@ -54,8 +52,6 @@ public class BusController : ControllerBase
     public async Task<IActionResult> GetByRegistration(string regNumber)
     {
         var result = await _service.GetBusByRegistrationAsync(regNumber);
-        if (result == null)
-            return NotFound($"Bus with registration {regNumber} not found.");
         return Ok(result);
     }
 
@@ -88,8 +84,6 @@ public class BusController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] BusRequestDto dto)
     {
         var result = await _service.UpdateBusAsync(id, dto);
-        if (result == null)
-            return NotFound($"Bus with ID {id} not found.");
         return Ok(result);
     }
 
@@ -98,8 +92,6 @@ public class BusController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _service.DeleteBusAsync(id);
-        if (!deleted)
-            return NotFound($"Bus with ID {id} not found.");
         return Ok(new { Message = $"Bus {id} deleted successfully." });
     }
 }
