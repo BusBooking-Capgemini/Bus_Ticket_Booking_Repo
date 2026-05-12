@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using API_Bus_Ticket_Booking.DTOs.Agency;
+﻿using API_Bus_Ticket_Booking.DTOs.Agency;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
 {
     [Route("api/agencies")]
     [ApiController]
+    [Authorize(Roles = "Agency")]
     public class AgencyController : ControllerBase
     {
         private readonly IAgencyService _service;

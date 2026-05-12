@@ -4,13 +4,14 @@ using API_Bus_Ticket_Booking.DTOs.Customer;
 using API_Bus_Ticket_Booking.DTOs.Review;
 using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_Bus_Ticket_Booking.Controllers;
 
 [ApiController]
-[Route("api/customers")] // custom routing
+[Route("api/customers")]
 public class CustomerController : ControllerBase
 {
     private readonly ICustomerService _customerService;
@@ -46,11 +47,15 @@ public class CustomerController : ControllerBase
 
     // POST /api/customers
     [HttpPost("register")]
+    [AllowAnonymous]
+
     public async Task<IActionResult> Register([FromBody] CustomerCreateDto dto)
     {
         if (await _customerService.EmailAlreadyExistsAsync(dto.Email))
-            return Conflict(new { message = "A customer with this email already exists." });
-
+            return Conflict(new
+            {
+                message = "A customer with this email already exists."
+            });
         var result = await _customerService.CreateCustomerAsync(dto);
 
         return CreatedAtAction(nameof(GetProfile), new { customerId = result.CustomerId }, result);
@@ -58,6 +63,7 @@ public class CustomerController : ControllerBase
 
     // GET /api/customers/{customerId}
     [HttpGet("getCustomer/{customerId}")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> GetProfile(int customerId)
     {
         var customer = await _customerService.GetCustomerAsync(customerId);
@@ -66,6 +72,7 @@ public class CustomerController : ControllerBase
 
     // PUT /api/customers/updateCustomer/{customerId}
     [HttpPatch("updateCustomer/{customerId}")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> UpdateProfile(int customerId, [FromBody] CustomerUpdateDto dto)
     {
         var updated = await _customerService.UpdateCustomerAsync(customerId, dto);
@@ -74,6 +81,7 @@ public class CustomerController : ControllerBase
 
     // DELETE /api/customers/deleteCustomer/{customerId}
     [HttpDelete("deleteCustomer/{customerId}")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> DeleteAccount(int customerId)
     {
         var deleted = await _customerService.DeleteCustomerAsync(customerId);
@@ -187,6 +195,7 @@ public class CustomerController : ControllerBase
 
     // GET /api/customers/{customerId}/getReviews
     [HttpGet("{customerId}/getReviews")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> GetMyReviews(int customerId)
     {
         var reviews = await _reviewService.GetCustomerReviewsAsync(customerId);
@@ -195,6 +204,7 @@ public class CustomerController : ControllerBase
 
     // GET /api/customers/{customerId}/getReview/{reviewId}
     [HttpGet("{customerId}/getReview/{reviewId}")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> GetReview(int customerId, int reviewId)
     {
         var review = await _reviewService.GetReviewByIdAsync(reviewId);
@@ -205,6 +215,7 @@ public class CustomerController : ControllerBase
 
     // PUT /api/customers/{customerId}/updateReview/{reviewId}
     [HttpPatch("{customerId}/updateReview/{reviewId}")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> UpdateReview(
         int customerId,
         int reviewId,
@@ -219,6 +230,7 @@ public class CustomerController : ControllerBase
 
     // DELETE /api/customers/{customerId}/deleteReview/{reviewId}
     [HttpDelete("{customerId}/deleteReview/{reviewId}")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> DeleteReview(int customerId, int reviewId)
     {
         var (success, message) = await _reviewService.DeleteReviewAsync(customerId, reviewId);
@@ -227,6 +239,7 @@ public class CustomerController : ControllerBase
 
     // GET /api/customers/trips/{tripId}/reviews  → Public: see all reviews for a trip
     [HttpGet("trips/{tripId}/getTripReviews")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetTripReviews(int tripId)
     {
         var reviews = await _reviewService.GetTripReviewsAsync(tripId);

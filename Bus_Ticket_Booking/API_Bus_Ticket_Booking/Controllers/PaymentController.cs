@@ -1,5 +1,6 @@
 ﻿using API_Bus_Ticket_Booking.DTOs.Payment;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
@@ -18,6 +19,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Create Payment
         [HttpPost("create")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult>
             CreatePayment(
                 [FromBody] CreatePaymentDto dto)
@@ -47,6 +49,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Get Payment By Id
         [HttpGet("get-by-id/{paymentId}")]
+        [Authorize(Roles = "Customer,Office,Agency")]
         public async Task<IActionResult>
             GetPaymentById(int paymentId)
         {
@@ -76,6 +79,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Customer Payments
         [HttpGet("customer-payments/{customerId}")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult>
             GetCustomerPayments(int customerId)
         {
@@ -106,6 +110,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Office Payments
         [HttpGet("office-payments/{officeId}")]
+        [Authorize(Roles = "Office")]
         public async Task<IActionResult>
             GetOfficePayments(int officeId)
         {
@@ -136,6 +141,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Agency Payments
         [HttpGet("agency-payments/{agencyId}")]
+        [Authorize(Roles = "Agency")]
         public async Task<IActionResult>
             GetAgencyPayments(int agencyId)
         {
@@ -166,6 +172,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Revenue Summary
         [HttpGet("revenue-summary")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult>
             GetRevenueSummary(
                 [FromQuery] int agencyId,
@@ -188,6 +195,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Dashboard
         [HttpGet("dashboard")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult>
             GetDashboard(
                 [FromQuery] int agencyId,
@@ -210,6 +218,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Analytics
         [HttpGet("analytics")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult>
             GetAnalytics(
                 [FromQuery] int agencyId,

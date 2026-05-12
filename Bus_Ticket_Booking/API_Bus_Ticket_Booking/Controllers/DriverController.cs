@@ -1,11 +1,13 @@
 using API_Bus_Ticket_Booking.DTOs.Driver;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
 {
     [ApiController]
     [Route("api/drivers")]
+    [Authorize(Roles = "Office,Agency")]
     public class DriverController : ControllerBase
     {
         private readonly IDriverService _service;

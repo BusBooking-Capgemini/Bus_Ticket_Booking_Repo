@@ -1,5 +1,6 @@
 ﻿using API_Bus_Ticket_Booking.DTOs.Booking;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
@@ -17,6 +18,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Create Booking
         [HttpPost("create")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult>CreateBooking([FromBody] CreateBookingDto dto)
         {
             if (dto == null)
@@ -43,6 +45,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Cancel Booking
         [HttpPut("cancel/{bookingId}")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult>CancelBooking(int bookingId)
         {
             await _bookingService
@@ -57,6 +60,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Get Booking By Id
         [HttpGet("get-by-id/{bookingId}")]
+        [Authorize(Roles = "Customer,Office,Agency")]
         public async Task<IActionResult>GetBookingById(int bookingId)
         {
             var result =
@@ -86,6 +90,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Customer Bookings
         [HttpGet("customer-bookings/{customerId}")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult>GetCustomerBookings(int customerId)
         {
             var result =
@@ -115,6 +120,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Office Bookings
         [HttpGet("office-bookings/{officeId}")]
+        [Authorize(Roles = "Office")]
         public async Task<IActionResult>GetOfficeBookings(int officeId)
         {
             var result =
@@ -144,6 +150,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Agency Bookings
         [HttpGet("agency-bookings/{agencyId}")]
+        [Authorize(Roles = "Agency")]
         public async Task<IActionResult>GetAgencyBookings(int agencyId)
         {
             var result =
@@ -173,6 +180,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Trip Bookings
         [HttpGet("trip-bookings/{tripId}")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult> GetTripBookings(int tripId)
         {
             var result =
@@ -202,6 +210,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Dashboard
         [HttpGet("dashboard")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult>GetDashboard([FromQuery] int agencyId, [FromQuery] int? officeId)
         {
             var result =
@@ -221,6 +230,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // Analytics
         [HttpGet("analytics")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult> GetAnalytics([FromQuery] int agencyId, [FromQuery] int? officeId)
         {
             var result =

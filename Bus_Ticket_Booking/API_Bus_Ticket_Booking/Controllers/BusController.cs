@@ -1,11 +1,13 @@
 using API_Bus_Ticket_Booking.DTOs.Bus;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Bus_Ticket_Booking.Controllers
 {
     [ApiController]
     [Route("api/buses")]
+    [Authorize(Roles = "Office,Agency")]
     public class BusController : ControllerBase
     {
         private readonly IBusService _service;
