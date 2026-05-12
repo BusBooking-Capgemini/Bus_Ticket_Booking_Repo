@@ -14,56 +14,52 @@ namespace API_Bus_Ticket_Booking.Repositories
             _context = context;
         }
 
-        private IQueryable<Trip> GetTripsWithIncludes()
-        {
-            return _context
-                .Trips.Include(t => t.Route)
-                .Include(t => t.Bus)
-                .Include(t => t.Driver1Driver)
-                .Include(t => t.Driver2Driver);
-        }
-
         public async Task<List<Trip>> GetAllAsync()
         {
-            return await GetTripsWithIncludes().ToListAsync();
+            // Lazy loading handles navigation properties automatically
+            return await _context.Trips.ToListAsync();
         }
 
         public async Task<Trip> GetByIdAsync(int id)
         {
-            return await GetTripsWithIncludes().FirstOrDefaultAsync(t => t.TripId == id);
+            return await _context.Trips.FirstOrDefaultAsync(t => t.TripId == id);
         }
 
         public async Task<List<Trip>> SearchAsync(string fromCity, string toCity, DateTime tripDate)
         {
-            return await GetTripsWithIncludes()
+            // Route nav property accessed via lazy loading
+            return await _context.Trips
                 .Where(t =>
-                    t.Route.FromCity.ToLower() == fromCity.ToLower()
-                    && t.Route.ToCity.ToLower() == toCity.ToLower()
-                    && t.TripDate.Date == tripDate.Date
-                )
+                    t.Route.FromCity.ToLower() == fromCity.ToLower() &&
+                    t.Route.ToCity.ToLower() == toCity.ToLower() &&
+                    t.TripDate.Date == tripDate.Date)
                 .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByRouteIdAsync(int routeId)
         {
-            return await GetTripsWithIncludes().Where(t => t.RouteId == routeId).ToListAsync();
+            return await _context.Trips
+                .Where(t => t.RouteId == routeId)
+                .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByDateAsync(DateTime date)
         {
-            return await GetTripsWithIncludes()
+            return await _context.Trips
                 .Where(t => t.TripDate.Date == date.Date)
                 .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByBusIdAsync(int busId)
         {
-            return await GetTripsWithIncludes().Where(t => t.BusId == busId).ToListAsync();
+            return await _context.Trips
+                .Where(t => t.BusId == busId)
+                .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByDriverIdAsync(int driverId)
         {
-            return await GetTripsWithIncludes()
+            return await _context.Trips
                 .Where(t => t.Driver1DriverId == driverId || t.Driver2DriverId == driverId)
                 .ToListAsync();
         }
@@ -71,7 +67,9 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<List<Trip>> GetUpcomingAsync()
         {
             DateTime today = DateTime.Today;
-            return await GetTripsWithIncludes().Where(t => t.TripDate >= today).ToListAsync();
+            return await _context.Trips
+                .Where(t => t.TripDate >= today)
+                .ToListAsync();
         }
 
         public async Task<bool> ExistsAsync(int id)
@@ -84,16 +82,15 @@ namespace API_Bus_Ticket_Booking.Repositories
             DateTime tripDate,
             DateTime departure,
             DateTime arrival,
-            int excludeTripId
-        )
+            int excludeTripId)
         {
             bool hasConflict = await _context.Trips.AnyAsync(t =>
-                t.BusId == busId
-                && t.TripId != excludeTripId
-                && t.TripDate.Date == tripDate.Date
-                && t.DepartureTime < arrival
-                && t.ArrivalTime > departure
-            );
+                t.BusId == busId &&
+                t.TripId != excludeTripId &&
+                t.TripDate.Date == tripDate.Date &&
+                t.DepartureTime < arrival &&
+                t.ArrivalTime > departure);
+
             return !hasConflict;
         }
 
@@ -102,22 +99,23 @@ namespace API_Bus_Ticket_Booking.Repositories
             DateTime tripDate,
             DateTime departure,
             DateTime arrival,
-            int excludeTripId
-        )
+            int excludeTripId)
         {
             bool hasConflict = await _context.Trips.AnyAsync(t =>
-                (t.Driver1DriverId == driverId || t.Driver2DriverId == driverId)
-                && t.TripId != excludeTripId
-                && t.TripDate.Date == tripDate.Date
-                && t.DepartureTime < arrival
-                && t.ArrivalTime > departure
-            );
+                (t.Driver1DriverId == driverId || t.Driver2DriverId == driverId) &&
+                t.TripId != excludeTripId &&
+                t.TripDate.Date == tripDate.Date &&
+                t.DepartureTime < arrival &&
+                t.ArrivalTime > departure);
+
             return !hasConflict;
         }
 
         public async Task<List<Booking>> GetBookingsByTripIdAsync(int tripId)
         {
-            return await _context.Bookings.Where(b => b.TripId == tripId).ToListAsync();
+            return await _context.Bookings
+                .Where(b => b.TripId == tripId)
+                .ToListAsync();
         }
 
         public async Task<int> GetBusCapacityAsync(int busId)
