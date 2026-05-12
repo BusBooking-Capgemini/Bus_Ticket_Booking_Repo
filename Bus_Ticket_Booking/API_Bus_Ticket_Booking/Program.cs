@@ -36,7 +36,6 @@ public class Program
             options.UseSqlServer(connectionString)
         );
 
-        // Controllers
         builder.Services.AddControllers();
 
         // Validation
@@ -114,6 +113,7 @@ public class Program
 
         // Repositories
         builder.Services.AddScoped<IAgencyRepository, AgencyRepository>();
+        builder.Services.AddScoped<IAuthRepository, AuthRepository>();
         builder.Services.AddScoped<IOfficeRepository, OfficeRepository>();
         builder.Services.AddScoped<IBusRepository, BusRepository>();
         builder.Services.AddScoped<IDriverRepository, DriverRepository>();
@@ -126,6 +126,7 @@ public class Program
 
         // Services
         builder.Services.AddScoped<IAgencyService, AgencyService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IOfficeService, OfficeService>();
         builder.Services.AddScoped<IBusService, BusService>();
         builder.Services.AddScoped<IDriverService, DriverService>();
