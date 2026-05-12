@@ -1,9 +1,11 @@
-﻿using API_Bus_Ticket_Booking.DTOs.Office;
+﻿using API_Bus_Ticket_Booking.Data;
+using API_Bus_Ticket_Booking.DTOs.Office;
 using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace API_Bus_Ticket_Booking.Services
@@ -14,12 +16,13 @@ namespace API_Bus_Ticket_Booking.Services
 
         private readonly IMapper _mapper;
 
-        public OfficeService(
-            IOfficeRepository repository,
-            IMapper mapper)
+        private readonly BusTicketBookingContext _context;
+
+        public OfficeService(IOfficeRepository repository, IMapper mapper, BusTicketBookingContext context)
         {
             _repository = repository;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<IEnumerable<OfficeResponseDto>> GetAllAsync()
@@ -40,8 +43,18 @@ namespace API_Bus_Ticket_Booking.Services
         }
 
         public async Task<OfficeResponseDto> CreateAsync(
-            OfficeRequestDto dto)
+    OfficeRequestDto dto)
         {
+            var agency = await _context.Agencies.FindAsync(dto.AgencyId);
+
+            if (agency == null)
+                throw new NotFoundException("Agency not found");
+
+            var address = await _context.Addresses.FindAsync(dto.OfficeAddressId);
+
+            if (address == null)
+                throw new NotFoundException("Address not found");
+
             var office = _mapper.Map<AgencyOffice>(dto);
 
             await _repository.AddAsync(office);
@@ -49,19 +62,23 @@ namespace API_Bus_Ticket_Booking.Services
             return _mapper.Map<OfficeResponseDto>(office);
         }
 
-        public async Task UpdateAsync(
-            int id,
-            OfficeRequestDto dto)
+        public async Task UpdateAsync(int id, OfficeRequestDto dto)
         {
             var office = await _repository.GetByIdAsync(id);
 
             if (office == null)
                 throw new NotFoundException("Office not found");
 
-            office.AgencyId = dto.AgencyId;
+            var address = await _context.Addresses.FindAsync(dto.OfficeAddressId);
+
+            if (address == null)
+                throw new NotFoundException("Address not found");
+
             office.OfficeMail = dto.OfficeMail;
             office.OfficeContactPersonName = dto.OfficeContactPersonName;
+
             office.OfficeContactNumber = dto.OfficeContactNumber;
+
             office.OfficeAddressId = dto.OfficeAddressId;
 
             await _repository.UpdateAsync(office);
