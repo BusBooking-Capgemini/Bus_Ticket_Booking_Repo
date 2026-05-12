@@ -16,16 +16,20 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<Customer?> GetByIdAsync(int customerId)
     {
-        return await _context
-            .Customers.Include(c => c.Address)
-            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+        // return await _context
+        //     .Customers.Include(c => c.Address)
+        //     .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+
+        return await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId);
     }
 
     public async Task<Customer?> GetByEmailAsync(string email)
     {
-        return await _context
-            .Customers.Include(c => c.Address)
-            .FirstOrDefaultAsync(c => c.Email == email);
+        // return await _context
+        //     .Customers.Include(c => c.Address)
+        //     .FirstOrDefaultAsync(c => c.Email == email);
+
+        return await _context.Customers.FirstOrDefaultAsync(c => c.Email == email);
     }
 
     public async Task<bool> ExistsAsync(int customerId)
