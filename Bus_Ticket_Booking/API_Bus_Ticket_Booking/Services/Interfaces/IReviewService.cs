@@ -8,12 +8,12 @@ public interface IReviewService
     Task<ReviewResponseDto?> GetReviewByIdAsync(int reviewId);
     Task<(bool success, string message, ReviewResponseDto? review)> CreateReviewAsync(
         int customerId,
-        ReviewCreateDto dto
+        ReviewRequestDto dto
     );
     Task<(bool success, string message)> UpdateReviewAsync(
         int customerId,
         int reviewId,
-        ReviewUpdateDto dto
+        ReviewRequestDto dto
     );
     Task<(bool success, string message)> DeleteReviewAsync(int customerId, int reviewId);
     Task<List<ReviewResponseDto>> GetTripReviewsAsync(int tripId);

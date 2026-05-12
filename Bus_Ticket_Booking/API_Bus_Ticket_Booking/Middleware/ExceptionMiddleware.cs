@@ -2,6 +2,8 @@
 using System.Text.Json;
 using API_Bus_Ticket_Booking.Exceptions;
 
+
+
 namespace API_Bus_Ticket_Booking.Middleware
 {
     public class ExceptionMiddleware
@@ -45,7 +47,7 @@ namespace API_Bus_Ticket_Booking.Middleware
                         (int)HttpStatusCode.BadRequest;
                     break;
 
-                case ValidationException:
+                case System.ComponentModel.DataAnnotations.ValidationException:
                     context.Response.StatusCode =
                         (int)HttpStatusCode.BadRequest;
                     break;

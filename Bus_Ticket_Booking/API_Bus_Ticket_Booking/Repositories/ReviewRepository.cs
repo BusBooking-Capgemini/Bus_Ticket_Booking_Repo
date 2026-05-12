@@ -16,11 +16,17 @@ public class ReviewRepository : IReviewRepository
 
     public async Task<List<Review>> GetByCustomerIdAsync(int customerId)
     {
+        // return await _context
+        //     .Reviews.Where(r => r.CustomerId == customerId)
+        //     .Include(r => r.Customer)
+        //     .Include(r => r.Trip)
+        //         .ThenInclude(t => t.Route)
+        //     .OrderByDescending(r => r.ReviewDate)
+        //     .ToListAsync();
+
         return await _context
             .Reviews.Where(r => r.CustomerId == customerId)
-            .Include(r => r.Customer)
             .Include(r => r.Trip)
-                .ThenInclude(t => t.Route)
             .OrderByDescending(r => r.ReviewDate)
             .ToListAsync();
     }

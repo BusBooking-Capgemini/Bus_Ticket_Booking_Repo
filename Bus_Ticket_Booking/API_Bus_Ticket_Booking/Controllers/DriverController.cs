@@ -28,9 +28,6 @@ public class DriverController : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _service.GetDriverByIdAsync(id);
-        if (result is null)
-            return NotFound($"Driver with ID {id} not found.");
-
         return Ok(result);
     }
 
@@ -47,9 +44,6 @@ public class DriverController : ControllerBase
     public async Task<IActionResult> GetByLicense(string licenseNumber)
     {
         var result = await _service.GetDriverByLicenseAsync(licenseNumber);
-        if (result is null)
-            return NotFound($"Driver with license {licenseNumber} not found.");
-
         return Ok(result);
     }
 
@@ -90,8 +84,6 @@ public class DriverController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] DriverRequestDto dto)
     {
         var result = await _service.UpdateDriverAsync(id, dto);
-        if (result == null)
-            return NotFound($"Driver with ID {id} not found.");
         return Ok(result);
     }
 
@@ -100,8 +92,6 @@ public class DriverController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _service.DeleteDriverAsync(id);
-        if (!deleted)
-            return NotFound($"Driver with ID {id} not found.");
         return Ok(new { Message = $"Driver {id} deleted successfully." });
     }
 }

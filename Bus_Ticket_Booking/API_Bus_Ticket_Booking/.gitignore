@@ -28,6 +28,7 @@
 
 # Visual Studio cache/options directory
 .vs/
+**/.vs/
 
 # Visual Studio auto generated files
 Generated\ Files/
