@@ -4,7 +4,7 @@ using AutoMapper;
 
 namespace API_Bus_Ticket_Booking.Mappings
 {
-    public class BookingProfile:Profile
+    public class BookingProfile : Profile
     {
         public BookingProfile()
         {

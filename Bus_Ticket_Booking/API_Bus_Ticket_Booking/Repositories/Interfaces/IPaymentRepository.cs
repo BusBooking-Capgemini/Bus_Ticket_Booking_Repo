@@ -21,7 +21,7 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
 
         // Payment By Booking
         Task<Payment?> GetPaymentByBookingIdAsync(int bookingId);
-        
+
         Task<decimal> GetTotalRevenueAsync();
 
         Task<decimal> GetTodayRevenueAsync();
@@ -34,7 +34,7 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
 
         Task<decimal> GetMonthlyRevenueByOfficeAsync(int officeId);
 
-     
+
 
         Task<decimal> GetTotalRevenueByAgencyAsync(int agencyId);
 
