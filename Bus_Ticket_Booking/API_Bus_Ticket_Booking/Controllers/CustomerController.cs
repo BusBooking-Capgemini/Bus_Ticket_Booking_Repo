@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API_Bus_Ticket_Booking.Controllers;
 
 [ApiController]
-[Route("api/customers")]
+[Route("api/customers")] // custom routing
 public class CustomerController : ControllerBase
 {
     private readonly ICustomerService _customerService;
@@ -48,34 +48,35 @@ public class CustomerController : ControllerBase
     // ───────────────────────────────────────────────────
 
     // POST /api/customers
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] CustomerCreateDto dto)
     {
         if (await _customerService.EmailAlreadyExistsAsync(dto.Email))
             return Conflict(new { message = "A customer with this email already exists." });
 
         var result = await _customerService.CreateCustomerAsync(dto);
+
         return CreatedAtAction(nameof(GetProfile), new { customerId = result.CustomerId }, result);
     }
 
     // GET /api/customers/{customerId}
-    [HttpGet("{customerId}")]
+    [HttpGet("getCustomer/{customerId}")]
     public async Task<IActionResult> GetProfile(int customerId)
     {
         var customer = await _customerService.GetCustomerAsync(customerId);
         return customer == null ? NotFound() : Ok(customer);
     }
 
-    // PUT /api/customers/{customerId}
-    [HttpPut("{customerId}")]
+    // PUT /api/customers/updateCustomer/{customerId}
+    [HttpPatch("updateCustomer/{customerId}")]
     public async Task<IActionResult> UpdateProfile(int customerId, [FromBody] CustomerUpdateDto dto)
     {
         var updated = await _customerService.UpdateCustomerAsync(customerId, dto);
         return updated ? NoContent() : NotFound();
     }
 
-    // DELETE /api/customers/{customerId}
-    [HttpDelete("{customerId}")]
+    // DELETE /api/customers/deleteCustomer/{customerId}
+    [HttpDelete("deleteCustomer/{customerId}")]
     public async Task<IActionResult> DeleteAccount(int customerId)
     {
         var deleted = await _customerService.DeleteCustomerAsync(customerId);
@@ -109,9 +110,10 @@ public class CustomerController : ControllerBase
     //     var trip = await _tripService.GetTripDetailsAsync(tripId);
     //     return trip == null ? NotFound() : Ok(trip);
     // }
+    // ───────────────────────────────────────────────────
 
-    // GET /api/customers/trips/{tripId}/seats
-    [HttpGet("trips/{tripId}/seats")]
+    // GET /api/customers/trips/{tripId}
+    [HttpGet("trips/getAvailableSeats/{tripId}")]
     public async Task<IActionResult> GetAvailableSeats(int tripId)
     {
         var seats = await _bookingService.GetAvailableSeatsAsync(tripId);
@@ -130,8 +132,8 @@ public class CustomerController : ControllerBase
     // BOOKINGS
     // ───────────────────────────────────────────────────
 
-    // POST /api/customers/{customerId}/bookings
-    [HttpPost("{customerId}/bookings")]
+    // POST /api/customers/{customerId}/createBooking
+    [HttpPost("{customerId}/createBooking")]
     public async Task<IActionResult> BookSeat(int customerId, [FromBody] BookSeatRequestDto dto)
     {
         var (success, message, bookingId) = await _bookingService.BookSeatAsync(
@@ -144,24 +146,24 @@ public class CustomerController : ControllerBase
         return Ok(new { bookingId, message });
     }
 
-    // GET /api/customers/{customerId}/bookings
-    [HttpGet("{customerId}/bookings")]
+    // GET /api/customers/{customerId}/getMybookings
+    [HttpGet("{customerId}/getMyBookings")]
     public async Task<IActionResult> GetMyBookings(int customerId)
     {
         var bookings = await _bookingService.GetCustomerBookingsAsync(customerId);
         return Ok(bookings);
     }
 
-    // GET /api/customers/{customerId}/bookings/{bookingId}
-    [HttpGet("{customerId}/bookings/{bookingId}")]
+    // GET /api/customers/{customerId}/getBooking/{bookingId}
+    [HttpGet("{customerId}/getBookings/{bookingId}")]
     public async Task<IActionResult> GetBookingDetail(int customerId, int bookingId)
     {
         var booking = await _bookingService.GetBookingDetailAsync(customerId, bookingId);
         return booking == null ? NotFound() : Ok(booking);
     }
 
-    // DELETE /api/customers/{customerId}/bookings/{bookingId}
-    [HttpDelete("{customerId}/bookings/{bookingId}")]
+    // DELETE /api/customers/{customerId}/deleteBooking/{bookingId}
+    [HttpDelete("{customerId}/deleteBooking/{bookingId}")]
     public async Task<IActionResult> CancelBooking(int customerId, int bookingId)
     {
         var (success, message) = await _bookingService.CancelBookingAsync(customerId, bookingId);
@@ -172,9 +174,9 @@ public class CustomerController : ControllerBase
     // REVIEWS
     // ───────────────────────────────────────────────────
 
-    // POST /api/customers/{customerId}/reviews
-    [HttpPost("{customerId}/reviews")]
-    public async Task<IActionResult> AddReview(int customerId, [FromBody] ReviewCreateDto dto)
+    // POST /api/customers/{customerId}/createReview
+    [HttpPost("{customerId}/createReview")]
+    public async Task<IActionResult> AddReview(int customerId, [FromBody] ReviewRequestDto dto)
     {
         var (success, message, review) = await _reviewService.CreateReviewAsync(customerId, dto);
         if (!success)
@@ -186,16 +188,16 @@ public class CustomerController : ControllerBase
         );
     }
 
-    // GET /api/customers/{customerId}/reviews
-    [HttpGet("{customerId}/reviews")]
+    // GET /api/customers/{customerId}/getReviews
+    [HttpGet("{customerId}/getReviews")]
     public async Task<IActionResult> GetMyReviews(int customerId)
     {
         var reviews = await _reviewService.GetCustomerReviewsAsync(customerId);
         return Ok(reviews);
     }
 
-    // GET /api/customers/{customerId}/reviews/{reviewId}
-    [HttpGet("{customerId}/reviews/{reviewId}")]
+    // GET /api/customers/{customerId}/getReview/{reviewId}
+    [HttpGet("{customerId}/getReview/{reviewId}")]
     public async Task<IActionResult> GetReview(int customerId, int reviewId)
     {
         var review = await _reviewService.GetReviewByIdAsync(reviewId);
@@ -204,20 +206,22 @@ public class CustomerController : ControllerBase
         return Ok(review);
     }
 
-    // PUT /api/customers/{customerId}/reviews/{reviewId}
-    [HttpPut("{customerId}/reviews/{reviewId}")]
+    // PUT /api/customers/{customerId}/updateReview/{reviewId}
+    [HttpPatch("{customerId}/updateReview/{reviewId}")]
     public async Task<IActionResult> UpdateReview(
         int customerId,
         int reviewId,
-        [FromBody] ReviewUpdateDto dto
+        [FromBody] ReviewRequestDto dto
     )
     {
         var (success, message) = await _reviewService.UpdateReviewAsync(customerId, reviewId, dto);
-        return success ? NoContent() : BadRequest(new { message });
+        // return success ? NoContent() : BadRequest(new { message });
+
+        return success ? Ok(new { message }) : BadRequest(new { message });
     }
 
-    // DELETE /api/customers/{customerId}/reviews/{reviewId}
-    [HttpDelete("{customerId}/reviews/{reviewId}")]
+    // DELETE /api/customers/{customerId}/deleteReview/{reviewId}
+    [HttpDelete("{customerId}/deleteReview/{reviewId}")]
     public async Task<IActionResult> DeleteReview(int customerId, int reviewId)
     {
         var (success, message) = await _reviewService.DeleteReviewAsync(customerId, reviewId);
@@ -225,7 +229,7 @@ public class CustomerController : ControllerBase
     }
 
     // GET /api/customers/trips/{tripId}/reviews  → Public: see all reviews for a trip
-    [HttpGet("trips/{tripId}/reviews")]
+    [HttpGet("trips/{tripId}/getTripReviews")]
     public async Task<IActionResult> GetTripReviews(int tripId)
     {
         var reviews = await _reviewService.GetTripReviewsAsync(tripId);
