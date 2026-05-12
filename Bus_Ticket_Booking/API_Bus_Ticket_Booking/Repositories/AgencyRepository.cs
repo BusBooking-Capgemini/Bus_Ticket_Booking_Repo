@@ -22,7 +22,7 @@ namespace API_Bus_Ticket_Booking.Repositories
         public async Task<Agency> GetByIdAsync(int id)
         {
             return await _context.Agencies
-                .FirstOrDefaultAsync(x => x.AgencyId == id);
+                .FirstOrDefaultAsync(x => x.AgencyId == id); // to check whether can use FindAsync or SingleOrDefaultAsync instead of FirstOrDefaultAsync
         }
 
         public async Task UpdateAsync(Agency agency)
@@ -46,13 +46,15 @@ namespace API_Bus_Ticket_Booking.Repositories
                 .ToListAsync();
         }
 
+        // Booking - Trip - Bus - Office - Agency
+
         public async Task<IEnumerable<Booking>> GetOfficeBookingsAsync(int agencyId, int officeId)
         {
             return await _context.Bookings
                 .Where(x =>
-                    x.Trip.Bus.OfficeId == officeId &&
-                    x.Trip.Bus.Office.AgencyId == agencyId)
-                .ToListAsync();
+                    x.Trip.Bus.OfficeId == officeId && 
+                    x.Trip.Bus.Office.AgencyId == agencyId) 
+                .ToListAsync(); 
         }
 
         public async Task<IEnumerable<Payment>> GetOfficePaymentsAsync(int agencyId, int officeId)
