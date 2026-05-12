@@ -36,13 +36,10 @@ public partial class BusTicketBookingContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<Route> Routes { get; set; }
+    public virtual DbSet<Models.Route> Routes { get; set; }
 
     public virtual DbSet<Trip> Trips { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-CT4MMTD\\SQLEXPRESS01;Database=busticketbooking;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -329,7 +326,7 @@ public partial class BusTicketBookingContext : DbContext
                 .HasColumnName("role_name");
         });
 
-        modelBuilder.Entity<Route>(entity =>
+        modelBuilder.Entity<Models.Route>(entity =>
         {
             entity.HasKey(e => e.RouteId).HasName("PK__routes__28F706FE7AAF68EB");
 
