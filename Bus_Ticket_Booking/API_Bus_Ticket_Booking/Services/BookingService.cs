@@ -88,8 +88,7 @@ namespace API_Bus_Ticket_Booking.Services
 
             if (booking == null)
             {
-                throw new NotFoundException(
-                    "Booking not found");
+                return null!;
             }
 
             return _mapper.Map<
