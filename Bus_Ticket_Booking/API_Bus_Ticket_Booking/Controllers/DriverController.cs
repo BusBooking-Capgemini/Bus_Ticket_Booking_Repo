@@ -2,96 +2,141 @@ using API_Bus_Ticket_Booking.DTOs.Driver;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API_Bus_Ticket_Booking.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class DriverController : ControllerBase
+namespace API_Bus_Ticket_Booking.Controllers
 {
-    private readonly IDriverService _service;
-
-    public DriverController(IDriverService service)
+    [ApiController]
+    [Route("api/drivers")]
+    public class DriverController : ControllerBase
     {
-        _service = service;
-    }
+        private readonly IDriverService _service;
 
-    // 1. GET all drivers
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var result = await _service.GetAllDriversAsync();
-        return Ok(result);
-    }
+        public DriverController(IDriverService service)
+        {
+            _service = service;
+        }
 
-    // 2. GET driver by ID
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var result = await _service.GetDriverByIdAsync(id);
-        return Ok(result);
-    }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _service.GetAllDriversAsync();
+            return Ok(new
+            {
+                success = true,
+                message = "Drivers retrieved successfully.",
+                count = result.Count(),
+                data = result
+            });
+        }
 
-    // 3. GET drivers by office
-    [HttpGet("office/{officeId}")]
-    public async Task<IActionResult> GetByOffice(int officeId)
-    {
-        var result = await _service.GetDriversByOfficeAsync(officeId);
-        return Ok(result);
-    }
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _service.GetDriverByIdAsync(id);
+            return Ok(new
+            {
+                success = true,
+                message = "Driver retrieved successfully.",
+                data = result
+            });
+        }
 
-    // 4. GET driver by license number
-    [HttpGet("license/{licenseNumber}")]
-    public async Task<IActionResult> GetByLicense(string licenseNumber)
-    {
-        var result = await _service.GetDriverByLicenseAsync(licenseNumber);
-        return Ok(result);
-    }
+        [HttpGet("office/{officeId:int}")]
+        public async Task<IActionResult> GetByOffice(int officeId)
+        {
+            var result = await _service.GetDriversByOfficeAsync(officeId);
+            return Ok(new
+            {
+                success = true,
+                message = $"Drivers for office ID {officeId} retrieved successfully.",
+                count = result.Count(),
+                data = result
+            });
+        }
 
-    // 5. GET drivers by name search
-    [HttpGet("search")]
-    public async Task<IActionResult> SearchByName([FromQuery] string name)
-    {
-        var result = await _service.GetDriversByNameAsync(name);
-        return Ok(result);
-    }
+        [HttpGet("license/{licenseNumber}")]
+        public async Task<IActionResult> GetByLicense(string licenseNumber)
+        {
+            var result = await _service.GetDriverByLicenseAsync(licenseNumber);
+            return Ok(new
+            {
+                success = true,
+                message = "Driver retrieved successfully.",
+                data = result
+            });
+        }
 
-    // 6. GET drivers by city
-    [HttpGet("city/{city}")]
-    public async Task<IActionResult> GetByCity(string city)
-    {
-        var result = await _service.GetDriversByCityAsync(city);
-        return Ok(result);
-    }
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchByName([FromQuery] string name)
+        {
+            var result = await _service.GetDriversByNameAsync(name);
+            return Ok(new
+            {
+                success = true,
+                message = $"Drivers matching '{name}' retrieved successfully.",
+                count = result.Count(),
+                data = result
+            });
+        }
 
-    // 7. GET driver count by office
-    [HttpGet("office/{officeId}/count")]
-    public async Task<IActionResult> GetDriverCount(int officeId)
-    {
-        var count = await _service.GetDriverCountByOfficeAsync(officeId);
-        return Ok(new { OfficeId = officeId, TotalDrivers = count });
-    }
+        [HttpGet("city/{city}")]
+        public async Task<IActionResult> GetByCity(string city)
+        {
+            var result = await _service.GetDriversByCityAsync(city);
+            return Ok(new
+            {
+                success = true,
+                message = $"Drivers in city '{city}' retrieved successfully.",
+                count = result.Count(),
+                data = result
+            });
+        }
 
-    // 8. POST create driver
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] DriverRequestDto dto)
-    {
-        var result = await _service.CreateDriverAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = result.DriverId }, result);
-    }
+        [HttpGet("office/{officeId:int}/count")]
+        public async Task<IActionResult> GetDriverCount(int officeId)
+        {
+            var count = await _service.GetDriverCountByOfficeAsync(officeId);
+            return Ok(new
+            {
+                success = true,
+                message = $"Driver count for office ID {officeId} retrieved successfully.",
+                officeId,
+                totalDrivers = count
+            });
+        }
 
-    // 9. PUT update driver
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] DriverRequestDto dto)
-    {
-        var result = await _service.UpdateDriverAsync(id, dto);
-        return Ok(result);
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] DriverRequestDto dto)
+        {
+            var result = await _service.CreateDriverAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = result.DriverId }, new
+            {
+                success = true,
+                message = "Driver created successfully.",
+                data = result
+            });
+        }
 
-    // 10. DELETE driver
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var deleted = await _service.DeleteDriverAsync(id);
-        return Ok(new { Message = $"Driver {id} deleted successfully." });
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] DriverRequestDto dto)
+        {
+            var result = await _service.UpdateDriverAsync(id, dto);
+            return Ok(new
+            {
+                success = true,
+                message = $"Driver with ID {id} updated successfully.",
+                data = result
+            });
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteDriverAsync(id);
+            return Ok(new
+            {
+                success = true,
+                message = $"Driver with ID {id} deleted successfully."
+            });
+        }
     }
 }
