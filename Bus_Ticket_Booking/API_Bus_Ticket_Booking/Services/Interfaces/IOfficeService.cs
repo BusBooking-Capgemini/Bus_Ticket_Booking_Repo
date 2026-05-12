@@ -10,11 +10,11 @@ namespace API_Bus_Ticket_Booking.Services.Interfaces
 
         Task<OfficeResponseDto> CreateAsync(OfficeRequestDto dto);
 
-        Task UpdateAsync(int id, OfficeRequestDto dto);
+        Task UpdateAsync(int id, OfficeRequestDto dto); // Dto update
 
         Task DeleteAsync(int id);
 
-        Task<object> GetSummaryAsync(int officeId);
+        Task<object> GetSummaryAsync(int officeId); // can change output if demands
 
         Task<IEnumerable<object>> GetBusesAsync(int officeId);
 

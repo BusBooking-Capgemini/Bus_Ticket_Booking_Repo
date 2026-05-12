@@ -20,9 +20,17 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddDbContext<BusTicketBookingContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-        );
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
+        var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+
+        var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+
+        var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+
+        // DB CONTEXT
+        builder.Services.AddDbContext<BusTicketBookingContext>(options => options.UseSqlServer(connectionString));
+
 
         // AutoMapper
         builder.Services.AddAutoMapper(typeof(Program));

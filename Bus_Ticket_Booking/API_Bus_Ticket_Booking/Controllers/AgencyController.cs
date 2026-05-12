@@ -45,7 +45,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 3. PUT update agency
+        // 3. PUT update agency -- Dto update
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] AgencyRequestDto dto)
         {
@@ -86,7 +86,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 6. GET agency summary
+        // 6. GET agency summary -- can change output if demands
         [HttpGet("{id}/summary")]
         public async Task<IActionResult> GetAgencySummary(int id)
         {
@@ -100,7 +100,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 7. GET office bookings by agency
+        // 7. GET office bookings per agency
         [HttpGet("{agencyId}/offices/{officeId}/bookings")]
         public async Task<IActionResult> GetOfficeBookings(int agencyId, int officeId)
         {
@@ -116,7 +116,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 8. GET office payments by agency
+        // 8. GET office payments per agency
         [HttpGet("{agencyId}/offices/{officeId}/payments")]
         public async Task<IActionResult> GetOfficePayments(int agencyId, int officeId)
         {
@@ -132,7 +132,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 9. GET office trips by agency
+        // 9. GET office trips per agency
         [HttpGet("{agencyId}/offices/{officeId}/trips")]
         public async Task<IActionResult> GetOfficeTrips(int agencyId, int officeId)
         {
@@ -148,7 +148,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 10. GET office buses by agency
+        // 10. GET office buses per agency
         [HttpGet("{agencyId}/offices/{officeId}/buses")]
         public async Task<IActionResult> GetOfficeBuses(int agencyId, int officeId)
         {
@@ -164,7 +164,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // 11. GET office drivers by agency
+        // 11. GET office drivers per agency
         [HttpGet("{agencyId}/offices/{officeId}/drivers")]
         public async Task<IActionResult> GetOfficeDrivers(int agencyId, int officeId)
         {

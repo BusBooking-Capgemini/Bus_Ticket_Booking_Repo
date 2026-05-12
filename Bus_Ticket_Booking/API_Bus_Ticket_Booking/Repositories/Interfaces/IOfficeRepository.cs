@@ -8,7 +8,7 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
 
         Task<AgencyOffice> GetByIdAsync(int id);
 
-        Task AddAsync(AgencyOffice office);
+        Task AddAsync(AgencyOffice office); // by Agency
 
         Task UpdateAsync(AgencyOffice office);
 

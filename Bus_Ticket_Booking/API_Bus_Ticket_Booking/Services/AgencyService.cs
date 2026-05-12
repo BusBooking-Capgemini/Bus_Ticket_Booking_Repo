@@ -3,6 +3,7 @@ using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using AutoMapper;
+using System.Security.Cryptography.Xml;
 
 namespace API_Bus_Ticket_Booking.Services
 {
@@ -75,6 +76,8 @@ namespace API_Bus_Ticket_Booking.Services
             if (!offices.Any())
                 throw new NotFoundException("No offices found");
 
+            // why select -> to transform each item in a collection into another shape
+
             return offices.Select(x => new
             {
                 x.OfficeId,
@@ -92,6 +95,8 @@ namespace API_Bus_Ticket_Booking.Services
                 throw new NotFoundException("Agency not found");
 
             var offices = await _repository.GetAgencyOfficesAsync(agencyId);
+
+            // why new -> to create a new object containing only these properties
 
             return new
             {
