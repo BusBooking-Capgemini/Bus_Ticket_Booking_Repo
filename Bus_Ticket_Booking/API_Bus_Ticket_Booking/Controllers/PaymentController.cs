@@ -22,6 +22,16 @@ namespace API_Bus_Ticket_Booking.Controllers
             CreatePayment(
                 [FromBody] CreatePaymentDto dto)
         {
+            if (dto == null)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message =
+                        "Request body cannot be empty"
+                });
+            }
+
             var result =
                 await _paymentService
                     .CreatePaymentAsync(dto);
@@ -44,7 +54,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                 await _paymentService
                     .GetPaymentByIdAsync(paymentId);
 
-            return Ok(result);
+            if (result == null)
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "Payment not found",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Payment fetched successfully",
+                data = result
+            });
         }
 
         // Customer Payments
@@ -57,7 +84,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                     .GetCustomerPaymentsAsync(
                         customerId);
 
-            return Ok(result);
+            if (!result.Any())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "No payments found for this customer",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Customer payments fetched successfully",
+                data = result
+            });
         }
 
         // Office Payments
@@ -70,7 +114,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                     .GetOfficePaymentsAsync(
                         officeId);
 
-            return Ok(result);
+            if (!result.Any())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "No payments found for this office",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Office payments fetched successfully",
+                data = result
+            });
         }
 
         // Agency Payments
@@ -83,7 +144,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                     .GetAgencyPaymentsAsync(
                         agencyId);
 
-            return Ok(result);
+            if (!result.Any())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "No payments found for this agency",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Agency payments fetched successfully",
+                data = result
+            });
         }
 
         // Revenue Summary
@@ -99,7 +177,13 @@ namespace API_Bus_Ticket_Booking.Controllers
                         agencyId,
                         officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Revenue summary fetched successfully",
+                data = result
+            });
         }
 
         // Dashboard
@@ -115,7 +199,13 @@ namespace API_Bus_Ticket_Booking.Controllers
                         agencyId,
                         officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Payment dashboard fetched successfully",
+                data = result
+            });
         }
 
         // Analytics
@@ -131,7 +221,13 @@ namespace API_Bus_Ticket_Booking.Controllers
                         agencyId,
                         officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Payment analytics fetched successfully",
+                data = result
+            });
         }
     }
 }

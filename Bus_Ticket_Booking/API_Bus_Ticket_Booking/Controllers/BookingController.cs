@@ -22,6 +22,16 @@ namespace API_Bus_Ticket_Booking.Controllers
             CreateBooking(
                 [FromBody] CreateBookingDto dto)
         {
+            if (dto == null)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message =
+                        "Request body cannot be empty"
+                });
+            }
+
             var result =
                 await _bookingService
                     .CreateBookingAsync(dto);
@@ -31,7 +41,6 @@ namespace API_Bus_Ticket_Booking.Controllers
                 success = true,
                 message =
                     "Booking created successfully",
-
                 data = result
             });
         }
@@ -59,9 +68,27 @@ namespace API_Bus_Ticket_Booking.Controllers
         {
             var result =
                 await _bookingService
-                    .GetBookingByIdAsync(bookingId);
+                    .GetBookingByIdAsync(
+                        bookingId);
 
-            return Ok(result);
+            if (result == null)
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "Booking not found",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Booking fetched successfully",
+                data = result
+            });
         }
 
         // Customer Bookings
@@ -74,7 +101,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                     .GetCustomerBookingsAsync(
                         customerId);
 
-            return Ok(result);
+            if (!result.Any())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "No bookings found for this customer",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Customer bookings fetched successfully",
+                data = result
+            });
         }
 
         // Office Bookings
@@ -87,7 +131,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                     .GetOfficeBookingsAsync(
                         officeId);
 
-            return Ok(result);
+            if (!result.Any())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "No bookings found for this office",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Office bookings fetched successfully",
+                data = result
+            });
         }
 
         // Agency Bookings
@@ -100,7 +161,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                     .GetAgencyBookingsAsync(
                         agencyId);
 
-            return Ok(result);
+            if (!result.Any())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "No bookings found for this agency",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Agency bookings fetched successfully",
+                data = result
+            });
         }
 
         // Trip Bookings
@@ -113,7 +191,24 @@ namespace API_Bus_Ticket_Booking.Controllers
                     .GetBookingsByTripAsync(
                         tripId);
 
-            return Ok(result);
+            if (!result.Any())
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message =
+                        "No bookings found for this trip",
+                    data = result
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Trip bookings fetched successfully",
+                data = result
+            });
         }
 
         // Dashboard
@@ -129,7 +224,13 @@ namespace API_Bus_Ticket_Booking.Controllers
                         agencyId,
                         officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Dashboard fetched successfully",
+                data = result
+            });
         }
 
         // Analytics
@@ -145,7 +246,13 @@ namespace API_Bus_Ticket_Booking.Controllers
                         agencyId,
                         officeId);
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                message =
+                    "Analytics fetched successfully",
+                data = result
+            });
         }
     }
 }
