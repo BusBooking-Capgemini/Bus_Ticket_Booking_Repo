@@ -1,18 +1,22 @@
 using API_Bus_Ticket_Booking.DTOs.Route;
 using API_Bus_Ticket_Booking.DTOs.Trip;
+using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using AutoMapper;
 
 namespace API_Bus_Ticket_Booking.Services
 {
     public class RouteService : IRouteService
     {
         private readonly IRouteRepository _routeRepository;
+        private readonly IMapper _mapper;
 
-        public RouteService(IRouteRepository routeRepository)
+        public RouteService(IRouteRepository routeRepository, IMapper mapper)
         {
             _routeRepository = routeRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<RouteresponseDto>> GetAllRoutesAsync()
@@ -21,7 +25,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<RouteresponseDto>();
             foreach (var route in routes)
             {
-                result.Add(MapRouteToDto(route));
+                result.Add(_mapper.Map<RouteresponseDto>(route));
             }
             return result;
         }
@@ -31,9 +35,9 @@ namespace API_Bus_Ticket_Booking.Services
             var route = await _routeRepository.GetByIdAsync(id);
             if (route == null)
             {
-                return null;
+                throw new NotFoundException($"Route with ID {id} was not found.");
             }
-            return MapRouteToDto(route);
+            return _mapper.Map<RouteresponseDto>(route);
         }
 
         public async Task<List<RouteresponseDto>> SearchRoutesAsync(string fromCity, string toCity)
@@ -42,7 +46,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<RouteresponseDto>();
             foreach (var route in routes)
             {
-                result.Add(MapRouteToDto(route));
+                result.Add(_mapper.Map<RouteresponseDto>(route));
             }
             return result;
         }
@@ -52,13 +56,13 @@ namespace API_Bus_Ticket_Booking.Services
             bool exists = await _routeRepository.ExistsAsync(routeId);
             if (!exists)
             {
-                return null;
+                throw new NotFoundException($"Route with ID {routeId} was not found.");
             }
             var trips = await _routeRepository.GetTripsByRouteIdAsync(routeId);
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapTripToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -88,7 +92,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<RouteresponseDto>();
             foreach (var route in routes)
             {
-                result.Add(MapRouteToDto(route));
+                result.Add(_mapper.Map<RouteresponseDto>(route));
             }
             return result;
         }
@@ -99,7 +103,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<RouteresponseDto>();
             foreach (var route in routes)
             {
-                result.Add(MapRouteToDto(route));
+                result.Add(_mapper.Map<RouteresponseDto>(route));
             }
             return result;
         }
@@ -110,7 +114,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<RouteresponseDto>();
             foreach (var route in routes)
             {
-                result.Add(MapRouteToDto(route));
+                result.Add(_mapper.Map<RouteresponseDto>(route));
             }
             return result;
         }
@@ -124,7 +128,7 @@ namespace API_Bus_Ticket_Booking.Services
             route.Duration = dto.Duration;
 
             var created = await _routeRepository.CreateAsync(route);
-            return MapRouteToDto(created);
+            return _mapper.Map<RouteresponseDto>(created);
         }
 
         public async Task<RouteresponseDto> UpdateRouteAsync(int id, UpdateRouteDto dto)
@@ -132,28 +136,16 @@ namespace API_Bus_Ticket_Booking.Services
             var route = await _routeRepository.GetByIdAsync(id);
             if (route == null)
             {
-                return null;
+                throw new NotFoundException($"Route with ID {id} was not found.");
             }
 
-            if (dto.FromCity != null)
-            {
-                route.FromCity = dto.FromCity;
-            }
-            if (dto.ToCity != null)
-            {
-                route.ToCity = dto.ToCity;
-            }
-            if (dto.BreakPoints != null)
-            {
-                route.BreakPoints = dto.BreakPoints;
-            }
-            if (dto.Duration != null)
-            {
-                route.Duration = dto.Duration;
-            }
+            if (dto.FromCity != null) route.FromCity = dto.FromCity;
+            if (dto.ToCity != null) route.ToCity = dto.ToCity;
+            if (dto.BreakPoints != null) route.BreakPoints = dto.BreakPoints;
+            if (dto.Duration != null) route.Duration = dto.Duration;
 
             var updated = await _routeRepository.UpdateAsync(route);
-            return MapRouteToDto(updated);
+            return _mapper.Map<RouteresponseDto>(updated);
         }
 
         public async Task<bool> DeleteRouteAsync(int id)
@@ -161,42 +153,10 @@ namespace API_Bus_Ticket_Booking.Services
             bool exists = await _routeRepository.ExistsAsync(id);
             if (!exists)
             {
-                return false;
+                throw new NotFoundException($"Route with ID {id} was not found.");
             }
             await _routeRepository.DeleteAsync(id);
             return true;
-        }
-
-        private RouteresponseDto MapRouteToDto(API_Bus_Ticket_Booking.Models.Route route)
-        {
-            var dto = new RouteresponseDto();
-            dto.RouteId = route.RouteId;
-            dto.FromCity = route.FromCity;
-            dto.ToCity = route.ToCity;
-            dto.BreakPoints = route.BreakPoints;
-            dto.Duration = route.Duration;
-            return dto;
-        }
-
-        private TripResponseDto MapTripToDto(API_Bus_Ticket_Booking.Models.Trip trip)
-        {
-            var dto = new TripResponseDto();
-            dto.TripId = trip.TripId;
-            dto.RouteId = trip.RouteId;
-            dto.FromCity = trip.Route != null ? trip.Route.FromCity : "";
-            dto.ToCity = trip.Route != null ? trip.Route.ToCity : "";
-            dto.BusId = trip.BusId;
-            dto.BusType = trip.Bus != null ? trip.Bus.Type : "";
-            dto.BoardingCity = "";
-            dto.DroppingCity = "";
-            dto.DepartureTime = trip.DepartureTime;
-            dto.ArrivalTime = trip.ArrivalTime;
-            dto.Driver1Name = trip.Driver1Driver != null ? trip.Driver1Driver.Name : "";
-            dto.Driver2Name = trip.Driver2Driver != null ? trip.Driver2Driver.Name : "";
-            dto.AvailableSeats = trip.AvailableSeats;
-            dto.Fare = trip.Fare;
-            dto.TripDate = trip.TripDate;
-            return dto;
         }
     }
 }

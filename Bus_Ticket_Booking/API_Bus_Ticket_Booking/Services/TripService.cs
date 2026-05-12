@@ -1,19 +1,23 @@
 using API_Bus_Ticket_Booking.DTOs.Trip;
+using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
+using AutoMapper;
 
 namespace API_Bus_Ticket_Booking.Services
 {
     public class TripService : ITripService
     {
         private readonly ITripRepository _tripRepository;
+        private readonly IMapper _mapper;
         private readonly IRouteRepository _routeRepository;
 
-        public TripService(ITripRepository tripRepository, IRouteRepository routeRepository)
+        public TripService(ITripRepository tripRepository, IRouteRepository routeRepository, IMapper mapper)
         {
             _tripRepository = tripRepository;
             _routeRepository = routeRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<TripResponseDto>> GetAllTripsAsync()
@@ -22,7 +26,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -32,9 +36,9 @@ namespace API_Bus_Ticket_Booking.Services
             var trip = await _tripRepository.GetByIdAsync(id);
             if (trip == null)
             {
-                return null;
+                throw new NotFoundException($"Trip with ID {id} was not found.");
             }
-            return MapToDto(trip);
+            return _mapper.Map<TripResponseDto>(trip);
         }
 
         public async Task<List<TripResponseDto>> SearchTripsAsync(TripSearchDto dto)
@@ -43,7 +47,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -53,13 +57,13 @@ namespace API_Bus_Ticket_Booking.Services
             bool exists = await _routeRepository.ExistsAsync(routeId);
             if (!exists)
             {
-                return null;
+                throw new NotFoundException($"Route with ID {routeId} was not found.");
             }
             var trips = await _tripRepository.GetByRouteIdAsync(routeId);
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -69,7 +73,7 @@ namespace API_Bus_Ticket_Booking.Services
             bool exists = await _tripRepository.ExistsAsync(tripId);
             if (!exists)
             {
-                return null;
+                throw new NotFoundException($"Trip with ID {tripId} was not found.");
             }
 
             var trip = await _tripRepository.GetByIdAsync(tripId);
@@ -99,7 +103,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -110,7 +114,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -121,7 +125,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -132,7 +136,7 @@ namespace API_Bus_Ticket_Booking.Services
             var result = new List<TripResponseDto>();
             foreach (var trip in trips)
             {
-                result.Add(MapToDto(trip));
+                result.Add(_mapper.Map<TripResponseDto>(trip));
             }
             return result;
         }
@@ -141,82 +145,53 @@ namespace API_Bus_Ticket_Booking.Services
         {
             if (dto.Driver1DriverId == dto.Driver2DriverId)
             {
-                throw new Exception("Driver 1 and Driver 2 cannot be the same person.");
+                throw new BadRequestException("Driver 1 and Driver 2 cannot be the same person.");
             }
 
             if (dto.ArrivalTime <= dto.DepartureTime)
             {
-                throw new Exception("Arrival time must be after departure time.");
+                throw new BadRequestException("Arrival time must be after departure time.");
             }
 
             bool routeExists = await _routeRepository.ExistsAsync(dto.RouteId);
             if (!routeExists)
             {
-                throw new Exception("Route not found.");
+                throw new NotFoundException($"Route with ID {dto.RouteId} was not found.");
             }
 
             int capacity = await _tripRepository.GetBusCapacityAsync(dto.BusId);
             if (capacity == 0)
             {
-                throw new Exception("Bus not found.");
+                throw new NotFoundException($"Bus with ID {dto.BusId} was not found.");
             }
 
             bool busAvailable = await _tripRepository.IsBusAvailableAsync(
-                dto.BusId,
-                dto.TripDate,
-                dto.DepartureTime,
-                dto.ArrivalTime,
-                0
-            );
+                dto.BusId, dto.TripDate, dto.DepartureTime, dto.ArrivalTime, 0);
             if (!busAvailable)
             {
-                throw new Exception("Bus is already assigned to another trip on this schedule.");
+                throw new ConflictException("Bus is already assigned to another trip on this schedule.");
             }
 
             bool driver1Available = await _tripRepository.IsDriverAvailableAsync(
-                dto.Driver1DriverId,
-                dto.TripDate,
-                dto.DepartureTime,
-                dto.ArrivalTime,
-                0
-            );
+                dto.Driver1DriverId, dto.TripDate, dto.DepartureTime, dto.ArrivalTime, 0);
             if (!driver1Available)
             {
-                throw new Exception(
-                    "Driver 1 is already assigned to another trip on this schedule."
-                );
+                throw new ConflictException("Driver 1 is already assigned to another trip on this schedule.");
             }
 
             bool driver2Available = await _tripRepository.IsDriverAvailableAsync(
-                dto.Driver2DriverId,
-                dto.TripDate,
-                dto.DepartureTime,
-                dto.ArrivalTime,
-                0
-            );
+                dto.Driver2DriverId, dto.TripDate, dto.DepartureTime, dto.ArrivalTime, 0);
             if (!driver2Available)
             {
-                throw new Exception(
-                    "Driver 2 is already assigned to another trip on this schedule."
-                );
+                throw new ConflictException("Driver 2 is already assigned to another trip on this schedule.");
             }
 
-            var trip = new Trip();
-            trip.RouteId = dto.RouteId;
-            trip.BusId = dto.BusId;
-            trip.BoardingAddressId = dto.BoardingAddressId;
-            trip.DroppingAddressId = dto.DroppingAddressId;
-            trip.DepartureTime = dto.DepartureTime;
-            trip.ArrivalTime = dto.ArrivalTime;
-            trip.Driver1DriverId = dto.Driver1DriverId;
-            trip.Driver2DriverId = dto.Driver2DriverId;
-            trip.Fare = dto.Fare;
-            trip.TripDate = dto.TripDate;
+            var trip = _mapper.Map<Trip>(dto);
             trip.AvailableSeats = capacity;
 
             var created = await _tripRepository.CreateAsync(trip);
             var full = await _tripRepository.GetByIdAsync(created.TripId);
-            return MapToDto(full);
+            return _mapper.Map<TripResponseDto>(full);
         }
 
         public async Task<TripResponseDto> UpdateTripAsync(int id, UpdateTripDto dto)
@@ -224,7 +199,7 @@ namespace API_Bus_Ticket_Booking.Services
             var trip = await _tripRepository.GetByIdAsync(id);
             if (trip == null)
             {
-                return null;
+                throw new NotFoundException($"Trip with ID {id} was not found.");
             }
 
             int finalBusId = dto.BusId ?? trip.BusId;
@@ -235,74 +210,47 @@ namespace API_Bus_Ticket_Booking.Services
 
             if (finalArrival <= finalDeparture)
             {
-                throw new Exception("Arrival time must be after departure time.");
+                throw new BadRequestException("Arrival time must be after departure time.");
             }
 
             if (finalDriver1 == finalDriver2)
             {
-                throw new Exception("Driver 1 and Driver 2 cannot be the same person.");
+                throw new BadRequestException("Driver 1 and Driver 2 cannot be the same person.");
             }
 
             bool busAvailable = await _tripRepository.IsBusAvailableAsync(
-                finalBusId,
-                trip.TripDate,
-                finalDeparture,
-                finalArrival,
-                id
-            );
+                finalBusId, trip.TripDate, finalDeparture, finalArrival, id);
             if (!busAvailable)
             {
-                throw new Exception("Bus is already assigned to another trip on this schedule.");
+                throw new ConflictException("Bus is already assigned to another trip on this schedule.");
             }
 
             bool driver1Available = await _tripRepository.IsDriverAvailableAsync(
-                finalDriver1,
-                trip.TripDate,
-                finalDeparture,
-                finalArrival,
-                id
-            );
+                finalDriver1, trip.TripDate, finalDeparture, finalArrival, id);
             if (!driver1Available)
             {
-                throw new Exception(
-                    "Driver 1 is already assigned to another trip on this schedule."
-                );
+                throw new ConflictException("Driver 1 is already assigned to another trip on this schedule.");
             }
 
             bool driver2Available = await _tripRepository.IsDriverAvailableAsync(
-                finalDriver2,
-                trip.TripDate,
-                finalDeparture,
-                finalArrival,
-                id
-            );
+                finalDriver2, trip.TripDate, finalDeparture, finalArrival, id);
             if (!driver2Available)
             {
-                throw new Exception(
-                    "Driver 2 is already assigned to another trip on this schedule."
-                );
+                throw new ConflictException("Driver 2 is already assigned to another trip on this schedule.");
             }
 
-            if (dto.BusId != null)
-                trip.BusId = dto.BusId.Value;
-            if (dto.BoardingAddressId != null)
-                trip.BoardingAddressId = dto.BoardingAddressId.Value;
-            if (dto.DroppingAddressId != null)
-                trip.DroppingAddressId = dto.DroppingAddressId.Value;
-            if (dto.DepartureTime != null)
-                trip.DepartureTime = dto.DepartureTime.Value;
-            if (dto.ArrivalTime != null)
-                trip.ArrivalTime = dto.ArrivalTime.Value;
-            if (dto.Driver1DriverId != null)
-                trip.Driver1DriverId = dto.Driver1DriverId.Value;
-            if (dto.Driver2DriverId != null)
-                trip.Driver2DriverId = dto.Driver2DriverId.Value;
-            if (dto.Fare != null)
-                trip.Fare = dto.Fare.Value;
+            if (dto.BusId != null) trip.BusId = dto.BusId.Value;
+            if (dto.BoardingAddressId != null) trip.BoardingAddressId = dto.BoardingAddressId.Value;
+            if (dto.DroppingAddressId != null) trip.DroppingAddressId = dto.DroppingAddressId.Value;
+            if (dto.DepartureTime != null) trip.DepartureTime = dto.DepartureTime.Value;
+            if (dto.ArrivalTime != null) trip.ArrivalTime = dto.ArrivalTime.Value;
+            if (dto.Driver1DriverId != null) trip.Driver1DriverId = dto.Driver1DriverId.Value;
+            if (dto.Driver2DriverId != null) trip.Driver2DriverId = dto.Driver2DriverId.Value;
+            if (dto.Fare != null) trip.Fare = dto.Fare.Value;
 
             var updated = await _tripRepository.UpdateAsync(trip);
             var full = await _tripRepository.GetByIdAsync(updated.TripId);
-            return MapToDto(full);
+            return _mapper.Map<TripResponseDto>(full);
         }
 
         public async Task<bool> DeleteTripAsync(int id)
@@ -310,31 +258,10 @@ namespace API_Bus_Ticket_Booking.Services
             bool exists = await _tripRepository.ExistsAsync(id);
             if (!exists)
             {
-                return false;
+                throw new NotFoundException($"Trip with ID {id} was not found.");
             }
             await _tripRepository.DeleteAsync(id);
             return true;
-        }
-
-        private TripResponseDto MapToDto(Trip trip)
-        {
-            var dto = new TripResponseDto();
-            dto.TripId = trip.TripId;
-            dto.RouteId = trip.RouteId;
-            dto.FromCity = trip.Route != null ? trip.Route.FromCity : "";
-            dto.ToCity = trip.Route != null ? trip.Route.ToCity : "";
-            dto.BusId = trip.BusId;
-            dto.BusType = trip.Bus != null ? trip.Bus.Type : "";
-            dto.BoardingCity = "";
-            dto.DroppingCity = "";
-            dto.DepartureTime = trip.DepartureTime;
-            dto.ArrivalTime = trip.ArrivalTime;
-            dto.Driver1Name = trip.Driver1Driver != null ? trip.Driver1Driver.Name : "";
-            dto.Driver2Name = trip.Driver2Driver != null ? trip.Driver2Driver.Name : "";
-            dto.AvailableSeats = trip.AvailableSeats;
-            dto.Fare = trip.Fare;
-            dto.TripDate = trip.TripDate;
-            return dto;
         }
     }
 }

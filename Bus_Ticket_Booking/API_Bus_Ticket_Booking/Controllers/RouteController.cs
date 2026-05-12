@@ -1,4 +1,6 @@
+using API_Bus_Ticket_Booking.DTOs;
 using API_Bus_Ticket_Booking.DTOs.Route;
+using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API_Bus_Ticket_Booking.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/routes")]
     public class RouteController : ControllerBase
     {
         private readonly IRouteService _routeService;
@@ -16,127 +18,170 @@ namespace API_Bus_Ticket_Booking.Controllers
             _routeService = routeService;
         }
 
+        // GET api/routes
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var routes = await _routeService.GetAllRoutesAsync();
-            return Ok(routes);
+            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) retrieved successfully.");
+            return Ok(response);
         }
 
-        [HttpGet("{id}")]
+        // GET api/routes/5
+        [HttpGet("{id:int}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
-            var route = await _routeService.GetRouteByIdAsync(id);
-            if (route == null)
+            try
             {
-                return NotFound(new { message = "Route not found." });
+                var route = await _routeService.GetRouteByIdAsync(id);
+                var response = ApiResponse<object>.Ok(route, "Route retrieved successfully.");
+                return Ok(response);
             }
-            return Ok(route);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
 
+        // GET api/routes/search?fromCity=Delhi&toCity=Mumbai
         [HttpGet("search")]
         [AllowAnonymous]
         public async Task<IActionResult> Search(
             [FromQuery] string fromCity,
-            [FromQuery] string toCity
-        )
+            [FromQuery] string toCity)
         {
             if (string.IsNullOrWhiteSpace(fromCity) || string.IsNullOrWhiteSpace(toCity))
             {
-                return BadRequest(new { message = "fromCity and toCity are required." });
+                return BadRequest(ApiResponse<object>.Fail("fromCity and toCity are required.", 400));
             }
+
             var routes = await _routeService.SearchRoutesAsync(fromCity, toCity);
-            return Ok(routes);
+            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) found matching your search.");
+            return Ok(response);
         }
 
-        [HttpGet("{id}/trips")]
+        // GET api/routes/5/trips
+        [HttpGet("{id:int}/trips")]
         [AllowAnonymous]
         public async Task<IActionResult> GetTripsForRoute(int id)
         {
-            var trips = await _routeService.GetTripsByRouteAsync(id);
-            if (trips == null)
+            try
             {
-                return NotFound(new { message = "Route not found." });
+                var trips = await _routeService.GetTripsByRouteAsync(id);
+                var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) found for route ID {id}.");
+                return Ok(response);
             }
-            return Ok(trips);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
 
+        // GET api/routes/cities
         [HttpGet("cities")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllCities()
         {
             var cities = await _routeService.GetAllCitiesAsync();
-            return Ok(cities);
+            var response = ApiResponse<object>.Ok(cities, $"{cities.Count} unique city/cities retrieved.");
+            return Ok(response);
         }
 
+        // GET api/routes/from/Delhi
         [HttpGet("from/{city}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetByFromCity(string city)
         {
             var routes = await _routeService.GetRoutesByFromCityAsync(city);
-            return Ok(routes);
+            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) departing from {city}.");
+            return Ok(response);
         }
 
+        // GET api/routes/to/Mumbai
         [HttpGet("to/{city}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetByToCity(string city)
         {
             var routes = await _routeService.GetRoutesToCityAsync(city);
-            return Ok(routes);
+            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) arriving at {city}.");
+            return Ok(response);
         }
 
+        // GET api/routes/duration?max=300
         [HttpGet("duration")]
         [AllowAnonymous]
         public async Task<IActionResult> GetByMaxDuration([FromQuery] int max)
         {
             if (max <= 0)
             {
-                return BadRequest(new { message = "max must be greater than zero." });
+                return BadRequest(ApiResponse<object>.Fail("max duration must be greater than zero.", 400));
             }
             var routes = await _routeService.GetRoutesByMaxDurationAsync(max);
-            return Ok(routes);
+            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) with duration up to {max} minutes.");
+            return Ok(response);
         }
 
+        // POST api/routes
         [HttpPost]
         [Authorize(Roles = "Admin,Agency")]
         public async Task<IActionResult> Create([FromBody] CreateRouteDto dto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.Fail("Validation failed.", 400));
             }
-            var created = await _routeService.CreateRouteAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.RouteId }, created);
+
+            try
+            {
+                var created = await _routeService.CreateRouteAsync(dto);
+                var response = ApiResponse<object>.Created(created, "Route created successfully.");
+                return CreatedAtAction(nameof(GetById), new { id = created.RouteId }, response);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, 400));
+            }
         }
 
-        [HttpPut("{id}")]
+        // PUT api/routes/5
+        [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin,Agency")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateRouteDto dto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.Fail("Validation failed.", 400));
             }
-            var updated = await _routeService.UpdateRouteAsync(id, dto);
-            if (updated == null)
+
+            try
             {
-                return NotFound(new { message = "Route not found." });
+                var updated = await _routeService.UpdateRouteAsync(id, dto);
+                var response = ApiResponse<object>.Ok(updated, "Route updated successfully.");
+                return Ok(response);
             }
-            return Ok(updated);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
 
-        [HttpDelete("{id}")]
+        // DELETE api/routes/5
+        [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            bool deleted = await _routeService.DeleteRouteAsync(id);
-            if (!deleted)
+            try
             {
-                return NotFound(new { message = "Route not found." });
+                await _routeService.DeleteRouteAsync(id);
+                var response = ApiResponse<object>.Ok(null, $"Route with ID {id} deleted successfully.");
+                return Ok(response);
             }
-            return NoContent();
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
     }
 }

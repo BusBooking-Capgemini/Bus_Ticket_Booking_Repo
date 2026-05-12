@@ -14,7 +14,8 @@ namespace API_Bus_Ticket_Booking.Controllers;
 public class CustomerController : ControllerBase
 {
     private readonly ICustomerService _customerService;
-    private readonly IBookingService _bookingService;
+
+    // private readonly IBookingService _bookingService;
     private readonly IReviewService _reviewService;
 
     // private readonly ITripService _tripService;
@@ -32,14 +33,10 @@ public class CustomerController : ControllerBase
     //     _tripService = tripService;
     // }
 
-    public CustomerController(
-        ICustomerService customerService,
-        IBookingService bookingService,
-        IReviewService reviewService
-    )
+    public CustomerController(ICustomerService customerService, IReviewService reviewService)
     {
         _customerService = customerService;
-        _bookingService = bookingService;
+        // _bookingService = bookingService;
         _reviewService = reviewService;
     }
 
@@ -113,12 +110,12 @@ public class CustomerController : ControllerBase
     // ───────────────────────────────────────────────────
 
     // GET /api/customers/trips/{tripId}
-    [HttpGet("trips/getAvailableSeats/{tripId}")]
-    public async Task<IActionResult> GetAvailableSeats(int tripId)
-    {
-        var seats = await _bookingService.GetAvailableSeatsAsync(tripId);
-        return Ok(new { tripId, availableSeats = seats });
-    }
+    // [HttpGet("trips/getAvailableSeats/{tripId}")]
+    // public async Task<IActionResult> GetAvailableSeats(int tripId)
+    // {
+    //     var seats = await _bookingService.GetAvailableSeatsAsync(tripId);
+    //     return Ok(new { tripId, availableSeats = seats });
+    // }
 
     // GET /api/customers/trips/route/{routeId}
     // [HttpGet("trips/route/{routeId}")]
@@ -133,60 +130,60 @@ public class CustomerController : ControllerBase
     // ───────────────────────────────────────────────────
 
     // POST /api/customers/{customerId}/createBooking
-    [HttpPost("{customerId}/createBooking")]
-    public async Task<IActionResult> BookSeat(int customerId, [FromBody] BookSeatRequestDto dto)
-    {
-        var (success, message, bookingId) = await _bookingService.BookSeatAsync(
-            customerId,
-            dto.TripId,
-            dto.SeatNumber
-        );
-        if (!success)
-            return BadRequest(new { message });
-        return Ok(new { bookingId, message });
-    }
+    // [HttpPost("{customerId}/createBooking")]
+    // public async Task<IActionResult> BookSeat(int customerId, [FromBody] BookSeatRequestDto dto)
+    // {
+    //     var (success, message, bookingId) = await _bookingService.BookSeatAsync(
+    //         customerId,
+    //         dto.TripId,
+    //         dto.SeatNumber
+    //     );
+    //     if (!success)
+    //         return BadRequest(new { message });
+    //     return Ok(new { bookingId, message });
+    // }
 
     // GET /api/customers/{customerId}/getMybookings
-    [HttpGet("{customerId}/getMyBookings")]
-    public async Task<IActionResult> GetMyBookings(int customerId)
-    {
-        var bookings = await _bookingService.GetCustomerBookingsAsync(customerId);
-        return Ok(bookings);
-    }
+    // [HttpGet("{customerId}/getMyBookings")]
+    // public async Task<IActionResult> GetMyBookings(int customerId)
+    // {
+    //     var bookings = await _bookingService.GetCustomerBookingsAsync(customerId);
+    //     return Ok(bookings);
+    // }
 
     // GET /api/customers/{customerId}/getBooking/{bookingId}
-    [HttpGet("{customerId}/getBookings/{bookingId}")]
-    public async Task<IActionResult> GetBookingDetail(int customerId, int bookingId)
-    {
-        var booking = await _bookingService.GetBookingDetailAsync(customerId, bookingId);
-        return booking == null ? NotFound() : Ok(booking);
-    }
+    // [HttpGet("{customerId}/getBookings/{bookingId}")]
+    // public async Task<IActionResult> GetBookingDetail(int customerId, int bookingId)
+    // {
+    //     var booking = await _bookingService.GetBookingDetailAsync(customerId, bookingId);
+    //     return booking == null ? NotFound() : Ok(booking);
+    // }
 
     // DELETE /api/customers/{customerId}/deleteBooking/{bookingId}
-    [HttpDelete("{customerId}/deleteBooking/{bookingId}")]
-    public async Task<IActionResult> CancelBooking(int customerId, int bookingId)
-    {
-        var (success, message) = await _bookingService.CancelBookingAsync(customerId, bookingId);
-        return success ? Ok(new { message }) : BadRequest(new { message });
-    }
+    // [HttpDelete("{customerId}/deleteBooking/{bookingId}")]
+    // public async Task<IActionResult> CancelBooking(int customerId, int bookingId)
+    // {
+    //     var (success, message) = await _bookingService.CancelBookingAsync(customerId, bookingId);
+    //     return success ? Ok(new { message }) : BadRequest(new { message });
+    // }
 
     // ───────────────────────────────────────────────────
     // REVIEWS
     // ───────────────────────────────────────────────────
 
     // POST /api/customers/{customerId}/createReview
-    [HttpPost("{customerId}/createReview")]
-    public async Task<IActionResult> AddReview(int customerId, [FromBody] ReviewRequestDto dto)
-    {
-        var (success, message, review) = await _reviewService.CreateReviewAsync(customerId, dto);
-        if (!success)
-            return BadRequest(new { message });
-        return CreatedAtAction(
-            nameof(GetReview),
-            new { customerId, reviewId = review!.ReviewId },
-            review
-        );
-    }
+    // [HttpPost("{customerId}/createReview")]
+    // public async Task<IActionResult> AddReview(int customerId, [FromBody] ReviewRequestDto dto)
+    // {
+    //     var (success, message, review) = await _reviewService.CreateReviewAsync(customerId, dto);
+    //     if (!success)
+    //         return BadRequest(new { message });
+    //     return CreatedAtAction(
+    //         nameof(GetReview),
+    //         new { customerId, reviewId = review!.ReviewId },
+    //         review
+    //     );
+    // }
 
     // GET /api/customers/{customerId}/getReviews
     [HttpGet("{customerId}/getReviews")]
