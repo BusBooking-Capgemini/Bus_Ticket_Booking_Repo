@@ -16,41 +16,37 @@ public class BusRepository : IBusRepository
 
     public async Task<IEnumerable<Bus>> GetAllAsync()
     {
-        return await _context.Buses.Include(b => b.Office).ToListAsync();
+        return await _context.Buses.ToListAsync();
     }
 
     public async Task<Bus?> GetByIdAsync(int id)
     {
-        return await _context.Buses.Include(b => b.Office).FirstOrDefaultAsync(b => b.BusId == id);
+        return await _context.Buses.FirstOrDefaultAsync(b => b.BusId == id);
     }
 
     public async Task<IEnumerable<Bus>> GetByOfficeIdAsync(int officeId)
     {
-        return await _context
-            .Buses.Include(b => b.Office)
+        return await _context.Buses
             .Where(b => b.OfficeId == officeId)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<Bus>> GetByTypeAsync(string type)
     {
-        return await _context
-            .Buses.Include(b => b.Office)
+        return await _context.Buses
             .Where(b => b.Type.ToLower() == type.ToLower())
             .ToListAsync();
     }
 
     public async Task<Bus?> GetByRegistrationNumberAsync(string regNumber)
     {
-        return await _context
-            .Buses.Include(b => b.Office)
+        return await _context.Buses
             .FirstOrDefaultAsync(b => b.RegistrationNumber == regNumber);
     }
 
     public async Task<IEnumerable<Bus>> GetByCapacityRangeAsync(int min, int max)
     {
-        return await _context
-            .Buses.Include(b => b.Office)
+        return await _context.Buses
             .Where(b => b.Capacity >= min && b.Capacity <= max)
             .ToListAsync();
     }

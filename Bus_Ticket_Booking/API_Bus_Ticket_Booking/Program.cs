@@ -23,6 +23,7 @@ public class Program
 
         builder.Services.AddDbContext<BusTicketBookingContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            .UseLazyLoadingProxies()
         );
 
         // AutoMapper

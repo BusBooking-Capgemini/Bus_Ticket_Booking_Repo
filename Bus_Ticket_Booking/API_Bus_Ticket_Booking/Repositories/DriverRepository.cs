@@ -16,48 +16,37 @@ public class DriverRepository : IDriverRepository
 
     public async Task<IEnumerable<Driver>> GetAllAsync()
     {
-        return await _context.Drivers.Include(d => d.Office).Include(d => d.Address).ToListAsync();
+        return await _context.Drivers.ToListAsync();
     }
 
     public async Task<Driver?> GetByIdAsync(int id)
     {
-        return await _context
-            .Drivers.Include(d => d.Office)
-            .Include(d => d.Address)
-            .FirstOrDefaultAsync(d => d.DriverId == id);
+        return await _context.Drivers.FirstOrDefaultAsync(d => d.DriverId == id);
     }
 
     public async Task<IEnumerable<Driver>> GetByOfficeIdAsync(int officeId)
     {
-        return await _context
-            .Drivers.Include(d => d.Office)
-            .Include(d => d.Address)
+        return await _context.Drivers
             .Where(d => d.OfficeId == officeId)
             .ToListAsync();
     }
 
     public async Task<Driver?> GetByLicenseNumberAsync(string licenseNumber)
     {
-        return await _context
-            .Drivers.Include(d => d.Office)
-            .Include(d => d.Address)
+        return await _context.Drivers
             .FirstOrDefaultAsync(d => d.LicenseNumber == licenseNumber);
     }
 
     public async Task<IEnumerable<Driver>> GetByNameAsync(string name)
     {
-        return await _context
-            .Drivers.Include(d => d.Office)
-            .Include(d => d.Address)
+        return await _context.Drivers
             .Where(d => d.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
     }
 
     public async Task<IEnumerable<Driver>> GetByCityAsync(string city)
     {
-        return await _context
-            .Drivers.Include(d => d.Office)
-            .Include(d => d.Address)
+        return await _context.Drivers
             .Where(d => d.Address != null && d.Address.City.ToLower() == city.ToLower())
             .ToListAsync();
     }

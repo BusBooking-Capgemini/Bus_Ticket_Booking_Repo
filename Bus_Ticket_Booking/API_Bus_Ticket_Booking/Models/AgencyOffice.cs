@@ -17,6 +17,10 @@ public partial class AgencyOffice
 
     public int? OfficeAddressId { get; set; }
 
+    public Guid? RoleId { get; set; }
+
+    public string? PasswordHash { get; set; }
+
     public virtual Agency? Agency { get; set; }
 
     public virtual ICollection<Bus> Buses { get; set; } = new List<Bus>();
@@ -24,4 +28,6 @@ public partial class AgencyOffice
     public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
 
     public virtual Address? OfficeAddress { get; set; }
+
+    public virtual Role? Role { get; set; }
 }
