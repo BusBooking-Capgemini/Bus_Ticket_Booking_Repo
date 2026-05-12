@@ -1,3 +1,4 @@
+using System.Text;
 using API_Bus_Ticket_Booking.Data;
 using API_Bus_Ticket_Booking.Helpers.JWT;
 using API_Bus_Ticket_Booking.Middleware;
@@ -6,17 +7,13 @@ using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using API_Bus_Ticket_Booking.Validators;
-
 using DotNetEnv;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-using System.Text;
 
 public class Program
 {
@@ -26,22 +23,18 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        var connectionString =
-            Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
-        var jwtKey =
-            Environment.GetEnvironmentVariable("JWT_KEY");
+        var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
 
-        var jwtIssuer =
-            Environment.GetEnvironmentVariable("JWT_ISSUER");
+        var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
 
-        var jwtAudience =
-            Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+        var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
         // Database
-        builder.Services.AddDbContext<BusTicketBookingContext>(
-            options =>
-                options.UseSqlServer(connectionString));
+        builder.Services.AddDbContext<BusTicketBookingContext>(options =>
+            options.UseSqlServer(connectionString)
+        );
 
         // Controllers
         builder.Services.AddControllers();
@@ -55,26 +48,22 @@ public class Program
         builder.Services.AddAutoMapper(typeof(Program));
 
         // JWT Authentication
-        builder.Services
-            .AddAuthentication(
-                JwtBearerDefaults.AuthenticationScheme)
+        builder
+            .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
 
-                        ValidIssuer = jwtIssuer,
-                        ValidAudience = jwtAudience,
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
 
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(jwtKey!))
-                    };
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)),
+                };
             });
 
         builder.Services.AddAuthorization();
@@ -86,11 +75,8 @@ public class Program
         {
             options.SwaggerDoc(
                 "v1",
-                new OpenApiInfo
-                {
-                    Title = "Bus Ticket Booking API",
-                    Version = "v1"
-                });
+                new OpenApiInfo { Title = "Bus Ticket Booking API", Version = "v1" }
+            );
 
             options.AddSecurityDefinition(
                 "Bearer",
@@ -101,8 +87,9 @@ public class Program
                     Scheme = "bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter token: Bearer {token}"
-                });
+                    Description = "Enter token: Bearer {token}",
+                }
+            );
 
             options.AddSecurityRequirement(
                 new OpenApiSecurityRequirement
@@ -110,16 +97,16 @@ public class Program
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference =
-                                new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer",
+                            },
                         },
                         Array.Empty<string>()
-                    }
-                });
+                    },
+                }
+            );
         });
 
         // Helpers
