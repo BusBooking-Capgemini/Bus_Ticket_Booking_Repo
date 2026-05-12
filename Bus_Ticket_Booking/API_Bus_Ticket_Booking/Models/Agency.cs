@@ -15,5 +15,11 @@ public partial class Agency
 
     public string Phone { get; set; } = null!;
 
+    public Guid? RoleId { get; set; }
+
+    public string? PasswordHash { get; set; }
+
     public virtual ICollection<AgencyOffice> AgencyOffices { get; set; } = new List<AgencyOffice>();
+
+    public virtual Role? Role { get; set; }
 }
