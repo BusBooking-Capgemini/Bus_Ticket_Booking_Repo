@@ -6,7 +6,7 @@ using API_Bus_Ticket_Booking.Services;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using API_Bus_Ticket_Booking.Validators;
 using AutoMapper;
-using DotNetEnv;
+using dotenv.net;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +16,14 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Env.Load();
+        DotEnv.Load();
 
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration.AddEnvironmentVariables();
+
         builder.Services.AddDbContext<BusTicketBookingContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
         );
 
         // AutoMapper

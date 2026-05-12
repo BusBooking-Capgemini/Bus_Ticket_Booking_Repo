@@ -1,4 +1,6 @@
+using API_Bus_Ticket_Booking.DTOs;
 using API_Bus_Ticket_Booking.DTOs.Trip;
+using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API_Bus_Ticket_Booking.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/trips")]
     public class TripController : ControllerBase
     {
         private readonly ITripService _tripService;
@@ -16,146 +18,197 @@ namespace API_Bus_Ticket_Booking.Controllers
             _tripService = tripService;
         }
 
+        // GET api/trips
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var trips = await _tripService.GetAllTripsAsync();
-            return Ok(trips);
+            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) retrieved successfully.");
+            return Ok(response);
         }
 
-        [HttpGet("{id}")]
+        // GET api/trips/5
+        [HttpGet("{id:int}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
-            var trip = await _tripService.GetTripByIdAsync(id);
-            if (trip == null)
+            try
             {
-                return NotFound(new { message = "Trip not found." });
+                var trip = await _tripService.GetTripByIdAsync(id);
+                var response = ApiResponse<object>.Ok(trip, "Trip retrieved successfully.");
+                return Ok(response);
             }
-            return Ok(trip);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
 
+        // GET api/trips/search?fromCity=Delhi&toCity=Mumbai&tripDate=2026-06-01
         [HttpGet("search")]
         [AllowAnonymous]
         public async Task<IActionResult> Search([FromQuery] TripSearchDto dto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.Fail("Validation failed. Please check fromCity, toCity and tripDate.", 400));
             }
+
             var trips = await _tripService.SearchTripsAsync(dto);
-            return Ok(trips);
+            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) found from {dto.FromCity} to {dto.ToCity} on {dto.TripDate:yyyy-MM-dd}.");
+            return Ok(response);
         }
 
-        [HttpGet("{id}/seats")]
+        // GET api/trips/5/seats
+        [HttpGet("{id:int}/seats")]
         [AllowAnonymous]
         public async Task<IActionResult> GetSeatMap(int id)
         {
-            var seatMap = await _tripService.GetSeatMapAsync(id);
-            if (seatMap == null)
+            try
             {
-                return NotFound(new { message = "Trip not found." });
+                var seatMap = await _tripService.GetSeatMapAsync(id);
+                var response = ApiResponse<object>.Ok(seatMap, $"Seat map retrieved. {seatMap.AvailableSeats} seat(s) available out of {seatMap.TotalSeats}.");
+                return Ok(response);
             }
-            return Ok(seatMap);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
 
-        [HttpGet("route/{routeId}")]
+        // GET api/trips/route/3
+        [HttpGet("route/{routeId:int}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetByRoute(int routeId)
         {
-            var trips = await _tripService.GetTripsByRouteAsync(routeId);
-            if (trips == null)
+            try
             {
-                return NotFound(new { message = "Route not found." });
+                var trips = await _tripService.GetTripsByRouteAsync(routeId);
+                var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) found for route ID {routeId}.");
+                return Ok(response);
             }
-            return Ok(trips);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
 
-        [HttpGet("date/{date}")]
+        // GET api/trips/date/2026-06-01
+        [HttpGet("date/{date:datetime}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetByDate(DateTime date)
         {
             var trips = await _tripService.GetTripsByDateAsync(date);
-            return Ok(trips);
+            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) scheduled on {date:yyyy-MM-dd}.");
+            return Ok(response);
         }
 
-        [HttpGet("bus/{busId}")]
+        // GET api/trips/bus/2
+        [HttpGet("bus/{busId:int}")]
         [Authorize(Roles = "Admin,Agency")]
         public async Task<IActionResult> GetByBus(int busId)
         {
             var trips = await _tripService.GetTripsByBusAsync(busId);
-            return Ok(trips);
+            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) assigned to bus ID {busId}.");
+            return Ok(response);
         }
 
-        [HttpGet("driver/{driverId}")]
+        // GET api/trips/driver/5
+        [HttpGet("driver/{driverId:int}")]
         [Authorize(Roles = "Admin,Agency")]
         public async Task<IActionResult> GetByDriver(int driverId)
         {
             var trips = await _tripService.GetTripsByDriverAsync(driverId);
-            return Ok(trips);
+            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) assigned to driver ID {driverId}.");
+            return Ok(response);
         }
 
+        // GET api/trips/upcoming
         [HttpGet("upcoming")]
         [AllowAnonymous]
         public async Task<IActionResult> GetUpcoming()
         {
             var trips = await _tripService.GetUpcomingTripsAsync();
-            return Ok(trips);
+            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} upcoming trip(s) found.");
+            return Ok(response);
         }
 
+        // POST api/trips
         [HttpPost]
         [Authorize(Roles = "Admin,Agency")]
         public async Task<IActionResult> Create([FromBody] CreateTripDto dto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.Fail("Validation failed. Please check all required fields.", 400));
             }
+
             try
             {
                 var created = await _tripService.CreateTripAsync(dto);
-                return CreatedAtAction(nameof(GetById), new { id = created.TripId }, created);
+                var response = ApiResponse<object>.Created(created, "Trip created successfully.");
+                return CreatedAtAction(nameof(GetById), new { id = created.TripId }, response);
             }
-            catch (Exception ex)
+            catch (NotFoundException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, 400));
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(ApiResponse<object>.Fail(ex.Message, 409));
             }
         }
 
-        [HttpPut("{id}")]
+        // PUT api/trips/5
+        [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin,Agency")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateTripDto dto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.Fail("Validation failed. Please check the provided fields.", 400));
             }
+
             try
             {
                 var updated = await _tripService.UpdateTripAsync(id, dto);
-                if (updated == null)
-                {
-                    return NotFound(new { message = "Trip not found." });
-                }
-                return Ok(updated);
+                var response = ApiResponse<object>.Ok(updated, "Trip updated successfully.");
+                return Ok(response);
             }
-            catch (Exception ex)
+            catch (NotFoundException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, 400));
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(ApiResponse<object>.Fail(ex.Message, 409));
             }
         }
 
-        [HttpDelete("{id}")]
+        // DELETE api/trips/5
+        [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            bool deleted = await _tripService.DeleteTripAsync(id);
-            if (!deleted)
+            try
             {
-                return NotFound(new { message = "Trip not found." });
+                await _tripService.DeleteTripAsync(id);
+                var response = ApiResponse<object>.Ok(null, $"Trip with ID {id} deleted successfully.");
+                return Ok(response);
             }
-            return NoContent();
+            catch (NotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
+            }
         }
     }
 }
