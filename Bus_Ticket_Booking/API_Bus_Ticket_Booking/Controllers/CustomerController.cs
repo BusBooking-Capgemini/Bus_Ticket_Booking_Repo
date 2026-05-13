@@ -48,14 +48,11 @@ public class CustomerController : ControllerBase
     // POST /api/customers
     [HttpPost("register")]
     [AllowAnonymous]
-
-    public async Task<IActionResult> Register([FromBody] CustomerCreateDto dto)
+    public async Task<IActionResult> Register([FromBody] CustomerRequestDto dto)
     {
-        if (await _customerService.EmailAlreadyExistsAsync(dto.Email))
-            return Conflict(new
-            {
-                message = "A customer with this email already exists."
-            });
+        if (await _customerService.EmailAlreadyExistsAsync(dto.Email!))
+            return Conflict(new { message = "A customer with this email already exists." });
+
         var result = await _customerService.CreateCustomerAsync(dto);
 
         return CreatedAtAction(nameof(GetProfile), new { customerId = result.CustomerId }, result);
@@ -73,9 +70,13 @@ public class CustomerController : ControllerBase
     // PUT /api/customers/updateCustomer/{customerId}
     [HttpPatch("updateCustomer/{customerId}")]
     [Authorize(Roles = "Customer")]
-    public async Task<IActionResult> UpdateProfile(int customerId, [FromBody] CustomerUpdateDto dto)
+    public async Task<IActionResult> UpdateProfile(
+        int customerId,
+        [FromBody] CustomerRequestDto dto
+    )
     {
         var updated = await _customerService.UpdateCustomerAsync(customerId, dto);
+
         return updated ? NoContent() : NotFound();
     }
 
