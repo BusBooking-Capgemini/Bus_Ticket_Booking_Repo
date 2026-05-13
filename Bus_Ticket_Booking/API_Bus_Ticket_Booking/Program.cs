@@ -32,16 +32,24 @@ public class Program
         var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
         // Database
+        //builder.Services.AddDbContext<BusTicketBookingContext>(options =>
+        //    options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
+        //);
+
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new Exception("DB_CONNECTION_STRING is missing");
+        }
         builder.Services.AddDbContext<BusTicketBookingContext>(options =>
-        options.UseSqlServer(connectionString)
-);
+            options.UseSqlServer(connectionString)
+        );
 
         builder.Services.AddControllers();
 
         // Validation
         builder.Services.AddFluentValidationAutoValidation();
 
-        builder.Services.AddValidatorsFromAssemblyContaining<CustomerCreateDtoValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CustomerRequestDtoValidator>();
 
         // AutoMapper
         builder.Services.AddAutoMapper(typeof(Program));
