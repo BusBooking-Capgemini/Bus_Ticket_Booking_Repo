@@ -43,6 +43,7 @@ public class Program
         builder.Services.AddDbContext<BusTicketBookingContext>(options =>
             options.UseSqlServer(connectionString)
         );
+        
 
         builder.Services.AddControllers();
 
