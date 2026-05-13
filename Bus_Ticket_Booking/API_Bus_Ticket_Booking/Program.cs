@@ -32,9 +32,18 @@ public class Program
         var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
         // Database
+        //builder.Services.AddDbContext<BusTicketBookingContext>(options =>
+        //    options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
+        //);
+
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new Exception("DB_CONNECTION_STRING is missing");
+        }
         builder.Services.AddDbContext<BusTicketBookingContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            options.UseSqlServer(connectionString)
         );
+        
 
         builder.Services.AddControllers();
 
