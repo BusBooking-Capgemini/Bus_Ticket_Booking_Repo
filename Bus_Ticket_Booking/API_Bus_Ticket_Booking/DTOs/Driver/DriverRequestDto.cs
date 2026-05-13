@@ -7,7 +7,7 @@ public class DriverRequestDto
     public string Phone { get; set; } = null!;
     public int OfficeId { get; set; }
 
-    // Address fields via DTO (no separate address controller)
+    // Address fields via DTO
     public string Address { get; set; } = null!;
     public string City { get; set; } = null!;
     public string State { get; set; } = null!;
