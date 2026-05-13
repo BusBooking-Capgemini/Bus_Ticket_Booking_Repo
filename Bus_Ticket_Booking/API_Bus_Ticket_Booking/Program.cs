@@ -49,7 +49,7 @@ public class Program
         // Validation
         builder.Services.AddFluentValidationAutoValidation();
 
-        builder.Services.AddValidatorsFromAssemblyContaining<CustomerCreateDtoValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CustomerRequestDtoValidator>();
 
         // AutoMapper
         builder.Services.AddAutoMapper(typeof(Program));

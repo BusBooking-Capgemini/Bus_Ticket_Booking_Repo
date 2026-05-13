@@ -28,7 +28,7 @@ public class CustomerService : ICustomerService
         return MapToResponseDto(customer);
     }
 
-    public async Task<CustomerResponseDto> CreateCustomerAsync(CustomerCreateDto dto)
+    public async Task<CustomerResponseDto> CreateCustomerAsync(CustomerRequestDto dto)
     {
         if (dto == null)
             throw new BadRequestException("Customer data is required");
@@ -69,7 +69,7 @@ public class CustomerService : ICustomerService
         return MapToResponseDto(created);
     }
 
-    public async Task<bool> UpdateCustomerAsync(int customerId, CustomerUpdateDto dto)
+    public async Task<bool> UpdateCustomerAsync(int customerId, CustomerRequestDto dto)
     {
         if (customerId <= 0)
             throw new BadRequestException("Invalid customer id");
