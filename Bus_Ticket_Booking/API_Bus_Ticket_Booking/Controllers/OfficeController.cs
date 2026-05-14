@@ -174,7 +174,7 @@ namespace API_Bus_Ticket_Booking.Controllers
         }
 
         // 11. GET office payments
-        [HttpGet("{id}/payments")]
+        [HttpGet("{id}/payments")]  
         [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult> GetPayments(int id)
         {

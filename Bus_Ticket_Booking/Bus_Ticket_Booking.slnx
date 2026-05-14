@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="API_Bus_Ticket_Booking.Tests/TEST_Bus_Ticket_Booking.csproj" />
+  <Project Path="API_Bus_Ticket_Booking.Tests/TEST_Bus_Ticket_Booking.csproj" Id="30674796-01cf-4aa1-befa-3f7c53051dcb" />
   <Project Path="API_Bus_Ticket_Booking/API_Bus_Ticket_Booking.csproj" />
 </Solution>
