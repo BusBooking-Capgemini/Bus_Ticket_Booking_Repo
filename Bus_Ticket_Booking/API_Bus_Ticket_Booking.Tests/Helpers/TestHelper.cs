@@ -1,49 +1,64 @@
-﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 using System.Security.Claims;
 
-namespace TEST_Bus_Ticket_Booking.Helpers;
-
-public static class TestHelper
+namespace TEST_Bus_Ticket_Booking.Helpers
 {
-    public static T? GetPropertyValue<T>(object source, string propertyName)
+    public static class TestHelper
     {
-        if (source is null)
+        public static dynamic GetResponseData(IActionResult result)
         {
-            throw new ArgumentNullException(nameof(source));
+            var okResult = result as OkObjectResult;
+
+            return okResult?.Value;
         }
 
-        if (string.IsNullOrWhiteSpace(propertyName))
+        public static T GetPropertyValue<T>(object obj, string propertyName)
         {
-            throw new ArgumentException("Property name cannot be null or empty.", nameof(propertyName));
+            ArgumentNullException.ThrowIfNull(obj);
+            ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+
+            var property = obj.GetType().GetProperty(
+                propertyName,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+
+            if (property == null)
+            {
+                throw new InvalidOperationException(
+                    $"Property '{propertyName}' was not found on type '{obj.GetType().Name}'.");
+            }
+
+            var value = property.GetValue(obj);
+
+            if (value is null)
+            {
+                return default!;
+            }
+
+            if (value is T typedValue)
+            {
+                return typedValue;
+            }
+
+            return (T)Convert.ChangeType(value, typeof(T));
         }
 
-        var property = source
-            .GetType()
-            .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-
-        if (property is null)
+        public static ClaimsPrincipal CreatePrincipal(int userId, string role)
         {
-            return default;
+            return CreatePrincipal(userId.ToString(), role);
         }
 
-        var value = property.GetValue(source);
-        if (value is null)
+        public static ClaimsPrincipal CreatePrincipal(string userId, string role)
         {
-            return default;
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, userId),
+                new(ClaimTypes.Role, role)
+            };
+
+            var identity = new ClaimsIdentity(claims, authenticationType: "Test");
+
+            return new ClaimsPrincipal(identity);
         }
-
-        return value is T typedValue ? typedValue : (T)Convert.ChangeType(value, typeof(T));
-    }
-
-    public static ClaimsPrincipal CreatePrincipal(int userId, string role)
-    {
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, userId.ToString()),
-            new(ClaimTypes.Role, role),
-        };
-
-        var identity = new ClaimsIdentity(claims, authenticationType: "TestAuthType");
-        return new ClaimsPrincipal(identity);
     }
 }
