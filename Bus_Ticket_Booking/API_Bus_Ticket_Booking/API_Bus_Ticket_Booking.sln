@@ -1,8 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.2.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11312.210 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_Bus_Ticket_Booking", "API_Bus_Ticket_Booking.csproj", "{1129CD7D-016E-DA3C-5919-70D68AC25A94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEST_Bus_Ticket_Booking", "..\API_Bus_Ticket_Booking.Tests\TEST_Bus_Ticket_Booking.csproj", "{9F238B05-4958-6692-6470-336B333C2228}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +16,10 @@ Global
 		{1129CD7D-016E-DA3C-5919-70D68AC25A94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1129CD7D-016E-DA3C-5919-70D68AC25A94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1129CD7D-016E-DA3C-5919-70D68AC25A94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F238B05-4958-6692-6470-336B333C2228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F238B05-4958-6692-6470-336B333C2228}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F238B05-4958-6692-6470-336B333C2228}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F238B05-4958-6692-6470-336B333C2228}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
