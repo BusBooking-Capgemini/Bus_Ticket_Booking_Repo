@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using API_Bus_Ticket_Booking.Data;
 using API_Bus_Ticket_Booking.DTOs.Booking;
 using API_Bus_Ticket_Booking.DTOs.Customer;
 using API_Bus_Ticket_Booking.DTOs.Review;
+using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +48,22 @@ public class CustomerController : ControllerBase
     // ───────────────────────────────────────────────────
 
     // POST /api/customers
+    // [HttpPost("register")]
+    // [AllowAnonymous]
+
+    // public async Task<IActionResult> Register([FromBody] CustomerCreateDto dto)
+    // {
+    //     if (await _customerService.EmailAlreadyExistsAsync(dto.Email))
+    //         return Conflict(new
+    //         {
+    //             message = "A customer with this email already exists."
+    //         });
+    //     var result = await _customerService.CreateCustomerAsync(dto);
+
+    //     return CreatedAtAction(nameof(GetProfile), new { customerId = result.CustomerId }, result);
+    // }
+
+    // POST /api/customers
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] CustomerRequestDto dto)
@@ -58,33 +76,54 @@ public class CustomerController : ControllerBase
         return CreatedAtAction(nameof(GetProfile), new { customerId = result.CustomerId }, result);
     }
 
-    // GET /api/customers/{customerId}
-    [HttpGet("getCustomer/{customerId}")]
+    // GET /api/customers
+    [HttpGet("getCustomer")]
     [Authorize(Roles = "Customer")]
-    public async Task<IActionResult> GetProfile(int customerId)
+    public async Task<IActionResult> GetProfile()
     {
+        var customerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        if (customerId <= 0)
+            throw new ForbiddenException();
+
         var customer = await _customerService.GetCustomerAsync(customerId);
         return customer == null ? NotFound() : Ok(customer);
     }
 
     // PUT /api/customers/updateCustomer/{customerId}
-    [HttpPatch("updateCustomer/{customerId}")]
+    // [HttpPatch("updateCustomer/{customerId}")]
+    // [Authorize(Roles = "Customer")]
+    // public async Task<IActionResult> UpdateProfile(int customerId, [FromBody] CustomerUpdateDto dto)
+    // {
+    //     var updated = await _customerService.UpdateCustomerAsync(customerId, dto);
+    //     return updated ? NoContent() : NotFound();
+    // }
+
+    // PUT /api/customers/updateCustomer/{customerId}
+    [HttpPatch("updateCustomer")]
     [Authorize(Roles = "Customer")]
-    public async Task<IActionResult> UpdateProfile(
-        int customerId,
-        [FromBody] CustomerRequestDto dto
-    )
+    public async Task<IActionResult> UpdateProfile([FromBody] CustomerRequestDto dto)
     {
+        var customerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        if (customerId <= 0)
+            throw new ForbiddenException();
+
         var updated = await _customerService.UpdateCustomerAsync(customerId, dto);
 
         return updated ? NoContent() : NotFound();
     }
 
-    // DELETE /api/customers/deleteCustomer/{customerId}
-    [HttpDelete("deleteCustomer/{customerId}")]
+    // DELETE /api/customers/deleteCustomer
+    [HttpDelete("deleteCustomer")]
     [Authorize(Roles = "Customer")]
-    public async Task<IActionResult> DeleteAccount(int customerId)
+    public async Task<IActionResult> DeleteAccount()
     {
+        var customerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        if (customerId <= 0)
+            throw new ForbiddenException();
+
         var deleted = await _customerService.DeleteCustomerAsync(customerId);
         return deleted ? NoContent() : NotFound();
     }
@@ -199,6 +238,11 @@ public class CustomerController : ControllerBase
     [Authorize(Roles = "Customer")]
     public async Task<IActionResult> GetMyReviews(int customerId)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        if (userId != customerId)
+            throw new ForbiddenException("You can only access your own reviews.");
+
         var reviews = await _reviewService.GetCustomerReviewsAsync(customerId);
         return Ok(reviews);
     }
