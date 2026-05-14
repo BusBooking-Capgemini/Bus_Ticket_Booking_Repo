@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="API_Bus_Ticket_Booking.Tests/TEST_Bus_Ticket_Booking.csproj" />
   <Project Path="API_Bus_Ticket_Booking/API_Bus_Ticket_Booking.csproj" />
 </Solution>
