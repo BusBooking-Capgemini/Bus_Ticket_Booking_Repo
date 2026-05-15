@@ -1,0 +1,10 @@
+@model ApiJsonViewModel
+
+@if (!Model.Result.Succeeded)
+{
+    <div class="alert alert-danger" role="alert">@Model.Result.Message</div>
+}
+else if (!string.IsNullOrWhiteSpace(Model.Result.Message))
+{
+    <div class="alert alert-info" role="alert">@Model.Result.Message</div>
+}

@@ -1,0 +1,38 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h1 class="h4 mb-1">@Model.Role Dashboard</h1>
+        <p class="text-muted mb-0">@(Model.DisplayName ?? Model.Email ?? "Not signed in")</p>
+    </div>
+    @if (Model.Role == "Guest")
+    {
+        <a class="btn btn-primary btn-sm" asp-controller="Auth" asp-action="Login">Login</a>
+    }
+</div>
+
+@await Component.InvokeAsync("DashboardSummary", new { role = Model.Role })
+
+@if ((Model.Role == "Agency" && !Model.AgencyId.HasValue) || (Model.Role == "Office" && !Model.OfficeId.HasValue))
+{
+    <div class="alert alert-info" role="alert">
+        Some role-specific summaries need your API login response to include @(Model.Role == "Agency" ? "agencyId" : "officeId"). General management pages are still available below.
+    </div>
+}
+
+<div class="row g-3">
+    @foreach (var action in Model.Actions)
+    {
+        <div class="col-md-4">
+            <a class="card text-decoration-none text-dark h-100" asp-controller="@action.Controller" asp-action="@action.Action" asp-all-route-data="@action.RouteValues">
+                <span class="card-body">
+                    <span class="d-block fw-semibold">@action.Title</span>
+                    <span class="d-block small text-muted">@action.Text</span>
+                </span>
+            </a>
+        </div>
+    }
+</div>

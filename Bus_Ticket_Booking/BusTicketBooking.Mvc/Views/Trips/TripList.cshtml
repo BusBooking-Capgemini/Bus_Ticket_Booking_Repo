@@ -1,0 +1,62 @@
+@model TripListViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">@Model.Title</h1>
+    <a class="btn btn-primary btn-sm" asp-controller="Trips" asp-action="Create">Create Trip</a>
+</div>
+
+@if (!Model.Result.Succeeded)
+{
+    <div class="alert alert-danger" role="alert">@Model.Result.Message</div>
+}
+else if (Model.Trips.Count == 0)
+{
+    <div class="alert alert-info" role="alert">No trips found.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>Route</th>
+                    <th>Bus</th>
+                    <th>Date</th>
+                    <th>Departure</th>
+                    <th>Arrival</th>
+                    <th>Drivers</th>
+                    <th>Fare</th>
+                    <th>Seats</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var trip in Model.Trips)
+                {
+                    <tr>
+                        <td>@trip.Route</td>
+                        <td>@trip.Bus</td>
+                        <td>@trip.TripDate</td>
+                        <td>@trip.DepartureTime</td>
+                        <td>@trip.ArrivalTime</td>
+                        <td>
+                            <span class="d-block">@trip.Driver1</span>
+                            <span class="d-block text-muted small">@trip.Driver2</span>
+                        </td>
+                        <td>@trip.Fare</td>
+                        <td>@(trip.AvailableSeats ?? "Check seats")</td>
+                        <td class="text-end">
+                            @if (trip.Id.HasValue)
+                            {
+                                <a class="btn btn-outline-secondary btn-sm" asp-controller="Trips" asp-action="Details" asp-route-id="@trip.Id">Details</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
