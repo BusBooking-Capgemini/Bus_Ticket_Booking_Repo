@@ -46,6 +46,15 @@ public class Program
 
         builder.Services.AddControllers();
 
+        // CORS
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
+        });
+
         // Validation
         builder.Services.AddFluentValidationAutoValidation();
 
@@ -156,6 +165,9 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseMiddleware<ExceptionMiddleware>();
+
+        // cors
+        app.UseCors("AllowFrontend");
 
         app.UseAuthentication();
         app.UseAuthorization();
