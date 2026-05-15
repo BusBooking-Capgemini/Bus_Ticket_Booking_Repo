@@ -1,6 +1,7 @@
 using API_Bus_Ticket_Booking.DTOs;
 using API_Bus_Ticket_Booking.DTOs.Route;
 using API_Bus_Ticket_Booking.Exceptions;
+using API_Bus_Ticket_Booking.Models;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,11 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetAll()
         {
             var routes = await _routeService.GetAllRoutesAsync();
-            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) retrieved successfully.");
-            return Ok(response);
+            var response = ApiResponse<object>.Ok(
+                routes,
+                $"{routes.Count} route(s) retrieved successfully."
+            );
+            return Ok(routes);
         }
 
         // GET api/routes/5
@@ -37,7 +41,7 @@ namespace API_Bus_Ticket_Booking.Controllers
             {
                 var route = await _routeService.GetRouteByIdAsync(id);
                 var response = ApiResponse<object>.Ok(route, "Route retrieved successfully.");
-                return Ok(response);
+                return Ok(route);
             }
             catch (NotFoundException ex)
             {
@@ -50,16 +54,22 @@ namespace API_Bus_Ticket_Booking.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Search(
             [FromQuery] string fromCity,
-            [FromQuery] string toCity)
+            [FromQuery] string toCity
+        )
         {
             if (string.IsNullOrWhiteSpace(fromCity) || string.IsNullOrWhiteSpace(toCity))
             {
-                return BadRequest(ApiResponse<object>.Fail("fromCity and toCity are required.", 400));
+                return BadRequest(
+                    ApiResponse<object>.Fail("fromCity and toCity are required.", 400)
+                );
             }
 
             var routes = await _routeService.SearchRoutesAsync(fromCity, toCity);
-            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) found matching your search.");
-            return Ok(response);
+            var response = ApiResponse<object>.Ok(
+                routes,
+                $"{routes.Count} route(s) found matching your search."
+            );
+            return Ok(routes);
         }
 
         // GET api/routes/5/trips
@@ -70,8 +80,11 @@ namespace API_Bus_Ticket_Booking.Controllers
             try
             {
                 var trips = await _routeService.GetTripsByRouteAsync(id);
-                var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) found for route ID {id}.");
-                return Ok(response);
+                var response = ApiResponse<object>.Ok(
+                    trips,
+                    $"{trips.Count} trip(s) found for route ID {id}."
+                );
+                return Ok(trips);
             }
             catch (NotFoundException ex)
             {
@@ -85,8 +98,11 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetAllCities()
         {
             var cities = await _routeService.GetAllCitiesAsync();
-            var response = ApiResponse<object>.Ok(cities, $"{cities.Count} unique city/cities retrieved.");
-            return Ok(response);
+            var response = ApiResponse<object>.Ok(
+                cities,
+                $"{cities.Count} unique city/cities retrieved."
+            );
+            return Ok(cities);
         }
 
         // GET api/routes/from/Delhi
@@ -95,8 +111,11 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetByFromCity(string city)
         {
             var routes = await _routeService.GetRoutesByFromCityAsync(city);
-            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) departing from {city}.");
-            return Ok(response);
+            var response = ApiResponse<object>.Ok(
+                routes,
+                $"{routes.Count} route(s) departing from {city}."
+            );
+            return Ok(routes);
         }
 
         // GET api/routes/to/Mumbai
@@ -105,8 +124,11 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetByToCity(string city)
         {
             var routes = await _routeService.GetRoutesToCityAsync(city);
-            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) arriving at {city}.");
-            return Ok(response);
+            var response = ApiResponse<object>.Ok(
+                routes,
+                $"{routes.Count} route(s) arriving at {city}."
+            );
+            return Ok(routes);
         }
 
         // GET api/routes/duration?max=300
@@ -116,11 +138,16 @@ namespace API_Bus_Ticket_Booking.Controllers
         {
             if (max <= 0)
             {
-                return BadRequest(ApiResponse<object>.Fail("max duration must be greater than zero.", 400));
+                return BadRequest(
+                    ApiResponse<object>.Fail("max duration must be greater than zero.", 400)
+                );
             }
             var routes = await _routeService.GetRoutesByMaxDurationAsync(max);
-            var response = ApiResponse<object>.Ok(routes, $"{routes.Count} route(s) with duration up to {max} minutes.");
-            return Ok(response);
+            var response = ApiResponse<object>.Ok(
+                routes,
+                $"{routes.Count} route(s) with duration up to {max} minutes."
+            );
+            return Ok(routes);
         }
 
         // POST api/routes
@@ -175,7 +202,10 @@ namespace API_Bus_Ticket_Booking.Controllers
             try
             {
                 await _routeService.DeleteRouteAsync(id);
-                var response = ApiResponse<object>.Ok(null, $"Route with ID {id} deleted successfully.");
+                var response = ApiResponse<object>.Ok(
+                    null,
+                    $"Route with ID {id} deleted successfully."
+                );
                 return Ok(response);
             }
             catch (NotFoundException ex)
