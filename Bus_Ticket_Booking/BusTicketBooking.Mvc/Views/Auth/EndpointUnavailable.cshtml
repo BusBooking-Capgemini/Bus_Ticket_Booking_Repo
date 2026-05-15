@@ -1,0 +1,8 @@
+@model string
+@{
+    ViewData["Title"] = ViewData["Title"] ?? "Endpoint Unavailable";
+}
+
+<h1 class="h4 mb-3">@ViewData["Title"]</h1>
+<div class="alert alert-warning" role="alert">@Model</div>
+<a class="btn btn-outline-secondary" asp-controller="Auth" asp-action="Login">Back to login</a>

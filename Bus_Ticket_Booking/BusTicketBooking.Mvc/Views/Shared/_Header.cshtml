@@ -1,0 +1,59 @@
+@using BusTicketBooking.Mvc.Helpers
+@{
+    var role = Context.Session.GetString(SessionKeys.Role);
+}
+<header class="border-bottom bg-white">
+    <nav class="navbar navbar-expand-lg navbar-light container">
+        <a class="navbar-brand fw-semibold" asp-controller="Dashboard" asp-action="Index">Bus Ticket Booking</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="mainNav" class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                @if (string.IsNullOrWhiteSpace(role))
+                {
+                    <li class="nav-item"><a class="nav-link" asp-controller="Trips" asp-action="Search">Search Trips</a></li>
+                }
+                else if (role == "Customer")
+                {
+                    <li class="nav-item"><a class="nav-link" asp-controller="Trips" asp-action="Search">Search Trips</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Booking" asp-action="Create">Book</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Payment" asp-action="Create">Payment</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Customers" asp-action="Profile">Profile</a></li>
+                }
+                else if (role == "Agency")
+                {
+                    <li class="nav-item"><a class="nav-link" asp-controller="Agencies" asp-action="Index">Agency</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Offices" asp-action="Index">Offices</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Buses" asp-action="Index">Buses</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Drivers" asp-action="Index">Drivers</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Routes" asp-action="Index">Routes</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Trips" asp-action="Index">Trips</a></li>
+                }
+                else if (role == "Office")
+                {
+                    <li class="nav-item"><a class="nav-link" asp-controller="Offices" asp-action="Index">Office</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Buses" asp-action="Index">Buses</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Drivers" asp-action="Index">Drivers</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Trips" asp-action="Index">Trips</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Booking" asp-action="Dashboard">Bookings</a></li>
+                }
+            </ul>
+            @if (string.IsNullOrWhiteSpace(role))
+            {
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-primary btn-sm" asp-controller="Auth" asp-action="Login">Login</a>
+                    <a class="btn btn-primary btn-sm" asp-controller="Auth" asp-action="CustomerRegister">Register</a>
+                </div>
+            }
+            else
+            {
+                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex align-items-center gap-2">
+                    <span class="text-muted small">@role</span>
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
+                </form>
+            }
+        </div>
+    </nav>
+</header>

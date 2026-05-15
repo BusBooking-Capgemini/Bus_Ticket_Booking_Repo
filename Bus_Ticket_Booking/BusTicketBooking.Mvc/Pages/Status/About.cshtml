@@ -1,0 +1,17 @@
+@page
+@model BusTicketBooking.Mvc.Pages.Status.AboutModel
+@{
+    ViewData["Title"] = "API Client Status";
+}
+
+<h1 class="h4 mb-3">API Client Status</h1>
+<div class="card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Configured API</dt>
+            <dd class="col-sm-9">@Model.ApiBaseUrl</dd>
+            <dt class="col-sm-3">Frontend</dt>
+            <dd class="col-sm-9">ASP.NET Core MVC and Razor Pages on .NET 8</dd>
+        </dl>
+    </div>
+</div>

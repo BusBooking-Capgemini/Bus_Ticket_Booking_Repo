@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Search Trips";
+}
+
+<h1 class="h4 mb-3">Search Trips</h1>
+<form asp-controller="Trips" asp-action="Search" method="post" class="card">
+    <div class="card-body">
+        <div class="mb-3">
+            <label for="fromCity" class="form-label">From City</label>
+            <input id="fromCity" name="fromCity" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="toCity" class="form-label">To City</label>
+            <input id="toCity" name="toCity" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="tripDate" class="form-label">Trip Date</label>
+            <input id="tripDate" name="tripDate" type="date" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
