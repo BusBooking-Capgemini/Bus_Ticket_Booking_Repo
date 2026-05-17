@@ -1,0 +1,94 @@
+﻿@model Bus_Ticket_Booking.Mvc.ViewModels.Booking.BookingCreateViewModel
+
+@{
+    ViewData["Title"] = "Confirm Booking";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card custom-card p-4">
+
+                <h2 class="text-primary mb-4">
+
+                    Booking Summary
+
+                </h2>
+
+                <form asp-action="Create"
+                      method="post">
+
+                    <input asp-for="TripId"
+                           type="hidden" />
+
+                    <input asp-for="SeatNumber"
+                           type="hidden" />
+
+                    <input asp-for="Fare"
+                           type="hidden" />
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Trip ID
+
+                        </label>
+
+                        <input class="form-control"
+                               value="@Model.TripId"
+                               readonly />
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Seat Number
+
+                        </label>
+
+                        <input class="form-control"
+                               value="@Model.SeatNumber"
+                               readonly />
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Fare
+
+                        </label>
+
+                        <input class="form-control"
+                               value="₹@Model.Fare"
+                               readonly />
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        Proceed To Payment
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,283 @@
+﻿@model List<Bus_Ticket_Booking.Mvc.ViewModels.Trip.TripViewModel>
+
+@{
+    ViewData["Title"] = "Manage Trips";
+}
+
+<div class="container py-5">
+
+    <!-- HEADER -->
+
+    <div class="d-flex
+        justify-content-between
+        align-items-center
+        mb-4">
+
+        <div>
+
+            <h2 class="text-primary fw-bold mb-1">
+
+                Manage Trips
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Create, update and manage all trips
+
+            </p>
+
+        </div>
+
+        <a asp-action="Create"
+               class="btn btn-success">
+
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Create Trip
+
+        </a>
+
+    </div>
+
+
+    <!-- TRIPS TABLE -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table
+                    table-hover
+                    align-middle
+                    mb-0">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Trip ID</th>
+
+                            <th>Route</th>
+
+                            <th>Bus</th>
+
+                            <th>Trip Date</th>
+
+                            <th>Departure</th>
+
+                            <th>Arrival</th>
+
+                            <th>Fare</th>
+
+                            <th>Seats</th>
+
+                            <th width="180">
+
+                                Actions
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var trip in Model)
+                            {
+                                <tr>
+
+                                    <!-- TRIP ID -->
+
+                                    <td>
+
+                                        <strong>
+
+                                            #@trip.TripId
+
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- ROUTE -->
+
+                                    <td>
+
+                                        <div class="fw-semibold">
+
+                                            @trip.FromCity
+
+                                            <i class="bi bi-arrow-right"></i>
+
+                                            @trip.ToCity
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- BUS -->
+
+                                    <td>
+
+                                        <span class="badge bg-secondary">
+
+                                            @trip.BusType
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- DATE -->
+
+                                    <td>
+
+                                        @trip.TripDate.ToString("dd MMM yyyy")
+
+                                    </td>
+
+
+                                    <!-- DEPARTURE -->
+
+                                    <td>
+
+                                        <span class="text-primary fw-semibold">
+
+                                            @trip.DepartureTime.ToString("hh:mm tt")
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- ARRIVAL -->
+
+                                    <td>
+
+                                        <span class="text-success fw-semibold">
+
+                                            @trip.ArrivalTime.ToString("hh:mm tt")
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- FARE -->
+
+                                    <td>
+
+                                        <span class="fw-bold text-success">
+
+                                            ₹@trip.Fare
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- AVAILABLE SEATS -->
+
+                                    <td>
+
+                                        @if (trip.AvailableSeats > 10)
+                                        {
+                                            <span class="badge bg-success">
+
+                                                @trip.AvailableSeats Seats
+
+                                            </span>
+                                        }
+                                        else if (trip.AvailableSeats > 0)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+
+                                                @trip.AvailableSeats Seats
+
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+
+                                                Full
+
+                                            </span>
+                                        }
+
+                                    </td>
+
+
+                                    <!-- ACTIONS -->
+
+                                    <td>
+
+                                        <div class="d-flex gap-2">
+
+                                            <!-- EDIT -->
+
+                                            <a asp-action="Edit"
+                                                   asp-route-id="@trip.TripId"
+                                                   class="btn btn-primary btn-sm">
+
+                                                <i class="bi bi-pencil-square"></i>
+
+                                            </a>
+
+
+                                            <!-- DELETE -->
+
+                                            <a asp-action="Delete"
+                                                   asp-route-id="@trip.TripId"
+                                                   class="btn btn-danger btn-sm"
+                                                   onclick="return confirm('Are you sure you want to delete this trip?')">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="9"
+                                    class="text-center py-5">
+
+                                    <div class="text-muted">
+
+                                        <i class="bi bi-bus-front display-6 d-block mb-3"></i>
+
+                                        No trips available.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

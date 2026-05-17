@@ -1,0 +1,131 @@
+﻿@model List<Bus_Ticket_Booking.Mvc.ViewModels.Booking.BookingListViewModel>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="container py-5">
+
+    <h2 class="mb-4 text-primary fw-bold">
+        My Bookings
+    </h2>
+
+    <div class="card shadow border-0">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Route</th>
+                            <th>Trip Date</th>
+                            <th>Departure</th>
+                            <th>Arrival</th>
+                            <th>Seat</th>
+                            <th>Fare</th>
+                            <th>Payment</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var booking in Model)
+                            {
+                                <tr>
+
+                                    <td class="fw-bold">
+                                        #@booking.BookingId
+                                    </td>
+
+                                    <td>
+                                        @booking.FromCity
+                                        →
+                                        @booking.ToCity
+                                    </td>
+
+                                    <td>
+                                        @booking.TripDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @booking.DepartureTime.ToString("hh:mm tt")
+                                    </td>
+
+                                    <td>
+                                        @booking.ArrivalTime.ToString("hh:mm tt")
+                                    </td>
+
+                                    <td>
+                                        Seat @booking.SeatNumber
+                                    </td>
+
+                                    <td class="fw-bold text-success">
+                                        ₹@booking.Fare
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-success px-3 py-2">
+                                            @booking.Status
+                                        </span>
+                                    </td>
+
+                                   
+
+                                    <td>
+
+                                        <form asp-action="Cancel"
+                                              method="post">
+
+                                            <input type="hidden"
+                                                   name="bookingId"
+                                                   value="@booking.BookingId" />
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Cancel this booking?')">
+
+                                                Cancel
+
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="10"
+                                    class="text-center py-5 text-muted">
+
+                                    No bookings found.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

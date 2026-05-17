@@ -16,7 +16,6 @@ namespace API_Bus_Ticket_Booking.Repositories
             _context = context;
         }
 
-        // Create Booking
         public async Task<Booking?> CreateBookingAsync(
             Booking booking)
         {
@@ -50,103 +49,165 @@ namespace API_Bus_Ticket_Booking.Repositories
                 trip.AvailableSeats -= 1;
             }
 
-            _context.Bookings.Update(existingSeat);
-
             await SaveChangesAsync();
 
             return existingSeat;
         }
 
-        // Get Booking By Id
         public async Task<Booking?> GetBookingByIdAsync(
             int bookingId)
         {
             return await _context.Bookings
-                .AsNoTracking()
+
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.Route)
+
+                .Include(b => b.Payments)
+
                 .FirstOrDefaultAsync(b =>
                     b.BookingId == bookingId);
         }
 
-        // Customer Bookings
         public async Task<IEnumerable<Booking>>
             GetCustomerBookingsAsync(
                 int customerId)
         {
             return await _context.Payments
+
+                .Include(p => p.Booking)
+                    .ThenInclude(b => b!.Trip)
+                        .ThenInclude(t => t.Route)
+
                 .Where(p =>
                     p.CustomerId == customerId)
+
                 .Select(p => p.Booking!)
+
                 .Where(b =>
                     b.Status == "Booked")
+
                 .AsNoTracking()
+
                 .ToListAsync();
         }
 
-        // Office Bookings
         public async Task<IEnumerable<Booking>>
             GetOfficeBookingsAsync(
                 int officeId)
         {
             return await _context.Bookings
+
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.Route)
+
+                .Include(b => b.Payments)
+
                 .Where(b =>
+
                     b.Status == "Booked" &&
-                    b.Trip != null &&
-                    b.Trip.Bus != null &&
-                    b.Trip.Bus.OfficeId == officeId)
-                .AsNoTracking()
+
+                    b.TripId != null &&
+
+                    _context.Trips.Any(t =>
+
+                        t.TripId == b.TripId &&
+
+                        _context.Buses.Any(bus =>
+
+                            bus.BusId == t.BusId &&
+                            bus.OfficeId == officeId)))
+
+                .OrderByDescending(b => b.BookingId)
+
                 .ToListAsync();
         }
 
-        // Agency Bookings
         public async Task<IEnumerable<Booking>>
             GetAgencyBookingsAsync(
                 int agencyId)
         {
             return await _context.Bookings
+
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.Route)
+
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.Bus)
+
+                .Include(b => b.Payments)
+
                 .Where(b =>
                     b.Status == "Booked" &&
                     b.Trip != null &&
                     b.Trip.Bus != null &&
                     b.Trip.Bus.Office != null &&
                     b.Trip.Bus.Office.AgencyId == agencyId)
+
                 .AsNoTracking()
+
                 .ToListAsync();
         }
 
-        // Trip Bookings
         public async Task<IEnumerable<Booking>>
             GetBookingsByTripAsync(
                 int tripId)
         {
             return await _context.Bookings
+
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.Route)
+
+                .Include(b => b.Payments)
+
                 .Where(b =>
                     b.TripId == tripId)
+
                 .AsNoTracking()
+
                 .ToListAsync();
         }
 
-        // Cancel Booking
         public async Task CancelBookingAsync(
             Booking booking)
         {
-            booking.Status = "Available";
+            var existingBooking =
+                await _context.Bookings
+                    .FirstOrDefaultAsync(b =>
+                        b.BookingId == booking.BookingId);
+
+            if (existingBooking == null)
+            {
+                return;
+            }
+
+            existingBooking.Status = "Available";
 
             var trip =
                 await _context.Trips
                     .FirstOrDefaultAsync(t =>
-                        t.TripId == booking.TripId);
+                        t.TripId == existingBooking.TripId);
 
             if (trip != null)
             {
                 trip.AvailableSeats += 1;
             }
 
-            _context.Bookings.Update(booking);
+            var payments =
+                await _context.Payments
+                    .Where(p =>
+                        p.BookingId ==
+                        existingBooking.BookingId)
+                    .ToListAsync();
+
+            if (payments.Any())
+            {
+                _context.Payments
+                    .RemoveRange(payments);
+            }
 
             await SaveChangesAsync();
         }
 
-        // Dashboard - Office
         public async Task<int>
             GetTotalBookingsByOfficeAsync(
                 int officeId)
@@ -168,7 +229,6 @@ namespace API_Bus_Ticket_Booking.Repositories
                     officeId);
         }
 
-        // Dashboard - Agency
         public async Task<int>
             GetTotalBookingsByAgencyAsync(
                 int agencyId)
@@ -191,7 +251,6 @@ namespace API_Bus_Ticket_Booking.Repositories
                     agencyId);
         }
 
-        // Analytics
         public async Task<double>
             GetOccupancyRateByOfficeAsync(
                 int officeId)
@@ -201,6 +260,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                     .Where(t =>
                         t.Bus != null &&
                         t.Bus.OfficeId == officeId)
+                    .Include(t => t.Bus)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -211,11 +271,11 @@ namespace API_Bus_Ticket_Booking.Repositories
 
             double totalCapacity =
                 trips.Sum(t =>
-                    t.Bus!.Capacity);
+                    t.Bus.Capacity);
 
             double bookedSeats =
                 trips.Sum(t =>
-                    t.Bus!.Capacity -
+                    t.Bus.Capacity -
                     t.AvailableSeats);
 
             return
@@ -232,6 +292,7 @@ namespace API_Bus_Ticket_Booking.Repositories
                         t.Bus != null &&
                         t.Bus.Office != null &&
                         t.Bus.Office.AgencyId == agencyId)
+                    .Include(t => t.Bus)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -242,11 +303,11 @@ namespace API_Bus_Ticket_Booking.Repositories
 
             double totalCapacity =
                 trips.Sum(t =>
-                    t.Bus!.Capacity);
+                    t.Bus.Capacity);
 
             double bookedSeats =
                 trips.Sum(t =>
-                    t.Bus!.Capacity -
+                    t.Bus.Capacity -
                     t.AvailableSeats);
 
             return
@@ -339,7 +400,6 @@ namespace API_Bus_Ticket_Booking.Repositories
             return result ?? string.Empty;
         }
 
-        // Save Changes
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

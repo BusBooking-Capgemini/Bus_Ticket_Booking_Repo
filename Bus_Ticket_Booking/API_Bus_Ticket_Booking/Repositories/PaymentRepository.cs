@@ -43,31 +43,62 @@ namespace API_Bus_Ticket_Booking.Repositories
         }
 
         // Office Payments
-        public async Task<IEnumerable<Payment>> GetOfficePaymentsAsync(int officeId)
+        public async Task<IEnumerable<Payment>>
+     GetOfficePaymentsAsync(
+         int officeId)
         {
             return await _context.Payments
+
+                .Include(p => p.Booking)
+                    .ThenInclude(b => b!.Trip)
+                        .ThenInclude(t => t.Route)
+
                 .Where(p =>
-                    p.Booking != null &&
-                    p.Booking.Trip != null &&
-                    p.Booking.Trip.Bus != null &&
-                    p.Booking.Trip.Bus.OfficeId == officeId)
-                .AsNoTracking()
+
+                    _context.Bookings.Any(b =>
+
+                        b.BookingId == p.BookingId &&
+
+                        b.TripId != null &&
+
+                        _context.Trips.Any(t =>
+
+                            t.TripId == b.TripId &&
+
+                            _context.Buses.Any(bus =>
+
+                                bus.BusId == t.BusId &&
+                                bus.OfficeId == officeId))))
+
+                .OrderByDescending(p => p.PaymentId)
+
                 .ToListAsync();
         }
 
-        // Agency Payments
-        public async Task<IEnumerable<Payment>> GetAgencyPaymentsAsync(int agencyId)
+        public async Task<IEnumerable<Payment>>
+            GetAgencyPaymentsAsync(int agencyId)
         {
             return await _context.Payments
+                .Include(p => p.Booking)
+                    .ThenInclude(b => b!.Trip)
+                        .ThenInclude(t => t.Route)
+
+                .Include(p => p.Booking)
+                    .ThenInclude(b => b!.Trip)
+                        .ThenInclude(t => t.Bus)
+
                 .Where(p =>
                     p.Booking != null &&
                     p.Booking.Trip != null &&
                     p.Booking.Trip.Bus != null &&
                     p.Booking.Trip.Bus.Office != null &&
                     p.Booking.Trip.Bus.Office.AgencyId == agencyId)
+
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        
 
         // Payment By Booking
         public async Task<Payment?> GetPaymentByBookingIdAsync(int bookingId)

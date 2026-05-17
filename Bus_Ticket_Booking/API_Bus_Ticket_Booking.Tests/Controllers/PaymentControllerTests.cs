@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using API_Bus_Ticket_Booking.Controllers;
 using API_Bus_Ticket_Booking.DTOs.Payment;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TEST_Bus_Ticket_Booking.Helpers;
@@ -28,7 +30,9 @@ namespace TEST_Bus_Ticket_Booking.Controllers
             var dto = PaymentTestData.GetCreatePaymentDto();
             var response = PaymentTestData.GetPaymentResponse();
 
-            _paymentServiceMock.Setup(x => x.CreatePaymentAsync(dto)).ReturnsAsync(response);
+            _paymentServiceMock
+                .Setup(x => x.CreatePaymentAsync(dto))
+                .ReturnsAsync(response);
 
             var result = await _controller.CreatePayment(dto);
 
@@ -36,7 +40,11 @@ namespace TEST_Bus_Ticket_Booking.Controllers
 
             okResult.Should().NotBeNull();
             okResult!.StatusCode.Should().Be(200);
-            TestHelper.GetPropertyValue<string>(okResult.Value!, "message").Should().Be("Payment created successfully");
+
+            TestHelper
+                .GetPropertyValue<string>(okResult.Value!, "message")
+                .Should()
+                .Be("Payment created successfully");
         }
 
         [Fact]
@@ -44,30 +52,62 @@ namespace TEST_Bus_Ticket_Booking.Controllers
         {
             var response = PaymentTestData.GetPaymentResponse();
 
-            _paymentServiceMock.Setup(x => x.GetPaymentByIdAsync(1)).ReturnsAsync(response);
+            _paymentServiceMock
+                .Setup(x => x.GetPaymentByIdAsync(1))
+                .ReturnsAsync(response);
 
             var result = await _controller.GetPaymentById(1);
 
             var okResult = result as OkObjectResult;
 
             okResult.Should().NotBeNull();
-            TestHelper.GetPropertyValue<string>(okResult!.Value!, "message").Should().Be("Payment fetched successfully");
+
+            TestHelper
+                .GetPropertyValue<string>(okResult!.Value!, "message")
+                .Should()
+                .Be("Payment fetched successfully");
         }
 
         [Fact]
-        public async Task GetCustomerPayments_ShouldReturnPayments()
+        public async Task GetMyPayments_ShouldReturnPayments()
         {
             var payments = PaymentTestData.GetPayments();
 
-            _paymentServiceMock.Setup(x => x.GetCustomerPaymentsAsync(1)).ReturnsAsync(payments);
+            _paymentServiceMock
+                .Setup(x => x.GetCustomerPaymentsAsync(1))
+                .ReturnsAsync(payments);
 
-            var result = await _controller.GetCustomerPayments(1);
+            var claims = new List<Claim>
+            {
+                new Claim("CustomerId", "1")
+            };
+
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var result = await _controller.GetMyPayments();
 
             var okResult = result as OkObjectResult;
 
             okResult.Should().NotBeNull();
-            TestHelper.GetPropertyValue<string>(okResult!.Value!, "message").Should().Be("Customer payments fetched successfully");
-            TestHelper.GetPropertyValue<IEnumerable<PaymentResponseDto>>(okResult.Value!, "data")!.Should().HaveCount(2);
+
+            TestHelper
+                .GetPropertyValue<string>(okResult!.Value!, "message")
+                .Should()
+                .Be("Payments fetched successfully");
+
+            TestHelper
+                .GetPropertyValue<IEnumerable<PaymentResponseDto>>(okResult.Value!, "data")!
+                .Should()
+                .HaveCount(2);
         }
 
         [Fact]
@@ -75,14 +115,62 @@ namespace TEST_Bus_Ticket_Booking.Controllers
         {
             var summary = PaymentTestData.GetRevenueSummary();
 
-            _paymentServiceMock.Setup(x => x.GetRevenueSummaryAsync(1, null)).ReturnsAsync(summary);
+            _paymentServiceMock
+                .Setup(x => x.GetRevenueSummaryAsync(1, null))
+                .ReturnsAsync(summary);
 
             var result = await _controller.GetRevenueSummary(1, null);
 
             var okResult = result as OkObjectResult;
 
             okResult.Should().NotBeNull();
-            TestHelper.GetPropertyValue<string>(okResult!.Value!, "message").Should().Be("Revenue summary fetched successfully");
+
+            TestHelper
+                .GetPropertyValue<string>(okResult!.Value!, "message")
+                .Should()
+                .Be("Revenue summary fetched successfully");
+        }
+
+        [Fact]
+        public async Task GetDashboard_ShouldReturnDashboard()
+        {
+            var dashboard = PaymentTestData.GetDashboard();
+
+            _paymentServiceMock
+                .Setup(x => x.GetDashboardAsync(1, null))
+                .ReturnsAsync(dashboard);
+
+            var result = await _controller.GetDashboard(1, null);
+
+            var okResult = result as OkObjectResult;
+
+            okResult.Should().NotBeNull();
+
+            TestHelper
+                .GetPropertyValue<string>(okResult!.Value!, "message")
+                .Should()
+                .Be("Payment dashboard fetched successfully");
+        }
+
+        [Fact]
+        public async Task GetAnalytics_ShouldReturnAnalytics()
+        {
+            var analytics = PaymentTestData.GetAnalytics();
+
+            _paymentServiceMock
+                .Setup(x => x.GetAnalyticsAsync(1, null))
+                .ReturnsAsync(analytics);
+
+            var result = await _controller.GetAnalytics(1, null);
+
+            var okResult = result as OkObjectResult;
+
+            okResult.Should().NotBeNull();
+
+            TestHelper
+                .GetPropertyValue<string>(okResult!.Value!, "message")
+                .Should()
+                .Be("Payment analytics fetched successfully");
         }
 
         // NEGATIVE TEST CASES
@@ -95,7 +183,11 @@ namespace TEST_Bus_Ticket_Booking.Controllers
             var badRequestResult = result as BadRequestObjectResult;
 
             badRequestResult.Should().NotBeNull();
-            TestHelper.GetPropertyValue<string>(badRequestResult!.Value!, "message").Should().Be("Request body cannot be empty");
+
+            TestHelper
+                .GetPropertyValue<string>(badRequestResult!.Value!, "message")
+                .Should()
+                .Be("Request body cannot be empty");
         }
 
         [Fact]
@@ -103,37 +195,56 @@ namespace TEST_Bus_Ticket_Booking.Controllers
         {
             var dto = PaymentTestData.GetCreatePaymentDto();
 
-            _paymentServiceMock.Setup(x => x.CreatePaymentAsync(dto)).ThrowsAsync(new Exception("Create failed"));
+            _paymentServiceMock
+                .Setup(x => x.CreatePaymentAsync(dto))
+                .ThrowsAsync(new Exception("Create failed"));
 
-            Func<Task> action = async () => await _controller.CreatePayment(dto);
+            Func<Task> action = async () =>
+                await _controller.CreatePayment(dto);
 
-            await action.Should().ThrowAsync<Exception>().WithMessage("Create failed");
+            await action
+                .Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Create failed");
         }
 
         [Fact]
         public async Task GetPaymentById_ShouldReturnPaymentNotFoundMessage()
         {
-            _paymentServiceMock.Setup(x => x.GetPaymentByIdAsync(1)).ReturnsAsync((PaymentResponseDto?)null);
+            _paymentServiceMock
+                .Setup(x => x.GetPaymentByIdAsync(1))
+                .ReturnsAsync((PaymentResponseDto?)null);
 
             var result = await _controller.GetPaymentById(1);
 
             var okResult = result as OkObjectResult;
 
             okResult.Should().NotBeNull();
-            TestHelper.GetPropertyValue<string>(okResult!.Value!, "message").Should().Be("Payment not found");
+
+            TestHelper
+                .GetPropertyValue<string>(okResult!.Value!, "message")
+                .Should()
+                .Be("Payment not found");
         }
 
         [Fact]
-        public async Task GetCustomerPayments_ShouldReturnNoPaymentsMessage_WhenEmpty()
+        public async Task GetMyPayments_ShouldReturnUnauthorized_WhenCustomerIdMissing()
         {
-            _paymentServiceMock.Setup(x => x.GetCustomerPaymentsAsync(1)).ReturnsAsync(Array.Empty<PaymentResponseDto>());
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
 
-            var result = await _controller.GetCustomerPayments(1);
+            var result = await _controller.GetMyPayments();
 
-            var okResult = result as OkObjectResult;
+            var unauthorizedResult = result as UnauthorizedObjectResult;
 
-            okResult.Should().NotBeNull();
-            TestHelper.GetPropertyValue<string>(okResult!.Value!, "message").Should().Be("No payments found for this customer");
+            unauthorizedResult.Should().NotBeNull();
+
+            TestHelper
+                .GetPropertyValue<string>(unauthorizedResult!.Value!, "message")
+                .Should()
+                .Be("Customer ID not found");
         }
     }
 }

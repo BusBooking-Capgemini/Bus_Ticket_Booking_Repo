@@ -1,0 +1,206 @@
+﻿@model Bus_Ticket_Booking.Mvc.ViewModels.Trip.UpdateTripViewModel
+
+@{
+    ViewData["Title"] = "Edit Trip";
+}
+
+<div class="container py-5">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-5">
+
+            <h2 class="text-primary mb-4">
+
+                Edit Trip
+
+            </h2>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+
+                    @ViewBag.Error
+
+                </div>
+            }
+
+            <form asp-action="Edit"
+                  method="post">
+
+                <input asp-for="TripId"
+                       type="hidden" />
+
+                <div class="row">
+
+                    <!-- BUS -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Bus
+                        </label>
+
+                        <select asp-for="BusId"
+                                asp-items="Model.Buses"
+                                class="form-select">
+
+                            <option value="">
+                                Select Bus
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- FARE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Fare
+                        </label>
+
+                        <input asp-for="Fare"
+                               class="form-control" />
+
+                    </div>
+
+                    <!-- TRIP DATE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Trip Date
+                        </label>
+
+                        <input asp-for="TripDate"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <!-- BOARDING -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Boarding Address
+                        </label>
+
+                        <select asp-for="BoardingAddressId"
+                                asp-items="Model.Addresses"
+                                class="form-select">
+
+                            <option value="">
+                                Select Boarding Address
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- DROPPING -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Dropping Address
+                        </label>
+
+                        <select asp-for="DroppingAddressId"
+                                asp-items="Model.Addresses"
+                                class="form-select">
+
+                            <option value="">
+                                Select Dropping Address
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- DRIVER 1 -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Driver 1
+                        </label>
+
+                        <select asp-for="Driver1DriverId"
+                                asp-items="Model.Drivers"
+                                class="form-select">
+
+                            <option value="">
+                                Select Driver
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- DRIVER 2 -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Driver 2
+                        </label>
+
+                        <select asp-for="Driver2DriverId"
+                                asp-items="Model.Drivers"
+                                class="form-select">
+
+                            <option value="">
+                                Select Driver
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- DEPARTURE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Departure Time
+                        </label>
+
+                        <input asp-for="DepartureTime"
+                               type="datetime-local"
+                               class="form-control" />
+
+                    </div>
+
+                    <!-- ARRIVAL -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Arrival Time
+                        </label>
+
+                        <input asp-for="ArrivalTime"
+                               type="datetime-local"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary w-100 mt-3">
+
+                    Update Trip
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

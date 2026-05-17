@@ -22,7 +22,6 @@ namespace API_Bus_Ticket_Booking.Services
             _mapper = mapper;
         }
 
-        // Create Booking
         public async Task<BookingResponseDto>
             CreateBookingAsync(
                 CreateBookingDto dto)
@@ -46,12 +45,9 @@ namespace API_Bus_Ticket_Booking.Services
                     "Seat not found");
             }
 
-            return _mapper.Map<
-                BookingResponseDto>(
-                    createdBooking);
+            return MapBooking(createdBooking);
         }
 
-        // Cancel Booking
         public async Task CancelBookingAsync(
             int bookingId)
         {
@@ -76,7 +72,6 @@ namespace API_Bus_Ticket_Booking.Services
                 .CancelBookingAsync(booking);
         }
 
-        // Get Booking By Id
         public async Task<BookingResponseDto>
             GetBookingByIdAsync(
                 int bookingId)
@@ -91,12 +86,9 @@ namespace API_Bus_Ticket_Booking.Services
                 return null!;
             }
 
-            return _mapper.Map<
-                BookingResponseDto>(
-                    booking);
+            return MapBooking(booking);
         }
 
-        // Customer Bookings
         public async Task<
             IEnumerable<BookingResponseDto>>
             GetCustomerBookingsAsync(
@@ -107,12 +99,9 @@ namespace API_Bus_Ticket_Booking.Services
                     .GetCustomerBookingsAsync(
                         customerId);
 
-            return _mapper.Map<
-                IEnumerable<BookingResponseDto>>(
-                    bookings);
+            return bookings.Select(MapBooking);
         }
 
-        // Office Bookings
         public async Task<
             IEnumerable<BookingResponseDto>>
             GetOfficeBookingsAsync(
@@ -123,12 +112,9 @@ namespace API_Bus_Ticket_Booking.Services
                     .GetOfficeBookingsAsync(
                         officeId);
 
-            return _mapper.Map<
-                IEnumerable<BookingResponseDto>>(
-                    bookings);
+            return bookings.Select(MapBooking);
         }
 
-        // Agency Bookings
         public async Task<
             IEnumerable<BookingResponseDto>>
             GetAgencyBookingsAsync(
@@ -139,12 +125,9 @@ namespace API_Bus_Ticket_Booking.Services
                     .GetAgencyBookingsAsync(
                         agencyId);
 
-            return _mapper.Map<
-                IEnumerable<BookingResponseDto>>(
-                    bookings);
+            return bookings.Select(MapBooking);
         }
 
-        // Trip Bookings
         public async Task<
             IEnumerable<BookingResponseDto>>
             GetBookingsByTripAsync(
@@ -155,12 +138,63 @@ namespace API_Bus_Ticket_Booking.Services
                     .GetBookingsByTripAsync(
                         tripId);
 
-            return _mapper.Map<
-                IEnumerable<BookingResponseDto>>(
-                    bookings);
+            return bookings.Select(MapBooking);
         }
 
-        // Dashboard
+        private BookingResponseDto
+            MapBooking(
+                Booking b)
+        {
+            return new BookingResponseDto
+            {
+                BookingId =
+                    b.BookingId,
+
+                TripId =
+                    b.TripId ?? 0,
+
+                SeatNumber =
+                    b.SeatNumber,
+
+                Status =
+                    b.Status,
+
+                FromCity =
+                    b.Trip?.Route?.FromCity
+                        ?? "",
+
+                ToCity =
+                    b.Trip?.Route?.ToCity
+                        ?? "",
+
+                TripDate =
+                    b.Trip?.TripDate
+                        ?? DateTime.MinValue,
+
+                DepartureTime =
+                    b.Trip?.DepartureTime
+                        ?? DateTime.MinValue,
+
+                ArrivalTime =
+                    b.Trip?.ArrivalTime
+                        ?? DateTime.MinValue,
+
+                Fare =
+                    b.Trip?.Fare
+                        ?? 0,
+
+                PaymentStatus =
+                    b.Payments
+                        .FirstOrDefault()?.PaymentStatus
+                        ?? "Pending",
+
+                PaidAmount =
+                    b.Payments
+                        .FirstOrDefault()?.Amount
+                        ?? 0
+            };
+        }
+
         public async Task<BookingDashboardDto>
             GetDashboardAsync(
                 int agencyId,
@@ -196,7 +230,6 @@ namespace API_Bus_Ticket_Booking.Services
             };
         }
 
-        // Analytics
         public async Task<BookingAnalyticsDto>
             GetAnalyticsAsync(
                 int agencyId,

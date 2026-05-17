@@ -1,0 +1,138 @@
+﻿@model Bus_Ticket_Booking.Mvc.ViewModels.Customer.CustomerProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card custom-card p-4">
+
+                <h2 class="text-primary mb-4">
+
+                    My Profile
+
+                </h2>
+
+                @if (ViewBag.Success != null)
+                {
+                    <div class="alert alert-success">
+                        @ViewBag.Success
+                    </div>
+                }
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <form asp-action="Profile"
+                      method="post">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Name
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control" />
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Phone
+                        </label>
+
+                        <input asp-for="Phone"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Address
+                        </label>
+
+                        <input asp-for="Address"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+
+                            <label class="form-label">
+                                City
+                            </label>
+
+                            <input asp-for="City"
+                                   class="form-control" />
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <label class="form-label">
+                                State
+                            </label>
+
+                            <input asp-for="State"
+                                   class="form-control" />
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <label class="form-label">
+                                Zip Code
+                            </label>
+
+                            <input asp-for="ZipCode"
+                                   class="form-control" />
+
+                        </div>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        Update Profile
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

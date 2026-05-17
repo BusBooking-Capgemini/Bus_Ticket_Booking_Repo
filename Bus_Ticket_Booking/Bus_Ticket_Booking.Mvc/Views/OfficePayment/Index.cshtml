@@ -1,0 +1,264 @@
+﻿@model List<Bus_Ticket_Booking.Mvc.ViewModels.OfficePayment.OfficePaymentViewModel>
+
+@{
+    ViewData["Title"] = "Manage Payments";
+
+    int pageSize = 10;
+
+    int currentPage = Context.Request.Query.ContainsKey("page")
+        ? int.Parse(Context.Request.Query["page"])
+        : 1;
+
+    int totalRecords = Model.Count();
+
+    int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+    var pagedData = Model
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+}
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="text-primary fw-bold mb-1">
+
+                Manage Payments
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                View and manage all office payments
+
+            </p>
+
+        </div>
+
+        <!-- PAGINATION -->
+
+        <nav>
+
+            <ul class="pagination mb-0 shadow-sm">
+
+                <!-- PREVIOUS -->
+
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+
+                    <a class="page-link"
+                           href="?page=@(currentPage - 1)">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+                <!-- SMART PAGE NUMBERS -->
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    bool showPage =
+                        i == 1 ||
+                        i == totalPages ||
+                        (i >= currentPage - 1 && i <= currentPage + 1);
+
+                    if (showPage)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+
+                            <a class="page-link"
+                                   href="?page=@i">
+
+                                @i
+
+                            </a>
+
+                        </li>
+                    }
+                    else if (
+                        i == currentPage - 2 ||
+                        i == currentPage + 2)
+                    {
+                        <li class="page-item disabled">
+
+                            <span class="page-link">
+
+                                ...
+
+                            </span>
+
+                        </li>
+                    }
+                }
+
+                <!-- NEXT -->
+
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+
+                    <a class="page-link"
+                           href="?page=@(currentPage + 1)">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+
+    <!-- TABLE CARD -->
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Payment ID</th>
+
+                            <th>Booking ID</th>
+
+                            <th>Route</th>
+
+                            <th>Trip Date</th>
+
+                            <th>Seat</th>
+
+                            <th>Amount</th>
+
+                            <th>Status</th>
+
+                            <th>Payment Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (pagedData != null && pagedData.Any())
+                        {
+                            @foreach (var payment in pagedData)
+                            {
+                                <tr>
+
+                                    <td class="fw-bold">
+
+                                        #@payment.PaymentId
+
+                                    </td>
+
+                                    <td>
+
+                                        #@payment.BookingId
+
+                                    </td>
+
+                                    <td class="fw-semibold">
+
+                                        @payment.FromCity
+                                        →
+                                        @payment.ToCity
+
+                                    </td>
+
+                                    <td>
+
+                                        @payment.TripDate.ToString("dd MMM yyyy")
+
+                                    </td>
+
+                                    <td>
+
+                                        Seat @payment.SeatNumber
+
+                                    </td>
+
+                                    <td class="fw-bold text-success">
+
+                                        ₹@payment.Amount
+
+                                    </td>
+
+                                    <td>
+
+                                        @if (payment.PaymentStatus == "Success")
+                                        {
+                                            <span class="badge bg-success px-3 py-2">
+
+                                                Success
+
+                                            </span>
+                                        }
+                                        else if (payment.PaymentStatus == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark px-3 py-2">
+
+                                                Pending
+
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger px-3 py-2">
+
+                                                Failed
+
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+
+                                        @payment.PaymentDate.ToString("dd MMM yyyy")
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="8"
+                                    class="text-center py-5 text-muted">
+
+                                    <i class="bi bi-credit-card fs-1 d-block mb-3"></i>
+
+                                    No payments found.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

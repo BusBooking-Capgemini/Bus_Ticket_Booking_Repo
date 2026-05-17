@@ -1,0 +1,145 @@
+﻿@model List<Bus_Ticket_Booking.Mvc.ViewModels.Driver.DriverViewModel>
+
+@{
+    ViewData["Title"] = "Manage Drivers";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex
+        justify-content-between
+        align-items-center
+        mb-4">
+
+        <h2 class="text-primary">
+
+            Manage Drivers
+
+        </h2>
+
+        <a asp-action="Create"
+               class="btn btn-success">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Driver
+
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Driver ID</th>
+
+                        <th>Name</th>
+
+                        <th>License Number</th>
+
+                        <th>Phone</th>
+
+                        <th>City</th>
+
+                        <th>State</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var driver in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @driver.DriverId
+                                </td>
+
+                                <td>
+                                    @driver.Name
+                                </td>
+
+                                <td>
+                                    @driver.LicenseNumber
+                                </td>
+
+                                <td>
+                                    @driver.Phone
+                                </td>
+
+                                <td>
+                                    @driver.City
+                                </td>
+
+                                <td>
+                                    @driver.State
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2">
+
+                                        <a asp-action="Edit"
+                                               asp-route-id="@driver.DriverId"
+                                               class="btn btn-primary btn-sm">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                            Edit
+
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                               asp-route-id="@driver.DriverId"
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Delete this driver?')">
+
+                                            <i class="bi bi-trash"></i>
+
+                                            Delete
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="7"
+                                class="text-center text-muted py-4">
+
+                                No drivers found.
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

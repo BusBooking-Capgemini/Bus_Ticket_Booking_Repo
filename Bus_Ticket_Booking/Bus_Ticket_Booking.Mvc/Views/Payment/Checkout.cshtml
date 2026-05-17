@@ -1,0 +1,82 @@
+﻿@model Bus_Ticket_Booking.Mvc.ViewModels.Payment.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card custom-card p-5">
+
+                <h2 class="text-success mb-4">
+
+                    Payment
+
+                </h2>
+
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+
+                        @ViewBag.Error
+
+                    </div>
+                }
+
+
+                <h5 class="mb-3">
+
+                    Trip ID:
+                    @Model.TripId
+
+                </h5>
+
+                <h5 class="mb-3">
+
+                    Seat Number:
+                    @Model.SeatNumber
+
+                </h5>
+
+                <h5 class="mb-4">
+
+                    Total Amount:
+                    ₹@Model.Fare
+
+                </h5>
+
+
+                <form asp-action="Pay"
+                      method="post">
+
+                    <input asp-for="TripId"
+                           type="hidden" />
+
+                    <input asp-for="SeatNumber"
+                           type="hidden" />
+
+                    <input asp-for="Fare"
+                           type="hidden" />
+
+                    <button type="submit"
+                            class="btn btn-success
+                        w-100">
+
+                        Pay Now
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

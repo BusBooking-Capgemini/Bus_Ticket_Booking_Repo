@@ -1,0 +1,142 @@
+﻿@model Bus_Ticket_Booking.Mvc.ViewModels.Trip.SeatMapViewModel
+
+@{
+    ViewData["Title"] = "Seat Selection";
+}
+
+<div class="container py-5">
+
+    <input type="hidden"
+           id="tripId"
+           value="@Model.TripId" />
+
+    <div class="card custom-card p-4">
+
+        <div class="d-flex
+            justify-content-between
+            align-items-center">
+
+            <div>
+
+                <h2 class="text-primary">
+
+                    Select Your Seat
+
+                </h2>
+
+                <p class="text-muted">
+
+                    Trip ID:
+                    @Model.TripId
+
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <span class="badge bg-success">
+
+                    Available:
+                    @Model.AvailableSeats
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <hr />
+
+
+        <!-- LEGEND -->
+
+        <div class="mb-4">
+
+            <span class="badge bg-success me-2">
+
+                Available
+
+            </span>
+
+            <span class="badge bg-danger me-2">
+
+                Booked
+
+            </span>
+
+            <span class="badge bg-primary">
+
+                Selected
+
+            </span>
+
+        </div>
+
+
+        <!-- SEAT LAYOUT -->
+
+        <div class="seat-layout">
+
+            <div class="row">
+
+                @foreach (var seat in Model.Seats)
+                {
+                    var isAvailable =
+                        seat.Status?
+                            .Trim()
+                            .ToLower() == "available";
+
+                    var cssClass =
+                        isAvailable
+                        ? "btn-success"
+                        : "btn-danger";
+
+                    <div class="col-md-1
+                        col-2
+                        mb-3">
+
+                        <button class="btn
+                            @cssClass
+                            w-100 seat-btn"
+                                data-seat="@seat.SeatNumber"
+                            @(!isAvailable
+                                                            ? "disabled"
+                                                            : "")>
+
+                            @seat.SeatNumber
+
+                        </button>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- BOOK BUTTON -->
+
+        <div class="mt-4 text-end">
+
+            <button class="btn btn-primary"
+                    id="bookSeatBtn">
+
+                Continue Booking
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script src="~/js/seat.js"></script>
+
+}

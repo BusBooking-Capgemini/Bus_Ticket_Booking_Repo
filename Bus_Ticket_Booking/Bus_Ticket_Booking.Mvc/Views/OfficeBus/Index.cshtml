@@ -1,0 +1,139 @@
+﻿@model List<Bus_Ticket_Booking.Mvc.ViewModels.Bus.BusViewModel>
+
+@{
+    ViewData["Title"] = "Manage Buses";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex
+        justify-content-between
+        align-items-center
+        mb-4">
+
+        <h2 class="text-primary">
+
+            Manage Buses
+
+        </h2>
+
+        <a asp-action="Create"
+               class="btn btn-success">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Bus
+
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Bus ID</th>
+
+                        <th>Registration Number</th>
+
+                        <th>Capacity</th>
+
+                        <th>Type</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var bus in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @bus.BusId
+                                </td>
+
+                                <td>
+                                    @bus.RegistrationNumber
+                                </td>
+
+                                <td>
+                                    @bus.Capacity
+                                </td>
+
+                                <td>
+
+                                    <span class="badge bg-primary">
+
+                                        @bus.Type
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2">
+
+                                        <a asp-action="Edit"
+                                               asp-route-id="@bus.BusId"
+                                               class="btn btn-primary btn-sm">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                            Edit
+
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                               asp-route-id="@bus.BusId"
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Delete this bus?')">
+
+                                            <i class="bi bi-trash"></i>
+
+                                            Delete
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center text-muted py-4">
+
+                                No buses found.
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

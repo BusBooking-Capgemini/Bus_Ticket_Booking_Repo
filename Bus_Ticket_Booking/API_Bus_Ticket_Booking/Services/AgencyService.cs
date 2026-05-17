@@ -3,7 +3,6 @@ using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Repositories.Interfaces;
 using API_Bus_Ticket_Booking.Services.Interfaces;
 using AutoMapper;
-using System.Security.Cryptography.Xml;
 
 namespace API_Bus_Ticket_Booking.Services
 {
@@ -13,172 +12,360 @@ namespace API_Bus_Ticket_Booking.Services
 
         private readonly IMapper _mapper;
 
-        public AgencyService(IAgencyRepository repository, IMapper mapper)
+        public AgencyService(
+            IAgencyRepository repository,
+            IMapper mapper)
         {
             _repository = repository;
+
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<AgencyResponseDto>> GetAllAsync()
+        // =========================
+        // GET ALL AGENCIES
+        // =========================
+
+        public async Task<IEnumerable<AgencyResponseDto>>
+            GetAllAsync()
         {
-            var agencies = await _repository.GetAllAsync();
+            var agencies =
+                await _repository.GetAllAsync();
 
             if (!agencies.Any())
-                throw new NotFoundException("No agencies found");
+            {
+                throw new NotFoundException(
+                    "No agencies found");
+            }
 
-            return _mapper.Map<IEnumerable<AgencyResponseDto>>(agencies);
+            return _mapper.Map<
+                IEnumerable<AgencyResponseDto>>(
+                    agencies);
         }
 
-        public async Task<AgencyResponseDto> GetByIdAsync(int id)
+        // =========================
+        // GET AGENCY BY ID
+        // =========================
+
+        public async Task<AgencyResponseDto>
+            GetByIdAsync(int id)
         {
-            var agency = await _repository.GetByIdAsync(id);
+            var agency =
+                await _repository.GetByIdAsync(id);
 
             if (agency == null)
-                throw new NotFoundException("Agency not found");
+            {
+                throw new NotFoundException(
+                    "Agency not found");
+            }
 
-            return _mapper.Map<AgencyResponseDto>(agency);
+            return _mapper.Map<
+                AgencyResponseDto>(
+                    agency);
         }
 
-        public async Task UpdateAsync(int id, AgencyRequestDto dto)
+        // =========================
+        // UPDATE AGENCY
+        // =========================
+
+        public async Task
+            UpdateAsync(
+                int id,
+                AgencyRequestDto dto)
         {
-            var agency = await _repository.GetByIdAsync(id);
+            var agency =
+                await _repository.GetByIdAsync(id);
 
             if (agency == null)
-                throw new NotFoundException("Agency not found");
+            {
+                throw new NotFoundException(
+                    "Agency not found");
+            }
 
-            agency.Name = dto.Name;
-            agency.ContactPersonName = dto.ContactPersonName;
-            agency.Email = dto.Email;
-            agency.Phone = dto.Phone;
+            agency.Name =
+                dto.Name;
 
-            await _repository.UpdateAsync(agency);
+            agency.ContactPersonName =
+                dto.ContactPersonName;
+
+            agency.Email =
+                dto.Email;
+
+            agency.Phone =
+                dto.Phone;
+
+            await _repository
+                .UpdateAsync(agency);
         }
 
-        public async Task DeleteAsync(int id)
+        // =========================
+        // DELETE AGENCY
+        // =========================
+
+        public async Task
+            DeleteAsync(int id)
         {
-            var agency = await _repository.GetByIdAsync(id);
+            var agency =
+                await _repository.GetByIdAsync(id);
 
             if (agency == null)
-                throw new NotFoundException("Agency not found");
+            {
+                throw new NotFoundException(
+                    "Agency not found");
+            }
 
-            await _repository.DeleteAsync(agency);
+            await _repository
+                .DeleteAsync(agency);
         }
 
-        public async Task<IEnumerable<object>> GetAgencyOfficesAsync(int agencyId)
+        // =========================
+        // GET AGENCY OFFICES
+        // =========================
+
+        public async Task<IEnumerable<object>>
+            GetAgencyOfficesAsync(
+                int agencyId)
         {
-            var agency = await _repository.GetByIdAsync(agencyId);
+            var agency =
+                await _repository
+                    .GetByIdAsync(agencyId);
 
             if (agency == null)
-                throw new NotFoundException("Agency not found");
+            {
+                throw new NotFoundException(
+                    "Agency not found");
+            }
 
-            var offices = await _repository.GetAgencyOfficesAsync(agencyId);
+            var offices =
+                await _repository
+                    .GetAgencyOfficesAsync(
+                        agencyId);
 
             if (!offices.Any())
-                throw new NotFoundException("No offices found");
-
-            // why select -> to transform each item in a collection into another shape
+            {
+                throw new NotFoundException(
+                    "No offices found");
+            }
 
             return offices.Select(x => new
             {
                 x.OfficeId,
+
                 x.OfficeMail,
+
                 x.OfficeContactPersonName,
+
                 x.OfficeContactNumber
             });
         }
 
-        public async Task<object> GetAgencySummaryAsync(int agencyId)
+        // =========================
+        // AGENCY SUMMARY
+        // =========================
+
+        public async Task<object>
+            GetAgencySummaryAsync(
+                int agencyId)
         {
-            var agency = await _repository.GetByIdAsync(agencyId);
+            var agency =
+                await _repository
+                    .GetByIdAsync(agencyId);
 
             if (agency == null)
-                throw new NotFoundException("Agency not found");
+            {
+                throw new NotFoundException(
+                    "Agency not found");
+            }
 
-            var offices = await _repository.GetAgencyOfficesAsync(agencyId);
-
-            // why new -> to create a new object containing only these properties
+            var offices =
+                await _repository
+                    .GetAgencyOfficesAsync(
+                        agencyId);
 
             return new
             {
                 AgencyId = agencyId,
-                TotalOffices = offices.Count()
+
+                TotalOffices =
+                    offices.Count()
             };
         }
 
-        public async Task<IEnumerable<object>> GetOfficeBookingsAsync(int agencyId, int officeId)
+        // =========================
+        // OFFICE BOOKINGS
+        // =========================
+
+        public async Task<IEnumerable<object>>
+            GetOfficeBookingsAsync(
+                int agencyId,
+                int officeId)
         {
-            var bookings = await _repository.GetOfficeBookingsAsync(agencyId, officeId);
+            var bookings =
+                await _repository
+                    .GetOfficeBookingsAsync(
+                        agencyId,
+                        officeId);
 
-            if (!bookings.Any())
-                throw new NotFoundException("No bookings found");
+            var filteredBookings =
+                bookings
+                    .Where(x =>
+                        x.Status == "Booked");
 
-            return bookings.Select(x => new
+            if (!filteredBookings.Any())
+            {
+                throw new NotFoundException(
+                    "No bookings found");
+            }
+
+            return filteredBookings.Select(x => new
             {
                 x.BookingId,
+
+                TripId =
+                    x.TripId,
+
                 x.SeatNumber,
+
                 x.Status
             });
         }
 
-        public async Task<IEnumerable<object>> GetOfficePaymentsAsync(int agencyId, int officeId)
+        // =========================
+        // OFFICE PAYMENTS
+        // =========================
+
+        public async Task<IEnumerable<object>>
+            GetOfficePaymentsAsync(
+                int agencyId,
+                int officeId)
         {
-            var payments = await _repository.GetOfficePaymentsAsync(agencyId, officeId);
+            var payments =
+                await _repository
+                    .GetOfficePaymentsAsync(
+                        agencyId,
+                        officeId);
 
             if (!payments.Any())
-                throw new NotFoundException("No payments found");
+            {
+                throw new NotFoundException(
+                    "No payments found");
+            }
 
             return payments.Select(x => new
             {
                 x.PaymentId,
+
+                BookingId =
+                    x.BookingId,
+
                 x.Amount,
-                x.PaymentStatus
+
+                Status =
+                    x.PaymentStatus
             });
         }
 
-        public async Task<IEnumerable<object>> GetOfficeTripsAsync(int agencyId, int officeId)
+        // =========================
+        // OFFICE TRIPS
+        // =========================
+
+        public async Task<IEnumerable<object>>
+            GetOfficeTripsAsync(
+                int agencyId,
+                int officeId)
         {
-            var trips = await _repository.GetOfficeTripsAsync(agencyId, officeId);
+            var trips =
+                await _repository
+                    .GetOfficeTripsAsync(
+                        agencyId,
+                        officeId);
 
             if (!trips.Any())
-                throw new NotFoundException("No trips found");
+            {
+                throw new NotFoundException(
+                    "No trips found");
+            }
 
             return trips.Select(x => new
             {
                 x.TripId,
+
+                Route =
+                    x.Route.FromCity +
+                    " → " +
+                    x.Route.ToCity,
+
+                x.TripDate,
+
                 x.DepartureTime,
+
                 x.ArrivalTime,
+
                 x.Fare
             });
         }
 
-        public async Task<IEnumerable<object>> GetOfficeBusesAsync(int agencyId, int officeId)
+        // =========================
+        // OFFICE BUSES
+        // =========================
+
+        public async Task<IEnumerable<object>>
+            GetOfficeBusesAsync(
+                int agencyId,
+                int officeId)
         {
-            var buses = await _repository.GetOfficeBusesAsync(agencyId, officeId);
+            var buses =
+                await _repository
+                    .GetOfficeBusesAsync(
+                        agencyId,
+                        officeId);
 
             if (!buses.Any())
-                throw new NotFoundException("No buses found");
+            {
+                throw new NotFoundException(
+                    "No buses found");
+            }
 
             return buses.Select(x => new
             {
                 x.BusId,
+
                 x.RegistrationNumber,
+
                 x.Capacity,
+
                 x.Type
             });
         }
 
-        public async Task<IEnumerable<object>> GetOfficeDriversAsync(int agencyId, int officeId)
+        // =========================
+        // OFFICE DRIVERS
+        // =========================
+
+        public async Task<IEnumerable<object>>
+            GetOfficeDriversAsync(
+                int agencyId,
+                int officeId)
         {
-            var drivers = await _repository.GetOfficeDriversAsync(agencyId, officeId);
+            var drivers =
+                await _repository
+                    .GetOfficeDriversAsync(
+                        agencyId,
+                        officeId);
 
             if (!drivers.Any())
-                throw new NotFoundException("No drivers found");
+            {
+                throw new NotFoundException(
+                    "No drivers found");
+            }
 
             return drivers.Select(x => new
             {
                 x.DriverId,
+
                 x.Name,
+
                 x.Phone,
+
                 x.LicenseNumber
             });
         }

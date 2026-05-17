@@ -1,0 +1,705 @@
+﻿@model Bus_Ticket_Booking.Mvc.ViewModels.AgencyDashboard.AgencyOfficeDetailsViewModel
+
+@{
+    ViewData["Title"] = "Office Details";
+
+    var officeId = Model.OfficeId;
+
+    /* =========================
+       BOOKING PAGINATION
+       ========================= */
+
+    int bookingPageSize = 5;
+
+    int bookingPage = Context.Request.Query.ContainsKey("bookingPage")
+        ? int.Parse(Context.Request.Query["bookingPage"])
+        : 1;
+
+    var pagedBookings = Model.Bookings
+        .Skip((bookingPage - 1) * bookingPageSize)
+        .Take(bookingPageSize)
+        .ToList();
+
+    int bookingTotalPages = (int)Math.Ceiling(
+        Model.Bookings.Count / (double)bookingPageSize);
+
+
+    /* =========================
+       PAYMENT PAGINATION
+       ========================= */
+
+    int paymentPageSize = 5;
+
+    int paymentPage = Context.Request.Query.ContainsKey("paymentPage")
+        ? int.Parse(Context.Request.Query["paymentPage"])
+        : 1;
+
+    var pagedPayments = Model.Payments
+        .Skip((paymentPage - 1) * paymentPageSize)
+        .Take(paymentPageSize)
+        .ToList();
+
+    int paymentTotalPages = (int)Math.Ceiling(
+        Model.Payments.Count / (double)paymentPageSize);
+}
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold text-primary mb-1">
+
+                Office Details
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Office ID:
+                <span class="fw-semibold">
+                    @Model.OfficeId
+                </span>
+
+            </p>
+
+        </div>
+
+        <a asp-controller="AgencyDashboard"
+               asp-action="Index"
+               class="btn btn-dark rounded-3">
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+
+    <!-- OFFICE INFO -->
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+        <div class="card-header bg-dark text-white rounded-top-4">
+
+            <h5 class="mb-0">
+
+                Office Information
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <h6 class="text-muted">
+
+                            Office Mail
+
+                        </h6>
+
+                        <h6 class="fw-semibold mb-0">
+
+                            @Model.OfficeMail
+
+                        </h6>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <h6 class="text-muted">
+
+                            Contact Person
+
+                        </h6>
+
+                        <h6 class="fw-semibold mb-0">
+
+                            @Model.OfficeContactPersonName
+
+                        </h6>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <h6 class="text-muted">
+
+                            Contact Number
+
+                        </h6>
+
+                        <h6 class="fw-semibold mb-0">
+
+                            @Model.OfficeContactNumber
+
+                        </h6>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRIPS -->
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+        <div class="card-header bg-primary text-white rounded-top-4">
+
+            <h5 class="mb-0">
+
+                Trips
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0 table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Trip ID</th>
+                        <th>Route</th>
+                        <th>Date</th>
+                        <th>Fare</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var trip in Model.Trips)
+                    {
+                        <tr>
+
+                            <td class="fw-semibold">
+
+                                #@trip.TripId
+
+                            </td>
+
+                            <td>
+
+                                @trip.Route
+
+                            </td>
+
+                            <td>
+
+                                @trip.TripDate.ToString("dd MMM yyyy")
+
+                            </td>
+
+                            <td class="fw-bold text-success">
+
+                                ₹@trip.Fare
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOOKINGS -->
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+        <div class="card-header bg-success text-white rounded-top-4">
+
+            <h5 class="mb-0">
+
+                Bookings
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0 table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Booking ID</th>
+                        <th>Trip ID</th>
+                        <th>Seat</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var booking in pagedBookings)
+                    {
+                        <tr>
+
+                            <td class="fw-semibold">
+
+                                #@booking.BookingId
+
+                            </td>
+
+                            <td>
+
+                                #@booking.TripId
+
+                            </td>
+
+                            <td>
+
+                                Seat @booking.SeatNumber
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success px-3 py-2">
+
+                                    @booking.Status
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- BOOKING PAGINATION -->
+
+        <div class="card-footer bg-white border-0">
+
+            <div class="d-flex justify-content-end">
+
+                <nav>
+
+                    <ul class="pagination pagination-sm mb-0">
+
+                        <!-- PREVIOUS -->
+
+                        <li class="page-item @(bookingPage == 1 ? "disabled" : "")">
+
+                            <a class="page-link"
+                                   href="?officeId=@officeId&bookingPage=@(bookingPage - 1)&paymentPage=@paymentPage">
+
+                                Previous
+
+                            </a>
+
+                        </li>
+
+                        <!-- SMART PAGE NUMBERS -->
+                        @for (int i = 1; i <= bookingTotalPages; i++)
+                        {
+                            bool showPage =
+                                i == 1 ||
+                                i == bookingTotalPages ||
+                                (i >= bookingPage - 1 && i <= bookingPage + 1);
+
+                            if (showPage)
+                            {
+                                <li class="page-item @(i == bookingPage ? "active" : "")">
+
+                                    <a class="page-link"
+                                           href="?officeId=@officeId&bookingPage=@i&paymentPage=@paymentPage">
+
+                                        @i
+
+                                    </a>
+
+                                </li>
+                            }
+                            else if (
+                                i == bookingPage - 2 ||
+                                i == bookingPage + 2)
+                            {
+                                <li class="page-item disabled">
+
+                                    <span class="page-link">
+
+                                        ...
+
+                                    </span>
+
+                                </li>
+                            }
+                        }
+
+                        <!-- NEXT -->
+
+                        <li class="page-item @(bookingPage == bookingTotalPages ? "disabled" : "")">
+
+                            <a class="page-link"
+                                   href="?officeId=@officeId&bookingPage=@(bookingPage + 1)&paymentPage=@paymentPage">
+
+                                Next
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PAYMENTS -->
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+        <div class="card-header bg-warning text-dark rounded-top-4">
+
+            <h5 class="mb-0">
+
+                Payments
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0 table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Payment ID</th>
+                        <th>Booking ID</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var payment in pagedPayments)
+                    {
+                        <tr>
+
+                            <td class="fw-semibold">
+
+                                #@payment.PaymentId
+
+                            </td>
+
+                            <td>
+
+                                #@payment.BookingId
+
+                            </td>
+
+                            <td class="fw-bold text-success">
+
+                                ₹@payment.Amount
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success px-3 py-2">
+
+                                    @payment.Status
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- PAYMENT PAGINATION -->
+
+        <div class="card-footer bg-white border-0">
+
+            <div class="d-flex justify-content-end">
+
+                <nav>
+
+                    <ul class="pagination pagination-sm mb-0">
+
+                        <!-- PREVIOUS -->
+
+                        <li class="page-item @(paymentPage == 1 ? "disabled" : "")">
+
+                            <a class="page-link"
+                                   href="?officeId=@officeId&paymentPage=@(paymentPage - 1)&bookingPage=@bookingPage">
+
+                                Previous
+
+                            </a>
+
+                        </li>
+
+                        <!-- SMART PAGE NUMBERS -->
+                        @for (int i = 1; i <= paymentTotalPages; i++)
+                        {
+                            bool showPage =
+                                i == 1 ||
+                                i == paymentTotalPages ||
+                                (i >= paymentPage - 1 && i <= paymentPage + 1);
+
+                            if (showPage)
+                            {
+                                <li class="page-item @(i == paymentPage ? "active" : "")">
+
+                                    <a class="page-link"
+                                           href="?officeId=@officeId&paymentPage=@i&bookingPage=@bookingPage">
+
+                                        @i
+
+                                    </a>
+
+                                </li>
+                            }
+                            else if (
+                                i == paymentPage - 2 ||
+                                i == paymentPage + 2)
+                            {
+                                <li class="page-item disabled">
+
+                                    <span class="page-link">
+
+                                        ...
+
+                                    </span>
+
+                                </li>
+                            }
+                        }
+
+                        <!-- NEXT -->
+
+                        <li class="page-item @(paymentPage == paymentTotalPages ? "disabled" : "")">
+
+                            <a class="page-link"
+                                   href="?officeId=@officeId&paymentPage=@(paymentPage + 1)&bookingPage=@bookingPage">
+
+                                Next
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BUSES -->
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+        <div class="card-header bg-info text-dark rounded-top-4">
+
+            <h5 class="mb-0">
+
+                Buses
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0 table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Bus ID</th>
+                        <th>Registration</th>
+                        <th>Type</th>
+                        <th>Capacity</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var bus in Model.Buses)
+                    {
+                        <tr>
+
+                            <td class="fw-semibold">
+
+                                #@bus.BusId
+
+                            </td>
+
+                            <td>
+
+                                @bus.RegistrationNumber
+
+                            </td>
+
+                            <td>
+
+                                @bus.Type
+
+                            </td>
+
+                            <td>
+
+                                @bus.Capacity
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- DRIVERS -->
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+        <div class="card-header bg-secondary text-white rounded-top-4">
+
+            <h5 class="mb-0">
+
+                Drivers
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0 table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Driver ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>License</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var driver in Model.Drivers)
+                    {
+                        <tr>
+
+                            <td class="fw-semibold">
+
+                                #@driver.DriverId
+
+                            </td>
+
+                            <td>
+
+                                @driver.Name
+
+                            </td>
+
+                            <td>
+
+                                @driver.Phone
+
+                            </td>
+
+                            <td>
+
+                                @driver.LicenseNumber
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

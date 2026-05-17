@@ -77,33 +77,40 @@ namespace API_Bus_Ticket_Booking.Controllers
             });
         }
 
-        // Customer Payments
-        [HttpGet("customer-payments/{customerId}")]
+        [HttpGet("my-payments")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult>
-            GetCustomerPayments(int customerId)
+    GetMyPayments()
         {
+            var customerIdClaim =
+                User.FindFirst("CustomerId")
+                ?.Value;
+
+            if (string.IsNullOrEmpty(
+                customerIdClaim))
+            {
+                return Unauthorized(new
+                {
+                    success = false,
+                    message =
+                        "Customer ID not found"
+                });
+            }
+
+            int customerId =
+                Convert.ToInt32(
+                    customerIdClaim);
+
             var result =
                 await _paymentService
                     .GetCustomerPaymentsAsync(
                         customerId);
 
-            if (!result.Any())
-            {
-                return Ok(new
-                {
-                    success = true,
-                    message =
-                        "No payments found for this customer",
-                    data = result
-                });
-            }
-
             return Ok(new
             {
                 success = true,
                 message =
-                    "Customer payments fetched successfully",
+                    "Payments fetched successfully",
                 data = result
             });
         }

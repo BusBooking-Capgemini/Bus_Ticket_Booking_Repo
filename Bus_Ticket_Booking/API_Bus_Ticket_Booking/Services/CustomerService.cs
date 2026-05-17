@@ -69,54 +69,104 @@ public class CustomerService : ICustomerService
         return MapToResponseDto(created);
     }
 
-    public async Task<bool> UpdateCustomerAsync(int customerId, CustomerRequestDto dto)
+    public async Task<bool>
+    UpdateCustomerAsync(
+        int customerId,
+        CustomerRequestDto dto)
     {
         if (customerId <= 0)
-            throw new BadRequestException("Invalid customer id");
+        {
+            throw new BadRequestException(
+                "Invalid customer id");
+        }
 
         if (dto == null)
-            throw new BadRequestException("Update data is required");
+        {
+            throw new BadRequestException(
+                "Update data is required");
+        }
 
-        var customer = await _customerRepo.GetByIdAsync(customerId);
+        var customer =
+            await _customerRepo
+                .GetByIdAsync(customerId);
 
         if (customer == null)
-            throw new NotFoundException("Customer not found");
+        {
+            throw new NotFoundException(
+                "Customer not found");
+        }
 
-        // Check duplicate email
+        // EMAIL
+
         if (!string.IsNullOrWhiteSpace(dto.Email))
         {
-            var existingCustomer = await _customerRepo.GetByEmailAsync(dto.Email);
+            var existingCustomer =
+                await _customerRepo
+                    .GetByEmailAsync(dto.Email);
 
-            if (existingCustomer != null && existingCustomer.CustomerId != customerId)
+            if (existingCustomer != null &&
+                existingCustomer.CustomerId != customerId)
             {
-                throw new ConflictException("Email already exists");
+                throw new ConflictException(
+                    "Email already exists");
             }
 
             customer.Email = dto.Email;
         }
 
+        // BASIC INFO
+
         if (!string.IsNullOrWhiteSpace(dto.Name))
-            customer.Name = dto.Name;
-
-        if (!string.IsNullOrWhiteSpace(dto.Phone))
-            customer.Phone = dto.Phone;
-
-        if (customer.Address != null)
         {
-            if (!string.IsNullOrWhiteSpace(dto.Address))
-                customer.Address.Address1 = dto.Address;
-
-            if (!string.IsNullOrWhiteSpace(dto.City))
-                customer.Address.City = dto.City;
-
-            if (!string.IsNullOrWhiteSpace(dto.State))
-                customer.Address.State = dto.State;
-
-            if (!string.IsNullOrWhiteSpace(dto.ZipCode))
-                customer.Address.ZipCode = dto.ZipCode;
+            customer.Name = dto.Name;
         }
 
-        await _customerRepo.UpdateAsync(customer);
+        if (!string.IsNullOrWhiteSpace(dto.Phone))
+        {
+            customer.Phone = dto.Phone;
+        }
+
+        // ADDRESS CREATE OR UPDATE
+
+        if (customer.Address == null)
+        {
+            customer.Address = new Address
+            {
+                Address1 = dto.Address ?? "",
+                City = dto.City ?? "",
+                State = dto.State ?? "",
+                ZipCode = dto.ZipCode ?? ""
+            };
+        }
+        else
+        {
+            if (!string.IsNullOrWhiteSpace(dto.Address))
+            {
+                customer.Address.Address1 =
+                    dto.Address;
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.City))
+            {
+                customer.Address.City =
+                    dto.City;
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.State))
+            {
+                customer.Address.State =
+                    dto.State;
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.ZipCode))
+            {
+                customer.Address.ZipCode =
+                    dto.ZipCode;
+            }
+        }
+
+        await _customerRepo
+            .UpdateAsync(customer);
 
         return true;
     }

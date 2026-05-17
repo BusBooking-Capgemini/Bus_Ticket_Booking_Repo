@@ -38,31 +38,69 @@ namespace API_Bus_Ticket_Booking.DTOs.Trip
     public class UpdateTripDto
     {
         public int? BusId { get; set; }
+
         public int? BoardingAddressId { get; set; }
+
         public int? DroppingAddressId { get; set; }
+
         public DateTime? DepartureTime { get; set; }
+
         public DateTime? ArrivalTime { get; set; }
+
         public int? Driver1DriverId { get; set; }
+
         public int? Driver2DriverId { get; set; }
+
         public decimal? Fare { get; set; }
+
+        public DateTime? TripDate { get; set; }
     }
 
     public class TripResponseDto
     {
         public int TripId { get; set; }
+
         public int RouteId { get; set; }
+
         public string FromCity { get; set; }
+            = string.Empty;
+
         public string ToCity { get; set; }
+            = string.Empty;
+
         public int BusId { get; set; }
+
         public string BusType { get; set; }
+            = string.Empty;
+
+        public int BoardingAddressId { get; set; }
+
+        public int DroppingAddressId { get; set; }
+
         public string BoardingCity { get; set; }
+            = string.Empty;
+
         public string DroppingCity { get; set; }
+            = string.Empty;
+
         public DateTime DepartureTime { get; set; }
+
         public DateTime ArrivalTime { get; set; }
+
+        public int Driver1DriverId { get; set; }
+
+        public int Driver2DriverId { get; set; }
+
         public string Driver1Name { get; set; }
+            = string.Empty;
+
         public string Driver2Name { get; set; }
+            = string.Empty;
+
         public int AvailableSeats { get; set; }
+
         public decimal Fare { get; set; }
+
         public DateTime TripDate { get; set; }
     }
 

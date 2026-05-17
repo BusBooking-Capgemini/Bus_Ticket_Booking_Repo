@@ -131,6 +131,11 @@ public class Program
         builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
         builder.Services.AddScoped<IRouteRepository, RouteRepository>();
         builder.Services.AddScoped<ITripRepository, TripRepository>();
+        builder.Services.AddScoped<IDropdownRepository,DropdownRepository>();
+
+        builder.Services.AddScoped<
+            IDropdownService,
+            DropdownService>();
 
         // Services
         builder.Services.AddScoped<IAgencyService, AgencyService>();
@@ -144,6 +149,7 @@ public class Program
         builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<IRouteService, RouteService>();
         builder.Services.AddScoped<ITripService, TripService>();
+        builder.Services.AddScoped<IDropdownService,DropdownService>();
 
         var app = builder.Build();
 

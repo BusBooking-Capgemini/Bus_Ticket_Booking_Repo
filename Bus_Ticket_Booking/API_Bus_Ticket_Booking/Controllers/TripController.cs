@@ -106,7 +106,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // GET api/trips/bus/2
         [HttpGet("bus/{busId:int}")]
-        [Authorize(Roles = "Admin,Agency")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult> GetByBus(int busId)
         {
             var trips = await _tripService.GetTripsByBusAsync(busId);
@@ -116,7 +116,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // GET api/trips/driver/5
         [HttpGet("driver/{driverId:int}")]
-        [Authorize(Roles = "Admin,Agency")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult> GetByDriver(int driverId)
         {
             var trips = await _tripService.GetTripsByDriverAsync(driverId);
@@ -136,7 +136,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // POST api/trips
         [HttpPost]
-        [Authorize(Roles = "Admin,Agency")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult> Create([FromBody] CreateTripDto dto)
         {
             if (!ModelState.IsValid)
@@ -166,7 +166,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // PUT api/trips/5
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin,Agency")]
+        [Authorize(Roles = "Office,Agency")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateTripDto dto)
         {
             if (!ModelState.IsValid)
@@ -196,7 +196,7 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         // DELETE api/trips/5
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Office")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -209,6 +209,45 @@ namespace API_Bus_Ticket_Booking.Controllers
             {
                 return NotFound(ApiResponse<object>.Fail(ex.Message, 404));
             }
+        }
+
+        // GET api/trips/office/1
+
+        [HttpGet("office/{officeId:int}")]
+        [Authorize(Roles = "Office")]
+        public async Task<IActionResult>
+            GetByOffice(int officeId)
+        {
+            var trips =
+                await _tripService
+                    .GetTripsByOfficeAsync(officeId);
+
+            var response =
+                ApiResponse<object>.Ok(
+                    trips,
+                    $"{trips.Count} office trip(s) retrieved successfully.");
+
+            return Ok(response);
+        }
+
+
+        // GET api/trips/agency/1
+
+        [HttpGet("agency/{agencyId:int}")]
+        [Authorize(Roles = "Agency")]
+        public async Task<IActionResult>
+            GetByAgency(int agencyId)
+        {
+            var trips =
+                await _tripService
+                    .GetTripsByAgencyAsync(agencyId);
+
+            var response =
+                ApiResponse<object>.Ok(
+                    trips,
+                    $"{trips.Count} agency trip(s) retrieved successfully.");
+
+            return Ok(response);
         }
     }
 }

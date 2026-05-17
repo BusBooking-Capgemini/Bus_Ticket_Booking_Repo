@@ -1,0 +1,242 @@
+﻿@model List<Bus_Ticket_Booking.Mvc.ViewModels.Trip.TripViewModel>
+
+@{
+    ViewData["Title"] = "Trips";
+}
+
+<div class="container py-5">
+
+    <!-- SEARCH SECTION -->
+
+    <div class="card custom-card p-4 mb-5">
+
+        <h2 class="text-primary mb-4">
+
+            Search Trips
+
+        </h2>
+
+        <form asp-action="Search"
+              method="post">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        From City
+
+                    </label>
+
+                    <input type="text"
+                           name="FromCity"
+                           class="form-control"
+                           placeholder="Enter source city" />
+
+                </div>
+
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        To City
+
+                    </label>
+
+                    <input type="text"
+                           name="ToCity"
+                           class="form-control"
+                           placeholder="Enter destination city" />
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Travel Date
+
+                    </label>
+
+                    <input type="date"
+                           name="TripDate"
+                           class="form-control" />
+
+                </div>
+
+
+                <div class="col-md-1 d-flex
+                    align-items-end">
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- TRIPS SECTION -->
+
+    <div class="row">
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var trip in Model)
+            {
+                <div class="col-md-6 mb-4">
+
+                    <div class="card custom-card h-100">
+
+                        <div class="card-body">
+
+                            <div class="d-flex
+                                justify-content-between">
+
+                                <div>
+
+                                    <h4 class="text-primary">
+
+                                        @trip.FromCity
+                                        →
+
+                                        @trip.ToCity
+
+                                    </h4>
+
+                                    <p class="text-muted">
+
+                                        @trip.TripDate.ToString("dd MMM yyyy")
+
+                                    </p>
+
+                                </div>
+
+
+                                <div class="text-end">
+
+                                    <h3 class="text-success">
+
+                                        ₹@trip.Fare
+
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+
+                            <hr />
+
+
+                            <div class="row">
+
+                                <div class="col-4">
+
+                                    <small class="text-muted">
+
+                                        Departure
+
+                                    </small>
+
+                                    <h6>
+
+                                        @trip.DepartureTime.ToString("hh:mm tt")
+
+                                    </h6>
+
+                                </div>
+
+
+                                <div class="col-4">
+
+                                    <small class="text-muted">
+
+                                        Arrival
+
+                                    </small>
+
+                                    <h6>
+
+                                        @trip.ArrivalTime.ToString("hh:mm tt")
+
+                                    </h6>
+
+                                </div>
+
+
+                                <div class="col-4">
+
+                                    <small class="text-muted">
+
+                                        Seats
+
+                                    </small>
+
+                                    <h6>
+
+                                        @trip.AvailableSeats
+                                    </h6>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="mt-4
+                                d-flex
+                                justify-content-between
+                                align-items-center">
+
+                                <span class="badge
+                                    bg-primary">
+
+                                    @trip.BusType
+
+                                </span>
+
+
+                                <a asp-action="Seats"
+                                       asp-route-id="@trip.TripId"
+                                       class="btn btn-primary">
+
+                                    View Seats
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-md-12">
+
+                <div class="alert alert-info">
+
+                    No trips available.
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

@@ -1,0 +1,16 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bus_Ticket_Booking.Mvc.ViewModels.Auth
+{
+    public class AgencyLoginViewModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+            = string.Empty;
+
+        [Required]
+        public string Password { get; set; }
+            = string.Empty;
+    }
+}

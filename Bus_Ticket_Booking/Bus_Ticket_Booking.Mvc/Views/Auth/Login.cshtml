@@ -1,0 +1,107 @@
+﻿@model Bus_Ticket_Booking.Mvc.ViewModels.Auth.LoginViewModel
+
+@{
+    ViewData["Title"] = "Customer Login";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-5">
+
+            <div class="card custom-card p-4">
+
+                <div class="text-center mb-4">
+
+                    <i class="bi bi-person-circle
+                        display-3 text-primary">
+                    </i>
+
+                    <h2 class="mt-3">
+                        Customer Login
+                    </h2>
+
+                </div>
+
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+
+                        @ViewBag.Error
+
+                    </div>
+                }
+
+
+                <form asp-action="Login"
+                      method="post">
+
+                    <div class="mb-3">
+
+                        <label asp-for="Email"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control" />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label asp-for="Password"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-control" />
+
+                        <span asp-validation-for="Password"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        Login
+
+                    </button>
+
+                </form>
+
+
+                <div class="text-center mt-3">
+
+                    <a asp-action="Register">
+
+                        Create New Account
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

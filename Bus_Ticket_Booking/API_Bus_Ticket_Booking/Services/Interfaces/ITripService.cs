@@ -16,5 +16,9 @@ namespace API_Bus_Ticket_Booking.Services.Interfaces
         Task<TripResponseDto> CreateTripAsync(CreateTripDto dto);
         Task<TripResponseDto> UpdateTripAsync(int id, UpdateTripDto dto);
         Task<bool> DeleteTripAsync(int id);
+
+        Task<List<TripResponseDto>>GetTripsByOfficeAsync(int officeId);
+
+        Task<List<TripResponseDto>>GetTripsByAgencyAsync(int agencyId);
     }
 }
