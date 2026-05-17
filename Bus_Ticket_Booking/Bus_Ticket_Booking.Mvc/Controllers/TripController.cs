@@ -8,42 +8,29 @@ namespace Bus_Ticket_Booking.Mvc.Controllers
     {
         private readonly ITripService _tripService;
 
-        public TripController(
-            ITripService tripService)
+        public TripController(ITripService tripService)
         {
             _tripService = tripService;
         }
 
-        public async Task<IActionResult>
-            Index()
+        public async Task<IActionResult> Index()
         {
-            var trips =
-                await _tripService
-                    .GetAllTripsAsync();
+            var trips = await _tripService.GetAllTripsAsync();
 
             return View(trips);
         }
 
         [HttpPost]
-        public async Task<IActionResult>
-    Search(
-        TripSearchViewModel model)
+        public async Task<IActionResult> Search(TripSearchViewModel model)
         {
-            var trips =
-                await _tripService
-                    .SearchTripsAsync(model);
+            var trips = await _tripService.SearchTripsAsync(model);
 
-            return View(
-                "Index",
-                trips);
+            return View("Index", trips);
         }
 
-        public async Task<IActionResult>
-    Seats(int id)
+        public async Task<IActionResult> Seats(int id)
         {
-            var seatMap =
-                await _tripService
-                    .GetSeatMapAsync(id);
+            var seatMap = await _tripService.GetSeatMapAsync(id);
 
             if (seatMap == null)
             {
