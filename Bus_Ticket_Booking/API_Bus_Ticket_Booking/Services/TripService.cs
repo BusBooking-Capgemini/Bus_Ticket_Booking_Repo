@@ -125,14 +125,6 @@ namespace API_Bus_Ticket_Booking.Services
                 .Select(b => b.SeatNumber)
                 .ToList();
 
-            // Console.WriteLine(bookedSeatNumbers);
-            Console.WriteLine("start");
-            // foreach (var item in bookedSeatNumbers)
-            // {
-            //     Console.WriteLine(item);
-            // }
-            Console.WriteLine("end");
-
             var seats = new List<SeatStatusDto>();
 
             for (int i = 1; i <= totalSeats; i++)
