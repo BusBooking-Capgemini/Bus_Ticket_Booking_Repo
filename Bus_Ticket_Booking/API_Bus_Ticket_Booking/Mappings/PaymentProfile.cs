@@ -9,68 +9,63 @@ namespace API_Bus_Ticket_Booking.Mappings
         public PaymentProfile()
         {
             CreateMap<Payment, PaymentResponseDto>()
+
                 .ForMember(
                     dest => dest.TripId,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.Booking != null && src.Booking.Trip != null
-                                ? src.Booking.Trip.TripId
-                                : 0
-                        )
-                )
+                    opt => opt.MapFrom(src =>
+                        src.Booking != null &&
+                        src.Booking.Trip != null
+                            ? src.Booking.Trip.TripId
+                            : 0))
+
                 .ForMember(
                     dest => dest.SeatNumber,
-                    opt => opt.MapFrom(src => src.Booking != null ? src.Booking.SeatNumber : 0)
-                )
+                    opt => opt.MapFrom(src =>
+                        src.Booking != null
+                            ? src.Booking.SeatNumber
+                            : 0))
+
                 .ForMember(
                     dest => dest.FromCity,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.Booking != null
-                            && src.Booking.Trip != null
-                            && src.Booking.Trip.Route != null
-                                ? src.Booking.Trip.Route.FromCity
-                                : ""
-                        )
-                )
+                    opt => opt.MapFrom(src =>
+                        src.Booking != null &&
+                        src.Booking.Trip != null &&
+                        src.Booking.Trip.Route != null
+                            ? src.Booking.Trip.Route.FromCity
+                            : ""))
+
                 .ForMember(
                     dest => dest.ToCity,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.Booking != null
-                            && src.Booking.Trip != null
-                            && src.Booking.Trip.Route != null
-                                ? src.Booking.Trip.Route.ToCity
-                                : ""
-                        )
-                )
+                    opt => opt.MapFrom(src =>
+                        src.Booking != null &&
+                        src.Booking.Trip != null &&
+                        src.Booking.Trip.Route != null
+                            ? src.Booking.Trip.Route.ToCity
+                            : ""))
+
                 .ForMember(
                     dest => dest.TripDate,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.Booking != null && src.Booking.Trip != null
-                                ? src.Booking.Trip.TripDate
-                                : DateTime.MinValue
-                        )
-                )
+                    opt => opt.MapFrom(src =>
+                        src.Booking != null &&
+                        src.Booking.Trip != null
+                            ? src.Booking.Trip.TripDate
+                            : DateTime.MinValue))
+
                 .ForMember(
                     dest => dest.DepartureTime,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.Booking != null && src.Booking.Trip != null
-                                ? src.Booking.Trip.DepartureTime
-                                : DateTime.MinValue
-                        )
-                )
+                    opt => opt.MapFrom(src =>
+                        src.Booking != null &&
+                        src.Booking.Trip != null
+                            ? src.Booking.Trip.DepartureTime
+                            : DateTime.MinValue))
+
                 .ForMember(
                     dest => dest.ArrivalTime,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.Booking != null && src.Booking.Trip != null
-                                ? src.Booking.Trip.ArrivalTime
-                                : DateTime.MinValue
-                        )
-                );
+                    opt => opt.MapFrom(src =>
+                        src.Booking != null &&
+                        src.Booking.Trip != null
+                            ? src.Booking.Trip.ArrivalTime
+                            : DateTime.MinValue));
         }
     }
 }

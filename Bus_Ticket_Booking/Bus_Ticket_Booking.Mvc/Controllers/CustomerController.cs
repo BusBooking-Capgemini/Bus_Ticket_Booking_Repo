@@ -5,13 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bus_Ticket_Booking.Mvc.Controllers
 {
-    public class CustomerController : Controller
+    public class CustomerController
+        : Controller
     {
-        private readonly ICustomerService _customerService;
+        private readonly ICustomerService
+            _customerService;
 
-        public CustomerController(ICustomerService customerService)
+        public CustomerController(
+            ICustomerService customerService)
         {
-            _customerService = customerService;
+            _customerService =
+                customerService;
         }
 
         // DASHBOARD
@@ -24,20 +28,28 @@ namespace Bus_Ticket_Booking.Mvc.Controllers
         // PROFILE PAGE
 
         [HttpGet]
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult>
+            Profile()
         {
-            var token = HttpContext.Session.GetString(SessionKeys.Token);
+            var token =
+                HttpContext.Session.GetString(
+                    SessionKeys.Token);
 
             if (string.IsNullOrEmpty(token))
             {
-                return RedirectToAction("Login", "Auth");
+                return RedirectToAction(
+                    "Login",
+                    "Auth");
             }
 
-            var model = await _customerService.GetProfileAsync(token);
+            var model =
+                await _customerService
+                    .GetProfileAsync(token);
 
             if (model == null)
             {
-                return RedirectToAction("Dashboard");
+                return RedirectToAction(
+                    "Dashboard");
             }
 
             return View(model);
@@ -46,13 +58,19 @@ namespace Bus_Ticket_Booking.Mvc.Controllers
         // UPDATE PROFILE
 
         [HttpPost]
-        public async Task<IActionResult> Profile(CustomerProfileViewModel model)
+        public async Task<IActionResult>
+            Profile(
+                CustomerProfileViewModel model)
         {
-            var token = HttpContext.Session.GetString(SessionKeys.Token);
+            var token =
+                HttpContext.Session.GetString(
+                    SessionKeys.Token);
 
             if (string.IsNullOrEmpty(token))
             {
-                return RedirectToAction("Login", "Auth");
+                return RedirectToAction(
+                    "Login",
+                    "Auth");
             }
 
             if (!ModelState.IsValid)
@@ -60,16 +78,22 @@ namespace Bus_Ticket_Booking.Mvc.Controllers
                 return View(model);
             }
 
-            bool success = await _customerService.UpdateProfileAsync(model, token);
+            bool success =
+                await _customerService
+                    .UpdateProfileAsync(
+                        model,
+                        token);
 
             if (!success)
             {
-                ViewBag.Error = "Profile update failed";
+                ViewBag.Error =
+                    "Profile update failed";
 
                 return View(model);
             }
 
-            ViewBag.Success = "Profile updated successfully";
+            ViewBag.Success =
+                "Profile updated successfully";
 
             return View(model);
         }

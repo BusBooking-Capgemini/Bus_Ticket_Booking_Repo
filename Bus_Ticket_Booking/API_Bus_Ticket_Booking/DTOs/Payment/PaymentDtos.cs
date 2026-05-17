@@ -25,9 +25,11 @@
 
         public int SeatNumber { get; set; }
 
-        public string FromCity { get; set; } = string.Empty;
+        public string FromCity { get; set; }
+            = string.Empty;
 
-        public string ToCity { get; set; } = string.Empty;
+        public string ToCity { get; set; }
+            = string.Empty;
 
         public DateTime TripDate { get; set; }
 
@@ -64,6 +66,7 @@
 
         public decimal AveragePaymentAmount { get; set; }
 
-        public string TopPayingRoute { get; set; } = string.Empty;
+        public string TopPayingRoute { get; set; }
+            = string.Empty;
     }
 }
