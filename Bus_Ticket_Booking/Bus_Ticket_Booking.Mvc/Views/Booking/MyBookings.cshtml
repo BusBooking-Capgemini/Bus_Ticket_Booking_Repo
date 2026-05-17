@@ -7,7 +7,9 @@
 <div class="container py-5">
 
     <h2 class="mb-4 text-primary fw-bold">
+
         My Bookings
+
     </h2>
 
     <div class="card shadow border-0">
@@ -43,61 +45,96 @@
                                 <tr>
 
                                     <td class="fw-bold">
+
                                         #@booking.BookingId
+
                                     </td>
 
                                     <td>
-                                        @booking.FromCity
-                                        →
-                                        @booking.ToCity
+
+                                        @booking.FromCity → @booking.ToCity
+
                                     </td>
 
                                     <td>
+
                                         @booking.TripDate.ToString("dd MMM yyyy")
+
                                     </td>
 
                                     <td>
+
                                         @booking.DepartureTime.ToString("hh:mm tt")
+
                                     </td>
 
                                     <td>
+
                                         @booking.ArrivalTime.ToString("hh:mm tt")
+
                                     </td>
 
                                     <td>
+
                                         Seat @booking.SeatNumber
+
                                     </td>
 
                                     <td class="fw-bold text-success">
+
                                         ₹@booking.Fare
+
                                     </td>
 
                                     <td>
+
                                         <span class="badge bg-success px-3 py-2">
-                                            @booking.Status
-                                        </span>
-                                    </td>
 
-                                   
+                                            @booking.Status
+
+                                        </span>
+
+                                    </td>
 
                                     <td>
 
-                                        <form asp-action="Cancel"
-                                              method="post">
+                                        <div class="d-flex gap-2 flex-wrap">
 
-                                            <input type="hidden"
-                                                   name="bookingId"
-                                                   value="@booking.BookingId" />
+                                            <!-- WRITE A REVIEW -->
 
-                                            <button type="submit"
-                                                    class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('Cancel this booking?')">
+                                            @if (booking.TripDate < DateTime.Now)
+                                            {
+                                                <a asp-controller="Review"
+                                                   asp-action="Create"
+                                                   asp-route-tripId="@booking.TripId"
+                                                   asp-route-fromCity="@booking.FromCity"
+                                                   asp-route-toCity="@booking.ToCity"
+                                                   class="btn btn-warning btn-sm">
 
-                                                Cancel
+                                                    <i class="bi bi-star me-1"></i>Review
 
-                                            </button>
+                                                </a>
+                                            }
 
-                                        </form>
+                                            <!-- CANCEL -->
+
+                                            <form asp-action="Cancel" method="post">
+
+                                                <input type="hidden"
+                                                       name="bookingId"
+                                                       value="@booking.BookingId" />
+
+                                                <button type="submit"
+                                                        class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('Cancel this booking?')">
+
+                                                    Cancel
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
 
                                     </td>
 
@@ -108,7 +145,7 @@
                         {
                             <tr>
 
-                                <td colspan="10"
+                                <td colspan="9"
                                     class="text-center py-5 text-muted">
 
                                     No bookings found.
