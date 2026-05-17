@@ -17,14 +17,11 @@ namespace API_Bus_Ticket_Booking.DTOs.Booking
 
         public int SeatNumber { get; set; }
 
-        public string Status { get; set; }
-            = string.Empty;
+        public string Status { get; set; } = string.Empty;
 
-        public string FromCity { get; set; }
-            = string.Empty;
+        public string FromCity { get; set; } = string.Empty;
 
-        public string ToCity { get; set; }
-            = string.Empty;
+        public string ToCity { get; set; } = string.Empty;
 
         public DateTime TripDate { get; set; }
 
@@ -34,8 +31,7 @@ namespace API_Bus_Ticket_Booking.DTOs.Booking
 
         public decimal Fare { get; set; }
 
-        public string PaymentStatus { get; set; }
-            = string.Empty;
+        public string PaymentStatus { get; set; } = string.Empty;
 
         public decimal PaidAmount { get; set; }
     }
@@ -53,7 +49,6 @@ namespace API_Bus_Ticket_Booking.DTOs.Booking
 
         public int MostBookedTripId { get; set; }
 
-        public string MostPopularRoute { get; set; }
-            = string.Empty;
+        public string MostPopularRoute { get; set; } = string.Empty;
     }
 }

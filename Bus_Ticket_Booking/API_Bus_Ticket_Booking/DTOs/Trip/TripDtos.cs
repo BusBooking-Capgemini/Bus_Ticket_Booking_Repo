@@ -62,26 +62,21 @@ namespace API_Bus_Ticket_Booking.DTOs.Trip
 
         public int RouteId { get; set; }
 
-        public string FromCity { get; set; }
-            = string.Empty;
+        public string FromCity { get; set; } = string.Empty;
 
-        public string ToCity { get; set; }
-            = string.Empty;
+        public string ToCity { get; set; } = string.Empty;
 
         public int BusId { get; set; }
 
-        public string BusType { get; set; }
-            = string.Empty;
+        public string BusType { get; set; } = string.Empty;
 
         public int BoardingAddressId { get; set; }
 
         public int DroppingAddressId { get; set; }
 
-        public string BoardingCity { get; set; }
-            = string.Empty;
+        public string BoardingCity { get; set; } = string.Empty;
 
-        public string DroppingCity { get; set; }
-            = string.Empty;
+        public string DroppingCity { get; set; } = string.Empty;
 
         public DateTime DepartureTime { get; set; }
 
@@ -91,11 +86,9 @@ namespace API_Bus_Ticket_Booking.DTOs.Trip
 
         public int Driver2DriverId { get; set; }
 
-        public string Driver1Name { get; set; }
-            = string.Empty;
+        public string Driver1Name { get; set; } = string.Empty;
 
-        public string Driver2Name { get; set; }
-            = string.Empty;
+        public string Driver2Name { get; set; } = string.Empty;
 
         public int AvailableSeats { get; set; }
 
