@@ -13,9 +13,7 @@ namespace API_Bus_Ticket_Booking.Services
 
         private readonly IMapper _mapper;
 
-        public PaymentService(
-            IPaymentRepository paymentRepository,
-            IMapper mapper)
+        public PaymentService(IPaymentRepository paymentRepository, IMapper mapper)
         {
             _paymentRepository = paymentRepository;
 
@@ -23,19 +21,15 @@ namespace API_Bus_Ticket_Booking.Services
         }
 
         // Create Payment
-        public async Task<PaymentResponseDto>
-            CreatePaymentAsync(
-                CreatePaymentDto dto)
+        public async Task<PaymentResponseDto> CreatePaymentAsync(CreatePaymentDto dto)
         {
-            var existingPayment =
-                await _paymentRepository
-                    .GetPaymentByBookingIdAsync(
-                        dto.BookingId);
+            var existingPayment = await _paymentRepository.GetPaymentByBookingIdAsync(
+                dto.BookingId
+            );
 
             if (existingPayment != null)
             {
-                throw new ConflictException(
-                    "Payment already exists for this booking");
+                throw new ConflictException("Payment already exists for this booking");
             }
 
             var payment = new Payment
@@ -48,151 +42,94 @@ namespace API_Bus_Ticket_Booking.Services
 
                 PaymentDate = DateTime.Now,
 
-                PaymentStatus = dto.Amount > 0
-                    ? "Success"
-                    : "Failed"
+                PaymentStatus = dto.Amount > 0 ? "Success" : "Failed",
             };
 
-            var createdPayment =
-                await _paymentRepository
-                    .CreatePaymentAsync(payment);
+            var createdPayment = await _paymentRepository.CreatePaymentAsync(payment);
 
-            return _mapper.Map<
-                PaymentResponseDto>(
-                    createdPayment);
+            return _mapper.Map<PaymentResponseDto>(createdPayment);
         }
 
         // Get Payment By Id
-        public async Task<PaymentResponseDto>
-            GetPaymentByIdAsync(
-                int paymentId)
+        public async Task<PaymentResponseDto> GetPaymentByIdAsync(int paymentId)
         {
-            var payment =
-                await _paymentRepository
-                    .GetPaymentByIdAsync(
-                        paymentId);
+            var payment = await _paymentRepository.GetPaymentByIdAsync(paymentId);
 
             if (payment == null)
             {
                 return null!;
             }
 
-            return _mapper.Map<
-                PaymentResponseDto>(
-                    payment);
+            return _mapper.Map<PaymentResponseDto>(payment);
         }
 
         // Customer Payments
-        public async Task<
-            IEnumerable<PaymentResponseDto>>
-            GetCustomerPaymentsAsync(
-                int customerId)
+        public async Task<IEnumerable<PaymentResponseDto>> GetCustomerPaymentsAsync(int customerId)
         {
-            var payments =
-                await _paymentRepository
-                    .GetCustomerPaymentsAsync(
-                        customerId);
+            var payments = await _paymentRepository.GetCustomerPaymentsAsync(customerId);
 
-            return _mapper.Map<
-                IEnumerable<PaymentResponseDto>>(
-                    payments);
+            return _mapper.Map<IEnumerable<PaymentResponseDto>>(payments);
         }
 
         // Office Payments
-        public async Task<
-            IEnumerable<PaymentResponseDto>>
-            GetOfficePaymentsAsync(
-                int officeId)
+        public async Task<IEnumerable<PaymentResponseDto>> GetOfficePaymentsAsync(int officeId)
         {
-            var payments =
-                await _paymentRepository
-                    .GetOfficePaymentsAsync(
-                        officeId);
+            var payments = await _paymentRepository.GetOfficePaymentsAsync(officeId);
 
-            return _mapper.Map<
-                IEnumerable<PaymentResponseDto>>(
-                    payments);
+            return _mapper.Map<IEnumerable<PaymentResponseDto>>(payments);
         }
 
         // Agency Payments
-        public async Task<
-            IEnumerable<PaymentResponseDto>>
-            GetAgencyPaymentsAsync(
-                int agencyId)
+        public async Task<IEnumerable<PaymentResponseDto>> GetAgencyPaymentsAsync(int agencyId)
         {
-            var payments =
-                await _paymentRepository
-                    .GetAgencyPaymentsAsync(
-                        agencyId);
+            var payments = await _paymentRepository.GetAgencyPaymentsAsync(agencyId);
 
-            return _mapper.Map<
-                IEnumerable<PaymentResponseDto>>(
-                    payments);
+            return _mapper.Map<IEnumerable<PaymentResponseDto>>(payments);
         }
 
         // Revenue Summary
-        public async Task<RevenueSummaryDto>
-            GetRevenueSummaryAsync(
-                int agencyId,
-                int? officeId)
+        public async Task<RevenueSummaryDto> GetRevenueSummaryAsync(int agencyId, int? officeId)
         {
             if (officeId.HasValue)
             {
                 return new RevenueSummaryDto
                 {
-                    TotalRevenue =
-                        await _paymentRepository
-                            .GetTotalRevenueByOfficeAsync(
-                                officeId.Value),
+                    TotalRevenue = await _paymentRepository.GetTotalRevenueByOfficeAsync(
+                        officeId.Value
+                    ),
 
-                    TodayRevenue =
-                        await _paymentRepository
-                            .GetTodayRevenueByOfficeAsync(
-                                officeId.Value),
+                    TodayRevenue = await _paymentRepository.GetTodayRevenueByOfficeAsync(
+                        officeId.Value
+                    ),
 
-                    MonthlyRevenue =
-                        await _paymentRepository
-                            .GetMonthlyRevenueByOfficeAsync(
-                                officeId.Value)
+                    MonthlyRevenue = await _paymentRepository.GetMonthlyRevenueByOfficeAsync(
+                        officeId.Value
+                    ),
                 };
             }
 
             return new RevenueSummaryDto
             {
-                TotalRevenue =
-                    await _paymentRepository
-                        .GetTotalRevenueByAgencyAsync(
-                            agencyId),
+                TotalRevenue = await _paymentRepository.GetTotalRevenueByAgencyAsync(agencyId),
 
-                TodayRevenue =
-                    await _paymentRepository
-                        .GetTodayRevenueByAgencyAsync(
-                            agencyId),
+                TodayRevenue = await _paymentRepository.GetTodayRevenueByAgencyAsync(agencyId),
 
-                MonthlyRevenue =
-                    await _paymentRepository
-                        .GetMonthlyRevenueByAgencyAsync(
-                            agencyId)
+                MonthlyRevenue = await _paymentRepository.GetMonthlyRevenueByAgencyAsync(agencyId),
             };
         }
 
         // Dashboard
-        public async Task<PaymentDashboardDto>
-            GetDashboardAsync(
-                int agencyId,
-                int? officeId)
+        public async Task<PaymentDashboardDto> GetDashboardAsync(int agencyId, int? officeId)
         {
             if (officeId.HasValue)
             {
-                var successful =
-                    await _paymentRepository
-                        .GetSuccessfulPaymentsByOfficeAsync(
-                            officeId.Value);
+                var successful = await _paymentRepository.GetSuccessfulPaymentsByOfficeAsync(
+                    officeId.Value
+                );
 
-                var failed =
-                    await _paymentRepository
-                        .GetFailedPaymentsByOfficeAsync(
-                            officeId.Value);
+                var failed = await _paymentRepository.GetFailedPaymentsByOfficeAsync(
+                    officeId.Value
+                );
 
                 return new PaymentDashboardDto
                 {
@@ -200,49 +137,34 @@ namespace API_Bus_Ticket_Booking.Services
 
                     FailedPayments = failed,
 
-                    TotalRevenue =
-                        await _paymentRepository
-                            .GetTotalRevenueByOfficeAsync(
-                                officeId.Value),
+                    TotalRevenue = await _paymentRepository.GetTotalRevenueByOfficeAsync(
+                        officeId.Value
+                    ),
 
-                    TotalPayments =
-                        successful + failed
+                    TotalPayments = successful + failed,
                 };
             }
 
-            var agencySuccessful =
-                await _paymentRepository
-                    .GetSuccessfulPaymentsByAgencyAsync(
-                        agencyId);
+            var agencySuccessful = await _paymentRepository.GetSuccessfulPaymentsByAgencyAsync(
+                agencyId
+            );
 
-            var agencyFailed =
-                await _paymentRepository
-                    .GetFailedPaymentsByAgencyAsync(
-                        agencyId);
+            var agencyFailed = await _paymentRepository.GetFailedPaymentsByAgencyAsync(agencyId);
 
             return new PaymentDashboardDto
             {
-                SuccessfulPayments =
-                    agencySuccessful,
+                SuccessfulPayments = agencySuccessful,
 
-                FailedPayments =
-                    agencyFailed,
+                FailedPayments = agencyFailed,
 
-                TotalRevenue =
-                    await _paymentRepository
-                        .GetTotalRevenueByAgencyAsync(
-                            agencyId),
+                TotalRevenue = await _paymentRepository.GetTotalRevenueByAgencyAsync(agencyId),
 
-                TotalPayments =
-                    agencySuccessful + agencyFailed
+                TotalPayments = agencySuccessful + agencyFailed,
             };
         }
 
         // Analytics
-        public async Task<PaymentAnalyticsDto>
-            GetAnalyticsAsync(
-                int agencyId,
-                int? officeId)
+        public async Task<PaymentAnalyticsDto> GetAnalyticsAsync(int agencyId, int? officeId)
         {
             int successfulPayments;
 
@@ -254,51 +176,36 @@ namespace API_Bus_Ticket_Booking.Services
 
             if (officeId.HasValue)
             {
-                successfulPayments =
-                    await _paymentRepository
-                        .GetSuccessfulPaymentsByOfficeAsync(
-                            officeId.Value);
+                successfulPayments = await _paymentRepository.GetSuccessfulPaymentsByOfficeAsync(
+                    officeId.Value
+                );
 
-                failedPayments =
-                    await _paymentRepository
-                        .GetFailedPaymentsByOfficeAsync(
-                            officeId.Value);
+                failedPayments = await _paymentRepository.GetFailedPaymentsByOfficeAsync(
+                    officeId.Value
+                );
 
-                averageAmount =
-                    await _paymentRepository
-                        .GetAveragePaymentAmountByOfficeAsync(
-                            officeId.Value);
+                averageAmount = await _paymentRepository.GetAveragePaymentAmountByOfficeAsync(
+                    officeId.Value
+                );
 
-                topRoute =
-                    await _paymentRepository
-                        .GetTopPayingRouteByOfficeAsync(
-                            officeId.Value);
+                topRoute = await _paymentRepository.GetTopPayingRouteByOfficeAsync(officeId.Value);
             }
             else
             {
-                successfulPayments =
-                    await _paymentRepository
-                        .GetSuccessfulPaymentsByAgencyAsync(
-                            agencyId);
+                successfulPayments = await _paymentRepository.GetSuccessfulPaymentsByAgencyAsync(
+                    agencyId
+                );
 
-                failedPayments =
-                    await _paymentRepository
-                        .GetFailedPaymentsByAgencyAsync(
-                            agencyId);
+                failedPayments = await _paymentRepository.GetFailedPaymentsByAgencyAsync(agencyId);
 
-                averageAmount =
-                    await _paymentRepository
-                        .GetAveragePaymentAmountByAgencyAsync(
-                            agencyId);
+                averageAmount = await _paymentRepository.GetAveragePaymentAmountByAgencyAsync(
+                    agencyId
+                );
 
-                topRoute =
-                    await _paymentRepository
-                        .GetTopPayingRouteByAgencyAsync(
-                            agencyId);
+                topRoute = await _paymentRepository.GetTopPayingRouteByAgencyAsync(agencyId);
             }
 
-            int totalPayments =
-                successfulPayments + failedPayments;
+            int totalPayments = successfulPayments + failedPayments;
 
             double successRate = 0;
 
@@ -306,13 +213,9 @@ namespace API_Bus_Ticket_Booking.Services
 
             if (totalPayments > 0)
             {
-                successRate =
-                    ((double)successfulPayments /
-                    totalPayments) * 100;
+                successRate = ((double)successfulPayments / totalPayments) * 100;
 
-                failureRate =
-                    ((double)failedPayments /
-                    totalPayments) * 100;
+                failureRate = ((double)failedPayments / totalPayments) * 100;
             }
 
             return new PaymentAnalyticsDto
@@ -321,11 +224,9 @@ namespace API_Bus_Ticket_Booking.Services
 
                 FailureRate = failureRate,
 
-                AveragePaymentAmount =
-                    averageAmount,
+                AveragePaymentAmount = averageAmount,
 
-                TopPayingRoute =
-                    topRoute
+                TopPayingRoute = topRoute,
             };
         }
     }
