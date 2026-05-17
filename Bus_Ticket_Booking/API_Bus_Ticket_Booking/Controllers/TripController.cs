@@ -24,7 +24,10 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetAll()
         {
             var trips = await _tripService.GetAllTripsAsync();
-            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) retrieved successfully.");
+            var response = ApiResponse<object>.Ok(
+                trips,
+                $"{trips.Count} trip(s) retrieved successfully."
+            );
             return Ok(response);
         }
 
@@ -52,11 +55,19 @@ namespace API_Bus_Ticket_Booking.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<object>.Fail("Validation failed. Please check fromCity, toCity and tripDate.", 400));
+                return BadRequest(
+                    ApiResponse<object>.Fail(
+                        "Validation failed. Please check fromCity, toCity and tripDate.",
+                        400
+                    )
+                );
             }
 
             var trips = await _tripService.SearchTripsAsync(dto);
-            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) found from {dto.FromCity} to {dto.ToCity} on {dto.TripDate:yyyy-MM-dd}.");
+            var response = ApiResponse<object>.Ok(
+                trips,
+                $"{trips.Count} trip(s) found from {dto.FromCity} to {dto.ToCity} on {dto.TripDate:yyyy-MM-dd}."
+            );
             return Ok(response);
         }
 
@@ -68,7 +79,11 @@ namespace API_Bus_Ticket_Booking.Controllers
             try
             {
                 var seatMap = await _tripService.GetSeatMapAsync(id);
-                var response = ApiResponse<object>.Ok(seatMap, $"Seat map retrieved. {seatMap.AvailableSeats} seat(s) available out of {seatMap.TotalSeats}.");
+
+                var response = ApiResponse<object>.Ok(
+                    seatMap,
+                    $"Seat map retrieved. {seatMap.AvailableSeats} seat(s) available out of {seatMap.TotalSeats}."
+                );
                 return Ok(response);
             }
             catch (NotFoundException ex)
@@ -85,7 +100,10 @@ namespace API_Bus_Ticket_Booking.Controllers
             try
             {
                 var trips = await _tripService.GetTripsByRouteAsync(routeId);
-                var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) found for route ID {routeId}.");
+                var response = ApiResponse<object>.Ok(
+                    trips,
+                    $"{trips.Count} trip(s) found for route ID {routeId}."
+                );
                 return Ok(response);
             }
             catch (NotFoundException ex)
@@ -100,7 +118,10 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetByDate(DateTime date)
         {
             var trips = await _tripService.GetTripsByDateAsync(date);
-            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) scheduled on {date:yyyy-MM-dd}.");
+            var response = ApiResponse<object>.Ok(
+                trips,
+                $"{trips.Count} trip(s) scheduled on {date:yyyy-MM-dd}."
+            );
             return Ok(response);
         }
 
@@ -110,7 +131,10 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetByBus(int busId)
         {
             var trips = await _tripService.GetTripsByBusAsync(busId);
-            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) assigned to bus ID {busId}.");
+            var response = ApiResponse<object>.Ok(
+                trips,
+                $"{trips.Count} trip(s) assigned to bus ID {busId}."
+            );
             return Ok(response);
         }
 
@@ -120,7 +144,10 @@ namespace API_Bus_Ticket_Booking.Controllers
         public async Task<IActionResult> GetByDriver(int driverId)
         {
             var trips = await _tripService.GetTripsByDriverAsync(driverId);
-            var response = ApiResponse<object>.Ok(trips, $"{trips.Count} trip(s) assigned to driver ID {driverId}.");
+            var response = ApiResponse<object>.Ok(
+                trips,
+                $"{trips.Count} trip(s) assigned to driver ID {driverId}."
+            );
             return Ok(response);
         }
 
@@ -141,7 +168,12 @@ namespace API_Bus_Ticket_Booking.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<object>.Fail("Validation failed. Please check all required fields.", 400));
+                return BadRequest(
+                    ApiResponse<object>.Fail(
+                        "Validation failed. Please check all required fields.",
+                        400
+                    )
+                );
             }
 
             try
@@ -171,7 +203,12 @@ namespace API_Bus_Ticket_Booking.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<object>.Fail("Validation failed. Please check the provided fields.", 400));
+                return BadRequest(
+                    ApiResponse<object>.Fail(
+                        "Validation failed. Please check the provided fields.",
+                        400
+                    )
+                );
             }
 
             try
@@ -202,7 +239,10 @@ namespace API_Bus_Ticket_Booking.Controllers
             try
             {
                 await _tripService.DeleteTripAsync(id);
-                var response = ApiResponse<object>.Ok(null, $"Trip with ID {id} deleted successfully.");
+                var response = ApiResponse<object>.Ok(
+                    null,
+                    $"Trip with ID {id} deleted successfully."
+                );
                 return Ok(response);
             }
             catch (NotFoundException ex)
@@ -215,37 +255,30 @@ namespace API_Bus_Ticket_Booking.Controllers
 
         [HttpGet("office/{officeId:int}")]
         [Authorize(Roles = "Office")]
-        public async Task<IActionResult>
-            GetByOffice(int officeId)
+        public async Task<IActionResult> GetByOffice(int officeId)
         {
-            var trips =
-                await _tripService
-                    .GetTripsByOfficeAsync(officeId);
+            var trips = await _tripService.GetTripsByOfficeAsync(officeId);
 
-            var response =
-                ApiResponse<object>.Ok(
-                    trips,
-                    $"{trips.Count} office trip(s) retrieved successfully.");
+            var response = ApiResponse<object>.Ok(
+                trips,
+                $"{trips.Count} office trip(s) retrieved successfully."
+            );
 
             return Ok(response);
         }
-
 
         // GET api/trips/agency/1
 
         [HttpGet("agency/{agencyId:int}")]
         [Authorize(Roles = "Agency")]
-        public async Task<IActionResult>
-            GetByAgency(int agencyId)
+        public async Task<IActionResult> GetByAgency(int agencyId)
         {
-            var trips =
-                await _tripService
-                    .GetTripsByAgencyAsync(agencyId);
+            var trips = await _tripService.GetTripsByAgencyAsync(agencyId);
 
-            var response =
-                ApiResponse<object>.Ok(
-                    trips,
-                    $"{trips.Count} agency trip(s) retrieved successfully.");
+            var response = ApiResponse<object>.Ok(
+                trips,
+                $"{trips.Count} agency trip(s) retrieved successfully."
+            );
 
             return Ok(response);
         }

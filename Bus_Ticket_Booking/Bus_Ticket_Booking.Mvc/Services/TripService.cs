@@ -1,10 +1,10 @@
-﻿using Bus_Ticket_Booking.Mvc.Helpers;
+﻿using System.Text;
+using Bus_Ticket_Booking.Mvc.Helpers;
 using Bus_Ticket_Booking.Mvc.Models.Common;
 using Bus_Ticket_Booking.Mvc.Services.Interfaces;
 using Bus_Ticket_Booking.Mvc.ViewModels.Trip;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace Bus_Ticket_Booking.Mvc.Services
 {
@@ -12,111 +12,80 @@ namespace Bus_Ticket_Booking.Mvc.Services
     {
         private readonly HttpClient _httpClient;
 
-        private readonly IConfiguration
-            _configuration;
+        private readonly IConfiguration _configuration;
 
         private readonly string _baseUrl;
 
-        public TripService(
-            HttpClient httpClient,
-            IConfiguration configuration)
+        public TripService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
 
             _configuration = configuration;
 
-            _baseUrl =
-                _configuration["ApiSettings:BaseUrl"]
-                ?? "";
+            _baseUrl = _configuration["ApiSettings:BaseUrl"] ?? "";
         }
 
         // =========================
         // GET ALL TRIPS
         // =========================
 
-        public async Task<List<TripViewModel>>
-            GetAllTripsAsync()
+        public async Task<List<TripViewModel>> GetAllTripsAsync()
         {
-            var response =
-                await _httpClient.GetAsync(
-                    $"{_baseUrl}trips");
+            var response = await _httpClient.GetAsync($"{_baseUrl}trips");
 
             if (!response.IsSuccessStatusCode)
             {
                 return new List<TripViewModel>();
             }
 
-            var content =
-                await response.Content
-                    .ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-            var result =
-                JsonConvert.DeserializeObject<
-                    ApiResponse<List<TripViewModel>>>
-                    (content);
+            var result = JsonConvert.DeserializeObject<ApiResponse<List<TripViewModel>>>(content);
 
-            return result?.Data
-                   ?? new List<TripViewModel>();
+            return result?.Data ?? new List<TripViewModel>();
         }
 
         // =========================
         // SEARCH TRIPS
         // =========================
 
-        public async Task<List<TripViewModel>>
-            SearchTripsAsync(
-                TripSearchViewModel model)
+        public async Task<List<TripViewModel>> SearchTripsAsync(TripSearchViewModel model)
         {
-            var response =
-                await _httpClient.GetAsync(
-                    $"{_baseUrl}trips/search" +
-                    $"?fromCity={model.FromCity}" +
-                    $"&toCity={model.ToCity}" +
-                    $"&tripDate={model.TripDate:yyyy-MM-dd}");
+            var response = await _httpClient.GetAsync(
+                $"{_baseUrl}trips/search"
+                    + $"?fromCity={model.FromCity}"
+                    + $"&toCity={model.ToCity}"
+                    + $"&tripDate={model.TripDate:yyyy-MM-dd}"
+            );
 
             if (!response.IsSuccessStatusCode)
             {
                 return new List<TripViewModel>();
             }
 
-            var content =
-                await response.Content
-                    .ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-            var result =
-                JsonConvert.DeserializeObject<
-                    ApiResponse<List<TripViewModel>>>
-                    (content);
+            var result = JsonConvert.DeserializeObject<ApiResponse<List<TripViewModel>>>(content);
 
-            return result?.Data
-                   ?? new List<TripViewModel>();
+            return result?.Data ?? new List<TripViewModel>();
         }
 
         // =========================
         // SEAT MAP
         // =========================
 
-        public async Task<SeatMapViewModel?>
-            GetSeatMapAsync(
-                int tripId)
+        public async Task<SeatMapViewModel?> GetSeatMapAsync(int tripId)
         {
-            var response =
-                await _httpClient.GetAsync(
-                    $"{_baseUrl}trips/{tripId}/seats");
+            var response = await _httpClient.GetAsync($"{_baseUrl}trips/{tripId}/seats");
 
             if (!response.IsSuccessStatusCode)
             {
                 return null;
             }
 
-            var content =
-                await response.Content
-                    .ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-            var result =
-                JsonConvert.DeserializeObject<
-                    ApiResponse<SeatMapViewModel>>
-                    (content);
+            var result = JsonConvert.DeserializeObject<ApiResponse<SeatMapViewModel>>(content);
 
             return result?.Data;
         }
@@ -125,68 +94,43 @@ namespace Bus_Ticket_Booking.Mvc.Services
         // OFFICE TRIPS
         // =========================
 
-        public async Task<List<TripViewModel>>
-    GetOfficeTripsAsync(
-        string token)
+        public async Task<List<TripViewModel>> GetOfficeTripsAsync(string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers
-                .AuthenticationHeaderValue(
-                    "Bearer",
-                    token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            var officeId =
-                JwtHelper.GetClaim(
-                    token,
-                    "OfficeId");
+            var officeId = JwtHelper.GetClaim(token, "OfficeId");
 
-            var response =
-                await _httpClient.GetAsync(
-                    $"{_baseUrl}trips/office/{officeId}");
+            var response = await _httpClient.GetAsync($"{_baseUrl}trips/office/{officeId}");
 
             if (!response.IsSuccessStatusCode)
             {
                 return new List<TripViewModel>();
             }
 
-            var content =
-                await response.Content
-                    .ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-            var result =
-                JsonConvert.DeserializeObject<
-                    ApiResponse<List<TripViewModel>>>(
-                        content);
+            var result = JsonConvert.DeserializeObject<ApiResponse<List<TripViewModel>>>(content);
 
-            return result?.Data
-                   ?? new List<TripViewModel>();
+            return result?.Data ?? new List<TripViewModel>();
         }
 
         // =========================
         // GET TRIP BY ID
         // =========================
 
-        public async Task<TripViewModel?>
-            GetTripByIdAsync(
-                int tripId)
+        public async Task<TripViewModel?> GetTripByIdAsync(int tripId)
         {
-            var response =
-                await _httpClient.GetAsync(
-                    $"{_baseUrl}trips/{tripId}");
+            var response = await _httpClient.GetAsync($"{_baseUrl}trips/{tripId}");
 
             if (!response.IsSuccessStatusCode)
             {
                 return null;
             }
 
-            var content =
-                await response.Content
-                    .ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-            var result =
-                JsonConvert.DeserializeObject<
-                    ApiResponse<TripViewModel>>
-                    (content);
+            var result = JsonConvert.DeserializeObject<ApiResponse<TripViewModel>>(content);
 
             return result?.Data;
         }
@@ -195,16 +139,10 @@ namespace Bus_Ticket_Booking.Mvc.Services
         // CREATE TRIP
         // =========================
 
-        public async Task<bool>
-            CreateTripAsync(
-                CreateTripViewModel model,
-                string token)
+        public async Task<bool> CreateTripAsync(CreateTripViewModel model, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers
-                .AuthenticationHeaderValue(
-                    "Bearer",
-                    token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             var request = new
             {
@@ -217,23 +155,14 @@ namespace Bus_Ticket_Booking.Mvc.Services
                 Driver1DriverId = model.Driver1DriverId,
                 Driver2DriverId = model.Driver2DriverId,
                 Fare = model.Fare,
-                TripDate = model.TripDate
+                TripDate = model.TripDate,
             };
 
-            var json =
-                JsonConvert.SerializeObject(
-                    request);
+            var json = JsonConvert.SerializeObject(request);
 
-            var content =
-                new StringContent(
-                    json,
-                    Encoding.UTF8,
-                    "application/json");
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response =
-                await _httpClient.PostAsync(
-                    $"{_baseUrl}trips",
-                    content);
+            var response = await _httpClient.PostAsync($"{_baseUrl}trips", content);
 
             return response.IsSuccessStatusCode;
         }
@@ -242,60 +171,37 @@ namespace Bus_Ticket_Booking.Mvc.Services
         // UPDATE TRIP
         // =========================
 
-        public async Task<bool>
-            UpdateTripAsync(
-                UpdateTripViewModel model,
-                string token)
+        public async Task<bool> UpdateTripAsync(UpdateTripViewModel model, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers
-                .AuthenticationHeaderValue(
-                    "Bearer",
-                    token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             var request = new
             {
                 BusId = model.BusId,
 
-                BoardingAddressId =
-        model.BoardingAddressId,
+                BoardingAddressId = model.BoardingAddressId,
 
-                DroppingAddressId =
-        model.DroppingAddressId,
+                DroppingAddressId = model.DroppingAddressId,
 
-                DepartureTime =
-        model.DepartureTime,
+                DepartureTime = model.DepartureTime,
 
-                ArrivalTime =
-        model.ArrivalTime,
+                ArrivalTime = model.ArrivalTime,
 
-                Driver1DriverId =
-        model.Driver1DriverId,
+                Driver1DriverId = model.Driver1DriverId,
 
-                Driver2DriverId =
-        model.Driver2DriverId,
+                Driver2DriverId = model.Driver2DriverId,
 
-                Fare =
-        model.Fare,
+                Fare = model.Fare,
 
-                TripDate =
-        model.TripDate
+                TripDate = model.TripDate,
             };
 
-            var json =
-                JsonConvert.SerializeObject(
-                    request);
+            var json = JsonConvert.SerializeObject(request);
 
-            var content =
-                new StringContent(
-                    json,
-                    Encoding.UTF8,
-                    "application/json");
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response =
-                await _httpClient.PutAsync(
-                    $"{_baseUrl}trips/{model.TripId}",
-                    content);
+            var response = await _httpClient.PutAsync($"{_baseUrl}trips/{model.TripId}", content);
 
             return response.IsSuccessStatusCode;
         }
@@ -304,20 +210,12 @@ namespace Bus_Ticket_Booking.Mvc.Services
         // DELETE TRIP
         // =========================
 
-        public async Task<bool>
-            DeleteTripAsync(
-                int tripId,
-                string token)
+        public async Task<bool> DeleteTripAsync(int tripId, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers
-                .AuthenticationHeaderValue(
-                    "Bearer",
-                    token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            var response =
-                await _httpClient.DeleteAsync(
-                    $"{_baseUrl}trips/{tripId}");
+            var response = await _httpClient.DeleteAsync($"{_baseUrl}trips/{tripId}");
 
             return response.IsSuccessStatusCode;
         }
@@ -326,105 +224,71 @@ namespace Bus_Ticket_Booking.Mvc.Services
         // ROUTES DROPDOWN
         // =========================
 
-        public async Task<List<SelectListItem>>
-            GetRoutesDropdownAsync(
-                string token)
+        public async Task<List<SelectListItem>> GetRoutesDropdownAsync(string token)
         {
-            return await GetDropdownAsync(
-                $"{_baseUrl}dropdowns/routes",
-                token);
+            return await GetDropdownAsync($"{_baseUrl}dropdowns/routes", token);
         }
 
         // =========================
         // BUSES DROPDOWN
         // =========================
 
-        public async Task<List<SelectListItem>>
-    GetBusesDropdownAsync(
-        string token)
+        public async Task<List<SelectListItem>> GetBusesDropdownAsync(string token)
         {
-            var officeId =
-                JwtHelper.GetClaim(
-                    token,
-                    "OfficeId");
+            var officeId = JwtHelper.GetClaim(token, "OfficeId");
 
-            return await GetDropdownAsync(
-                $"{_baseUrl}dropdowns/buses/{officeId}",
-                token);
+            return await GetDropdownAsync($"{_baseUrl}dropdowns/buses/{officeId}", token);
         }
 
         // =========================
         // ADDRESSES DROPDOWN
         // =========================
 
-        public async Task<List<SelectListItem>>
-            GetAddressesDropdownAsync(
-                string token)
+        public async Task<List<SelectListItem>> GetAddressesDropdownAsync(string token)
         {
-            return await GetDropdownAsync(
-                $"{_baseUrl}dropdowns/addresses",
-                token);
+            return await GetDropdownAsync($"{_baseUrl}dropdowns/addresses", token);
         }
 
         // =========================
         // DRIVERS DROPDOWN
         // =========================
 
-        public async Task<List<SelectListItem>>
-    GetDriversDropdownAsync(
-        string token)
+        public async Task<List<SelectListItem>> GetDriversDropdownAsync(string token)
         {
-            var officeId =
-                JwtHelper.GetClaim(
-                    token,
-                    "OfficeId");
+            var officeId = JwtHelper.GetClaim(token, "OfficeId");
 
-            return await GetDropdownAsync(
-                $"{_baseUrl}dropdowns/drivers/{officeId}",
-                token);
+            return await GetDropdownAsync($"{_baseUrl}dropdowns/drivers/{officeId}", token);
         }
 
         // =========================
         // COMMON DROPDOWN METHOD
         // =========================
 
-        private async Task<List<SelectListItem>>
-            GetDropdownAsync(
-                string url,
-                string token)
+        private async Task<List<SelectListItem>> GetDropdownAsync(string url, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers
-                .AuthenticationHeaderValue(
-                    "Bearer",
-                    token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            var response =
-                await _httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
             {
                 return new List<SelectListItem>();
             }
 
-            var content =
-                await response.Content
-                    .ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-            var result =
-                JsonConvert.DeserializeObject<
-                    ApiResponse<List<DropdownResponseModel>>>(
-                        content);
+            var result = JsonConvert.DeserializeObject<ApiResponse<List<DropdownResponseModel>>>(
+                content
+            );
 
-            return result?.Data?
-                .Select(x =>
-                    new SelectListItem
+            return result
+                    ?.Data?.Select(x => new SelectListItem
                     {
                         Value = x.Id.ToString(),
-                        Text = x.Name
+                        Text = x.Name,
                     })
-                .ToList()
-
+                    .ToList()
                 ?? new List<SelectListItem>();
         }
     }
