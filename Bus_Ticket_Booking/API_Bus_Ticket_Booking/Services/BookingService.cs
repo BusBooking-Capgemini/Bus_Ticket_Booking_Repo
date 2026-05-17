@@ -13,18 +13,14 @@ namespace API_Bus_Ticket_Booking.Services
 
         private readonly IMapper _mapper;
 
-        public BookingService(
-            IBookingRepository bookingRepository,
-            IMapper mapper)
+        public BookingService(IBookingRepository bookingRepository, IMapper mapper)
         {
             _bookingRepository = bookingRepository;
 
             _mapper = mapper;
         }
 
-        public async Task<BookingResponseDto>
-            CreateBookingAsync(
-                CreateBookingDto dto)
+        public async Task<BookingResponseDto> CreateBookingAsync(CreateBookingDto dto)
         {
             var booking = new Booking
             {
@@ -32,54 +28,39 @@ namespace API_Bus_Ticket_Booking.Services
 
                 SeatNumber = dto.SeatNumber,
 
-                Status = "Booked"
+                Status = "Booked",
             };
 
-            var createdBooking =
-                await _bookingRepository
-                    .CreateBookingAsync(booking);
+            var createdBooking = await _bookingRepository.CreateBookingAsync(booking);
 
             if (createdBooking == null)
             {
-                throw new NotFoundException(
-                    "Seat not found");
+                throw new NotFoundException("Seat not found");
             }
 
             return MapBooking(createdBooking);
         }
 
-        public async Task CancelBookingAsync(
-            int bookingId)
+        public async Task CancelBookingAsync(int bookingId)
         {
-            var booking =
-                await _bookingRepository
-                    .GetBookingByIdAsync(
-                        bookingId);
+            var booking = await _bookingRepository.GetBookingByIdAsync(bookingId);
 
             if (booking == null)
             {
-                throw new NotFoundException(
-                    "Booking not found");
+                throw new NotFoundException("Booking not found");
             }
 
             if (booking.Status == "Available")
             {
-                throw new ConflictException(
-                    "Seat already available");
+                throw new ConflictException("Seat already available");
             }
 
-            await _bookingRepository
-                .CancelBookingAsync(booking);
+            await _bookingRepository.CancelBookingAsync(booking);
         }
 
-        public async Task<BookingResponseDto>
-            GetBookingByIdAsync(
-                int bookingId)
+        public async Task<BookingResponseDto> GetBookingByIdAsync(int bookingId)
         {
-            var booking =
-                await _bookingRepository
-                    .GetBookingByIdAsync(
-                        bookingId);
+            var booking = await _bookingRepository.GetBookingByIdAsync(bookingId);
 
             if (booking == null)
             {
@@ -89,151 +70,89 @@ namespace API_Bus_Ticket_Booking.Services
             return MapBooking(booking);
         }
 
-        public async Task<
-            IEnumerable<BookingResponseDto>>
-            GetCustomerBookingsAsync(
-                int customerId)
+        public async Task<IEnumerable<BookingResponseDto>> GetCustomerBookingsAsync(int customerId)
         {
-            var bookings =
-                await _bookingRepository
-                    .GetCustomerBookingsAsync(
-                        customerId);
+            var bookings = await _bookingRepository.GetCustomerBookingsAsync(customerId);
 
             return bookings.Select(MapBooking);
         }
 
-        public async Task<
-            IEnumerable<BookingResponseDto>>
-            GetOfficeBookingsAsync(
-                int officeId)
+        public async Task<IEnumerable<BookingResponseDto>> GetOfficeBookingsAsync(int officeId)
         {
-            var bookings =
-                await _bookingRepository
-                    .GetOfficeBookingsAsync(
-                        officeId);
+            var bookings = await _bookingRepository.GetOfficeBookingsAsync(officeId);
 
             return bookings.Select(MapBooking);
         }
 
-        public async Task<
-            IEnumerable<BookingResponseDto>>
-            GetAgencyBookingsAsync(
-                int agencyId)
+        public async Task<IEnumerable<BookingResponseDto>> GetAgencyBookingsAsync(int agencyId)
         {
-            var bookings =
-                await _bookingRepository
-                    .GetAgencyBookingsAsync(
-                        agencyId);
+            var bookings = await _bookingRepository.GetAgencyBookingsAsync(agencyId);
 
             return bookings.Select(MapBooking);
         }
 
-        public async Task<
-            IEnumerable<BookingResponseDto>>
-            GetBookingsByTripAsync(
-                int tripId)
+        public async Task<IEnumerable<BookingResponseDto>> GetBookingsByTripAsync(int tripId)
         {
-            var bookings =
-                await _bookingRepository
-                    .GetBookingsByTripAsync(
-                        tripId);
+            var bookings = await _bookingRepository.GetBookingsByTripAsync(tripId);
 
             return bookings.Select(MapBooking);
         }
 
-        private BookingResponseDto
-            MapBooking(
-                Booking b)
+        private BookingResponseDto MapBooking(Booking b)
         {
             return new BookingResponseDto
             {
-                BookingId =
-                    b.BookingId,
+                BookingId = b.BookingId,
 
-                TripId =
-                    b.TripId ?? 0,
+                TripId = b.TripId ?? 0,
 
-                SeatNumber =
-                    b.SeatNumber,
+                SeatNumber = b.SeatNumber,
 
-                Status =
-                    b.Status,
+                Status = b.Status,
 
-                FromCity =
-                    b.Trip?.Route?.FromCity
-                        ?? "",
+                FromCity = b.Trip?.Route?.FromCity ?? "",
 
-                ToCity =
-                    b.Trip?.Route?.ToCity
-                        ?? "",
+                ToCity = b.Trip?.Route?.ToCity ?? "",
 
-                TripDate =
-                    b.Trip?.TripDate
-                        ?? DateTime.MinValue,
+                TripDate = b.Trip?.TripDate ?? DateTime.MinValue,
 
-                DepartureTime =
-                    b.Trip?.DepartureTime
-                        ?? DateTime.MinValue,
+                DepartureTime = b.Trip?.DepartureTime ?? DateTime.MinValue,
 
-                ArrivalTime =
-                    b.Trip?.ArrivalTime
-                        ?? DateTime.MinValue,
+                ArrivalTime = b.Trip?.ArrivalTime ?? DateTime.MinValue,
 
-                Fare =
-                    b.Trip?.Fare
-                        ?? 0,
+                Fare = b.Trip?.Fare ?? 0,
 
-                PaymentStatus =
-                    b.Payments
-                        .FirstOrDefault()?.PaymentStatus
-                        ?? "Pending",
+                PaymentStatus = b.Payments.FirstOrDefault()?.PaymentStatus ?? "Pending",
 
-                PaidAmount =
-                    b.Payments
-                        .FirstOrDefault()?.Amount
-                        ?? 0
+                PaidAmount = b.Payments.FirstOrDefault()?.Amount ?? 0,
             };
         }
 
-        public async Task<BookingDashboardDto>
-            GetDashboardAsync(
-                int agencyId,
-                int? officeId)
+        public async Task<BookingDashboardDto> GetDashboardAsync(int agencyId, int? officeId)
         {
             if (officeId.HasValue)
             {
                 return new BookingDashboardDto
                 {
-                    TotalBookings =
-                        await _bookingRepository
-                            .GetTotalBookingsByOfficeAsync(
-                                officeId.Value),
+                    TotalBookings = await _bookingRepository.GetTotalBookingsByOfficeAsync(
+                        officeId.Value
+                    ),
 
-                    ActiveBookings =
-                        await _bookingRepository
-                            .GetActiveBookingsByOfficeAsync(
-                                officeId.Value)
+                    ActiveBookings = await _bookingRepository.GetActiveBookingsByOfficeAsync(
+                        officeId.Value
+                    ),
                 };
             }
 
             return new BookingDashboardDto
             {
-                TotalBookings =
-                    await _bookingRepository
-                        .GetTotalBookingsByAgencyAsync(
-                            agencyId),
+                TotalBookings = await _bookingRepository.GetTotalBookingsByAgencyAsync(agencyId),
 
-                ActiveBookings =
-                    await _bookingRepository
-                        .GetActiveBookingsByAgencyAsync(
-                            agencyId)
+                ActiveBookings = await _bookingRepository.GetActiveBookingsByAgencyAsync(agencyId),
             };
         }
 
-        public async Task<BookingAnalyticsDto>
-            GetAnalyticsAsync(
-                int agencyId,
-                int? officeId)
+        public async Task<BookingAnalyticsDto> GetAnalyticsAsync(int agencyId, int? officeId)
         {
             double occupancyRate;
 
@@ -243,37 +162,29 @@ namespace API_Bus_Ticket_Booking.Services
 
             if (officeId.HasValue)
             {
-                occupancyRate =
-                    await _bookingRepository
-                        .GetOccupancyRateByOfficeAsync(
-                            officeId.Value);
+                occupancyRate = await _bookingRepository.GetOccupancyRateByOfficeAsync(
+                    officeId.Value
+                );
 
-                mostBookedTripId =
-                    await _bookingRepository
-                        .GetMostBookedTripByOfficeAsync(
-                            officeId.Value);
+                mostBookedTripId = await _bookingRepository.GetMostBookedTripByOfficeAsync(
+                    officeId.Value
+                );
 
-                mostPopularRoute =
-                    await _bookingRepository
-                        .GetMostPopularRouteByOfficeAsync(
-                            officeId.Value);
+                mostPopularRoute = await _bookingRepository.GetMostPopularRouteByOfficeAsync(
+                    officeId.Value
+                );
             }
             else
             {
-                occupancyRate =
-                    await _bookingRepository
-                        .GetOccupancyRateByAgencyAsync(
-                            agencyId);
+                occupancyRate = await _bookingRepository.GetOccupancyRateByAgencyAsync(agencyId);
 
-                mostBookedTripId =
-                    await _bookingRepository
-                        .GetMostBookedTripByAgencyAsync(
-                            agencyId);
+                mostBookedTripId = await _bookingRepository.GetMostBookedTripByAgencyAsync(
+                    agencyId
+                );
 
-                mostPopularRoute =
-                    await _bookingRepository
-                        .GetMostPopularRouteByAgencyAsync(
-                            agencyId);
+                mostPopularRoute = await _bookingRepository.GetMostPopularRouteByAgencyAsync(
+                    agencyId
+                );
             }
 
             return new BookingAnalyticsDto
@@ -282,7 +193,7 @@ namespace API_Bus_Ticket_Booking.Services
 
                 MostBookedTripId = mostBookedTripId,
 
-                MostPopularRoute = mostPopularRoute
+                MostPopularRoute = mostPopularRoute,
             };
         }
     }
