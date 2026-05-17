@@ -1,0 +1,202 @@
+@model Bus_Ticket_Booking.Mvc.ViewModels.Review.CreateReviewViewModel
+
+@{
+    ViewData["Title"] = "Write a Review";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-header bg-warning text-dark rounded-top-4 py-3 px-4">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-star-fill fs-5"></i>
+
+                        <h5 class="mb-0 fw-bold">
+
+                            Write a Review
+
+                        </h5>
+
+                    </div>
+
+                    <p class="mb-0 mt-1 small fw-normal opacity-75">
+
+                        @Model.FromCity → @Model.ToCity &nbsp;·&nbsp; Trip #@Model.TripId
+
+                    </p>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- VALIDATION SUMMARY -->
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger rounded-3 small">
+
+                            <ul class="mb-0 ps-3">
+
+                                @foreach (var error in ViewData.ModelState.Values
+                                    .SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+
+                            </ul>
+
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="TripId" />
+                        <input type="hidden" asp-for="FromCity" />
+                        <input type="hidden" asp-for="ToCity" />
+
+
+                        <!-- STAR RATING -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Your Rating <span class="text-danger">*</span>
+
+                            </label>
+
+                            <div class="star-rating d-flex gap-2 flex-row-reverse justify-content-end">
+
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    <input type="radio"
+                                           class="d-none"
+                                           name="Rating"
+                                           id="star@(i)"
+                                           value="@i"
+                                           @(Model.Rating == i ? "checked" : "") />
+
+                                    <label for="star@(i)"
+                                           class="star-label fs-2"
+                                           title="@i star@(i > 1 ? "s" : "")">
+
+                                        ★
+
+                                    </label>
+                                }
+
+                            </div>
+
+                            <span asp-validation-for="Rating"
+                                  class="text-danger small"></span>
+
+                        </div>
+
+
+                        <!-- COMMENT -->
+
+                        <div class="mb-4">
+
+                            <label asp-for="Comment"
+                                   class="form-label fw-semibold">
+
+                                Comment <span class="text-muted fw-normal">(optional)</span>
+
+                            </label>
+
+                            <textarea asp-for="Comment"
+                                      class="form-control rounded-3"
+                                      rows="4"
+                                      maxlength="1000"
+                                      placeholder="Share your experience..."></textarea>
+
+                            <span asp-validation-for="Comment"
+                                  class="text-danger small"></span>
+
+                            <div class="text-end text-muted small mt-1">
+
+                                <span id="charCount">0</span>/1000
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+
+                        <div class="d-flex gap-3">
+
+                            <button type="submit"
+                                    class="btn btn-warning fw-semibold px-4">
+
+                                <i class="bi bi-send me-1"></i> Submit Review
+
+                            </button>
+
+                            <a asp-controller="Review"
+                               asp-action="MyReviews"
+                               class="btn btn-outline-secondary px-4">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .star-rating .star-label {
+        cursor: pointer;
+        color: #ccc;
+        transition: color 0.15s;
+        line-height: 1;
+    }
+
+    .star-rating input:checked ~ .star-label,
+    .star-rating .star-label:hover,
+    .star-rating .star-label:hover ~ .star-label {
+        color: #ffc107;
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <script>
+
+        const textarea = document.querySelector('textarea[name="Comment"]');
+        const counter = document.getElementById('charCount');
+
+        if (textarea && counter) {
+            counter.textContent = textarea.value.length;
+            textarea.addEventListener('input', () => {
+                counter.textContent = textarea.value.length;
+            });
+        }
+
+    </script>
+
+}

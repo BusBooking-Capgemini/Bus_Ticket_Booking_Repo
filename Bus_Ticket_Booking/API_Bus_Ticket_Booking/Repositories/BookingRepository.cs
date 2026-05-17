@@ -151,6 +151,22 @@ namespace API_Bus_Ticket_Booking.Repositories
             await SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Checks whether a customer has a confirmed (Booked) booking for the given trip.
+        /// Used by ReviewService to enforce that only customers who have booked a trip can review it.
+        /// </summary>
+        public async Task<bool> CustomerHasBookedTripAsync(int customerId, int tripId)
+        {
+            return await _context
+                .Payments.Include(p => p.Booking)
+                .AnyAsync(p =>
+                    p.CustomerId == customerId
+                    && p.Booking != null
+                    && p.Booking.TripId == tripId
+                    && p.Booking.Status == "Booked"
+                );
+        }
+
         public async Task<int> GetTotalBookingsByOfficeAsync(int officeId)
         {
             return await _context.Bookings.CountAsync(b =>
@@ -196,7 +212,6 @@ namespace API_Bus_Ticket_Booking.Repositories
             }
 
             double totalCapacity = trips.Sum(t => t.Bus.Capacity);
-
             double bookedSeats = trips.Sum(t => t.Bus.Capacity - t.AvailableSeats);
 
             return (bookedSeats / totalCapacity) * 100;
@@ -218,7 +233,6 @@ namespace API_Bus_Ticket_Booking.Repositories
             }
 
             double totalCapacity = trips.Sum(t => t.Bus.Capacity);
-
             double bookedSeats = trips.Sum(t => t.Bus.Capacity - t.AvailableSeats);
 
             return (bookedSeats / totalCapacity) * 100;

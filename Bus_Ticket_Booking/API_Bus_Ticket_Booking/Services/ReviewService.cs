@@ -1,4 +1,3 @@
-using API_Bus_Ticket_Booking.DTOs.Booking;
 using API_Bus_Ticket_Booking.DTOs.Review;
 using API_Bus_Ticket_Booking.Exceptions;
 using API_Bus_Ticket_Booking.Models;
@@ -10,25 +9,26 @@ namespace API_Bus_Ticket_Booking.Services;
 public class ReviewService : IReviewService
 {
     private readonly IReviewRepository _reviewRepo;
-
-    // private readonly IBookingRepository _bookingRepo;
+    private readonly IBookingRepository _bookingRepo;
     private readonly ICustomerRepository _customerRepo;
 
-    public ReviewService(IReviewRepository reviewRepo, ICustomerRepository customerRepo)
+    public ReviewService(
+        IReviewRepository reviewRepo,
+        IBookingRepository bookingRepo,
+        ICustomerRepository customerRepo
+    )
     {
         _reviewRepo = reviewRepo;
-        // _bookingRepo = bookingRepo;
+        _bookingRepo = bookingRepo;
         _customerRepo = customerRepo;
     }
 
     public async Task<List<ReviewResponseDto>> GetCustomerReviewsAsync(int customerId)
     {
         var reviews = await _reviewRepo.GetByCustomerIdAsync(customerId);
-
         return reviews.Select(MapToDto).ToList();
     }
 
-    // public async Task<ReviewResponseDto?> GetReviewByIdAsync(int reviewId)
     public async Task<ReviewResponseDto?> GetReviewByIdAsync(int reviewId)
     {
         var review = await _reviewRepo.GetByIdAsync(reviewId);
@@ -39,119 +39,51 @@ public class ReviewService : IReviewService
         return MapToDto(review);
     }
 
-    // {
-    //     var review = await _reviewRepo.GetByIdAsync(reviewId);
+    public async Task<(bool success, string message, ReviewResponseDto? review)> CreateReviewAsync(
+        int customerId,
+        ReviewRequestDto dto
+    )
+    {
+        // Validate customer exists
+        if (!await _customerRepo.ExistsAsync(customerId))
+            throw new NotFoundException("Customer not found.");
 
-    //     return review == null ? null : MapToDto(review);
-    // }
+        // TripId is required for creation
+        if (dto.TripId == null || dto.TripId <= 0)
+            throw new ValidationException("TripId is required.");
 
-    // public async Task<(bool success, string message, ReviewResponseDto? review)> CreateReviewAsync(
-    //     int customerId,
-    //     ReviewCreateDto dto
-    // )
-    // {
-    //     if (!await _customerRepo.ExistsAsync(customerId))
-    //     {
-    //         throw new NotFoundException("Customer not found.");
-    //         return (false, "Customer not found.", null);
-    //     }
+        // Rating is required for creation
+        if (dto.Rating == null || dto.Rating < 1 || dto.Rating > 5)
+            throw new ValidationException("Rating is required and must be between 1 and 5.");
 
-    //     if (dto.Rating < 1 || dto.Rating > 5)
-    //         return (false, "Rating must be between 1 and 5.", null);
+        int tripId = dto.TripId.Value;
+        int rating = dto.Rating.Value;
 
-    //     // Must have actually booked the trip
-    //     if (!await _bookingRepo.CustomerHasBookedTripAsync(customerId, dto.TripId))
-    //         return (false, "You can only review trips you have booked and paid for.", null);
+        // Customer must have booked the trip to leave a review
+        if (!await _bookingRepo.CustomerHasBookedTripAsync(customerId, tripId))
+            throw new ForbiddenException("You can only review trips you have booked.");
 
-    //     // Prevent duplicate reviews
-    //     if (await _reviewRepo.CustomerAlreadyReviewedTripAsync(customerId, dto.TripId))
-    //         return (false, "You have already reviewed this trip.", null);
+        // Prevent duplicate reviews for the same trip
+        if (await _reviewRepo.CustomerAlreadyReviewedTripAsync(customerId, tripId))
+            throw new ConflictException("You have already reviewed this trip.");
 
-    //     var review = new Review
-    //     {
-    //         ReviewId = await _reviewRepo.GetNextReviewIdAsync(),
-    //         CustomerId = customerId,
-    //         TripId = dto.TripId,
-    //         Rating = dto.Rating,
-    //         Comment = dto.Comment,
-    //         ReviewDate = DateTime.UtcNow,
-    //     };
+        var review = new Review
+        {
+            ReviewId = await _reviewRepo.GetNextReviewIdAsync(),
+            CustomerId = customerId,
+            TripId = tripId,
+            Rating = rating,
+            Comment = dto.Comment,
+            ReviewDate = DateTime.UtcNow,
+        };
 
-    //     var created = await _reviewRepo.CreateAsync(review);
-    //     var result = await _reviewRepo.GetByIdAsync(created.ReviewId); // fetch with includes
-    //     return (true, "Review submitted successfully.", MapToDto(result!));
-    // }
+        var created = await _reviewRepo.CreateAsync(review);
 
-    // public async Task<(bool success, string message, ReviewResponseDto? review)> CreateReviewAsync(
-    //     int customerId,
-    //     ReviewRequestDto dto
-    // )
-    // {
-    //     if (!await _customerRepo.ExistsAsync(customerId))
-    //         throw new NotFoundException("Customer not found.");
+        // Fetch with navigation properties for full response
+        var result = await _reviewRepo.GetByIdAsync(created.ReviewId);
 
-    //     if (dto.Rating < 1 || dto.Rating > 5)
-    //         throw new ValidationException("Rating must be between 1 and 5.");
-
-    //     if (dto.TripId == null || dto.TripId < 1)
-    //         throw new ValidationException("TripId is required.");
-
-    //     int tripId = (int)dto.TripId;
-    //     int rating = (int)dto.Rating;
-
-    //     if (rating == null || rating < 1 || rating > 5)
-    //         throw new ValidationException("Rating is required and must be between 1 and 5.");
-
-    //     // Must have actually booked the trip
-    //     if (!await _bookingRepo.CustomerHasBookedTripAsync(customerId, tripId))
-    //         throw new ForbiddenException("You can only review trips you have booked and paid for.");
-
-    //     // Prevent duplicate reviews
-    //     if (await _reviewRepo.CustomerAlreadyReviewedTripAsync(customerId, tripId))
-    //         throw new ConflictException("You have already reviewed this trip.");
-
-    //     var review = new Review
-    //     {
-    //         ReviewId = await _reviewRepo.GetNextReviewIdAsync(),
-    //         CustomerId = customerId,
-    //         TripId = tripId,
-    //         Rating = rating,
-    //         Comment = dto.Comment,
-    //         ReviewDate = DateTime.UtcNow,
-    //     };
-
-    //     var created = await _reviewRepo.CreateAsync(review);
-
-    //     var result = await _reviewRepo.GetByIdAsync(created.ReviewId);
-
-    //     return (true, "Review submitted successfully.", MapToDto(result!));
-    // }
-
-    // public async Task<(bool success, string message)> UpdateReviewAsync(
-    //     int customerId,
-    //     int reviewId,
-    //     ReviewUpdateDto dto
-    // )
-    // {
-    //     var review = await _reviewRepo.GetByIdAsync(reviewId);
-
-    //     if (review == null || review.CustomerId != customerId)
-    //         return (false, "Review not found");
-
-    //     if (dto.Rating.HasValue)
-    //     {
-    //         if (dto.Rating < 1 || dto.Rating > 5)
-    //             return (false, "Rating must be between 1 and 5.");
-
-    //         review.Rating = dto.Rating.Value;
-    //     }
-
-    //     if (dto.Comment != null)
-    //         review.Comment = dto.Comment;
-
-    //     await _reviewRepo.UpdateAsync(review);
-    //     return (true, "Review updated successfully.");
-    // }
+        return (true, "Review submitted successfully.", MapToDto(result!));
+    }
 
     public async Task<(bool success, string message)> UpdateReviewAsync(
         int customerId,
@@ -180,22 +112,6 @@ public class ReviewService : IReviewService
         return (true, "Review updated successfully.");
     }
 
-    // public async Task<(bool success, string message)> DeleteReviewAsync(
-    //     int customerId,
-    //     int reviewId
-    // )
-    // {
-    //     var review = await _reviewRepo.GetByIdAsync(reviewId);
-
-    //     if (review == null || review.CustomerId != customerId)
-    //     {
-    //         return (false, "Review not found.");
-    //     }
-
-    //     await _reviewRepo.DeleteAsync(review);
-    //     return (true, "Review Deleted Successfully.");
-    // }
-
     public async Task<(bool success, string message)> DeleteReviewAsync(
         int customerId,
         int reviewId
@@ -214,7 +130,6 @@ public class ReviewService : IReviewService
     public async Task<List<ReviewResponseDto>> GetTripReviewsAsync(int tripId)
     {
         var reviews = await _reviewRepo.GetByTripIdAsync(tripId);
-
         return reviews.Select(MapToDto).ToList();
     }
 

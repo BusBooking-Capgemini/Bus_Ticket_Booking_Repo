@@ -16,17 +16,11 @@ public class ReviewRepository : IReviewRepository
 
     public async Task<List<Review>> GetByCustomerIdAsync(int customerId)
     {
-        // return await _context
-        //     .Reviews.Where(r => r.CustomerId == customerId)
-        //     .Include(r => r.Customer)
-        //     .Include(r => r.Trip)
-        //         .ThenInclude(t => t.Route)
-        //     .OrderByDescending(r => r.ReviewDate)
-        //     .ToListAsync();
-
         return await _context
             .Reviews.Where(r => r.CustomerId == customerId)
+            .Include(r => r.Customer)
             .Include(r => r.Trip)
+                .ThenInclude(t => t.Route)
             .OrderByDescending(r => r.ReviewDate)
             .ToListAsync();
     }
@@ -49,7 +43,6 @@ public class ReviewRepository : IReviewRepository
 
     public async Task<int> GetNextReviewIdAsync()
     {
-        // If any review exists, find the one with maximum 'ReviewId' + 1, else just return 1 meaning it is the first review being created.
         return await _context.Reviews.AnyAsync()
             ? await _context.Reviews.MaxAsync(r => r.ReviewId) + 1
             : 1;
@@ -79,6 +72,8 @@ public class ReviewRepository : IReviewRepository
         return await _context
             .Reviews.Where(r => r.TripId == tripId)
             .Include(r => r.Customer)
+            .Include(r => r.Trip)
+                .ThenInclude(t => t.Route)
             .OrderByDescending(r => r.ReviewDate)
             .ToListAsync();
     }
