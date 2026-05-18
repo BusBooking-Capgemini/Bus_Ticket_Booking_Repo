@@ -62,7 +62,7 @@ namespace API_Bus_Ticket_Booking.Repositories
 
             if (tripDate.HasValue)
             {
-                query = query.Where(t => t.TripDate.Date <= tripDate.Value.Date);
+                query = query.Where(t => t.TripDate.Date >= tripDate.Value.Date);
             }
 
             return await query.ToListAsync();
