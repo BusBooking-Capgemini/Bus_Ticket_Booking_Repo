@@ -10,20 +10,16 @@ namespace API_Bus_Ticket_Booking.Repositories
     {
         private readonly BusTicketBookingContext _context;
 
-        public BookingRepository(
-            BusTicketBookingContext context)
+        public BookingRepository(BusTicketBookingContext context)
         {
             _context = context;
         }
 
-        public async Task<Booking?> CreateBookingAsync(
-            Booking booking)
+        public async Task<Booking?> CreateBookingAsync(Booking booking)
         {
-            var existingSeat =
-                await _context.Bookings
-                    .FirstOrDefaultAsync(b =>
-                        b.TripId == booking.TripId &&
-                        b.SeatNumber == booking.SeatNumber);
+            var existingSeat = await _context.Bookings.FirstOrDefaultAsync(b =>
+                b.TripId == booking.TripId && b.SeatNumber == booking.SeatNumber
+            );
 
             if (existingSeat == null)
             {
@@ -32,19 +28,14 @@ namespace API_Bus_Ticket_Booking.Repositories
 
             if (existingSeat.Status == "Booked")
             {
-                throw new ConflictException(
-                    "Seat already booked");
+                throw new ConflictException("Seat already booked");
             }
 
             existingSeat.Status = "Booked";
 
-            var trip =
-                await _context.Trips
-                    .FirstOrDefaultAsync(t =>
-                        t.TripId == booking.TripId);
+            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.TripId == booking.TripId);
 
-            if (trip != null &&
-                trip.AvailableSeats > 0)
+            if (trip != null && trip.AvailableSeats > 0)
             {
                 trip.AvailableSeats -= 1;
             }
@@ -54,126 +45,83 @@ namespace API_Bus_Ticket_Booking.Repositories
             return existingSeat;
         }
 
-        public async Task<Booking?> GetBookingByIdAsync(
-            int bookingId)
+        public async Task<Booking?> GetBookingByIdAsync(int bookingId)
         {
-            return await _context.Bookings
-
-                .Include(b => b.Trip)
+            return await _context
+                .Bookings.Include(b => b.Trip)
                     .ThenInclude(t => t.Route)
-
                 .Include(b => b.Payments)
-
-                .FirstOrDefaultAsync(b =>
-                    b.BookingId == bookingId);
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId);
         }
 
-        public async Task<IEnumerable<Booking>>
-            GetCustomerBookingsAsync(
-                int customerId)
+        public async Task<IEnumerable<Booking>> GetCustomerBookingsAsync(int customerId)
         {
-            return await _context.Payments
-
-                .Include(p => p.Booking)
+            return await _context
+                .Payments.Include(p => p.Booking)
                     .ThenInclude(b => b!.Trip)
                         .ThenInclude(t => t.Route)
-
-                .Where(p =>
-                    p.CustomerId == customerId)
-
+                .Where(p => p.CustomerId == customerId)
                 .Select(p => p.Booking!)
-
-                .Where(b =>
-                    b.Status == "Booked")
-
+                .Where(b => b.Status == "Booked")
                 .AsNoTracking()
-
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Booking>>
-            GetOfficeBookingsAsync(
-                int officeId)
+        public async Task<IEnumerable<Booking>> GetOfficeBookingsAsync(int officeId)
         {
-            return await _context.Bookings
-
-                .Include(b => b.Trip)
+            return await _context
+                .Bookings.Include(b => b.Trip)
                     .ThenInclude(t => t.Route)
-
                 .Include(b => b.Payments)
-
                 .Where(b =>
-
-                    b.Status == "Booked" &&
-
-                    b.TripId != null &&
-
-                    _context.Trips.Any(t =>
-
-                        t.TripId == b.TripId &&
-
-                        _context.Buses.Any(bus =>
-
-                            bus.BusId == t.BusId &&
-                            bus.OfficeId == officeId)))
-
+                    b.Status == "Booked"
+                    && b.TripId != null
+                    && _context.Trips.Any(t =>
+                        t.TripId == b.TripId
+                        && _context.Buses.Any(bus =>
+                            bus.BusId == t.BusId && bus.OfficeId == officeId
+                        )
+                    )
+                )
                 .OrderByDescending(b => b.BookingId)
-
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Booking>>
-            GetAgencyBookingsAsync(
-                int agencyId)
+        public async Task<IEnumerable<Booking>> GetAgencyBookingsAsync(int agencyId)
         {
-            return await _context.Bookings
-
-                .Include(b => b.Trip)
+            return await _context
+                .Bookings.Include(b => b.Trip)
                     .ThenInclude(t => t.Route)
-
                 .Include(b => b.Trip)
                     .ThenInclude(t => t.Bus)
-
                 .Include(b => b.Payments)
-
                 .Where(b =>
-                    b.Status == "Booked" &&
-                    b.Trip != null &&
-                    b.Trip.Bus != null &&
-                    b.Trip.Bus.Office != null &&
-                    b.Trip.Bus.Office.AgencyId == agencyId)
-
+                    b.Status == "Booked"
+                    && b.Trip != null
+                    && b.Trip.Bus != null
+                    && b.Trip.Bus.Office != null
+                    && b.Trip.Bus.Office.AgencyId == agencyId
+                )
                 .AsNoTracking()
-
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Booking>>
-            GetBookingsByTripAsync(
-                int tripId)
+        public async Task<IEnumerable<Booking>> GetBookingsByTripAsync(int tripId)
         {
-            return await _context.Bookings
-
-                .Include(b => b.Trip)
+            return await _context
+                .Bookings.Include(b => b.Trip)
                     .ThenInclude(t => t.Route)
-
                 .Include(b => b.Payments)
-
-                .Where(b =>
-                    b.TripId == tripId)
-
+                .Where(b => b.TripId == tripId)
                 .AsNoTracking()
-
                 .ToListAsync();
         }
 
-        public async Task CancelBookingAsync(
-            Booking booking)
+        public async Task CancelBookingAsync(Booking booking)
         {
-            var existingBooking =
-                await _context.Bookings
-                    .FirstOrDefaultAsync(b =>
-                        b.BookingId == booking.BookingId);
+            var existingBooking = await _context.Bookings.FirstOrDefaultAsync(b =>
+                b.BookingId == booking.BookingId
+            );
 
             if (existingBooking == null)
             {
@@ -182,220 +130,182 @@ namespace API_Bus_Ticket_Booking.Repositories
 
             existingBooking.Status = "Available";
 
-            var trip =
-                await _context.Trips
-                    .FirstOrDefaultAsync(t =>
-                        t.TripId == existingBooking.TripId);
+            var trip = await _context.Trips.FirstOrDefaultAsync(t =>
+                t.TripId == existingBooking.TripId
+            );
 
             if (trip != null)
             {
                 trip.AvailableSeats += 1;
             }
 
-            var payments =
-                await _context.Payments
-                    .Where(p =>
-                        p.BookingId ==
-                        existingBooking.BookingId)
-                    .ToListAsync();
+            var payments = await _context
+                .Payments.Where(p => p.BookingId == existingBooking.BookingId)
+                .ToListAsync();
 
             if (payments.Any())
             {
-                _context.Payments
-                    .RemoveRange(payments);
+                _context.Payments.RemoveRange(payments);
             }
 
             await SaveChangesAsync();
         }
 
-        public async Task<int>
-            GetTotalBookingsByOfficeAsync(
-                int officeId)
+        /// <summary>
+        /// Checks whether a customer has a confirmed (Booked) booking for the given trip.
+        /// Used by ReviewService to enforce that only customers who have booked a trip can review it.
+        /// </summary>
+        public async Task<bool> CustomerHasBookedTripAsync(int customerId, int tripId)
         {
-            return await _context.Bookings
-                .CountAsync(b =>
-                    b.Status == "Booked" &&
-                    b.Trip != null &&
-                    b.Trip.Bus != null &&
-                    b.Trip.Bus.OfficeId == officeId);
+            return await _context
+                .Payments.Include(p => p.Booking)
+                .AnyAsync(p =>
+                    p.CustomerId == customerId
+                    && p.Booking != null
+                    && p.Booking.TripId == tripId
+                    && p.Booking.Status == "Booked"
+                );
         }
 
-        public async Task<int>
-            GetActiveBookingsByOfficeAsync(
-                int officeId)
+        public async Task<int> GetTotalBookingsByOfficeAsync(int officeId)
         {
-            return await
-                GetTotalBookingsByOfficeAsync(
-                    officeId);
+            return await _context.Bookings.CountAsync(b =>
+                b.Status == "Booked"
+                && b.Trip != null
+                && b.Trip.Bus != null
+                && b.Trip.Bus.OfficeId == officeId
+            );
         }
 
-        public async Task<int>
-            GetTotalBookingsByAgencyAsync(
-                int agencyId)
+        public async Task<int> GetActiveBookingsByOfficeAsync(int officeId)
         {
-            return await _context.Bookings
-                .CountAsync(b =>
-                    b.Status == "Booked" &&
-                    b.Trip != null &&
-                    b.Trip.Bus != null &&
-                    b.Trip.Bus.Office != null &&
-                    b.Trip.Bus.Office.AgencyId == agencyId);
+            return await GetTotalBookingsByOfficeAsync(officeId);
         }
 
-        public async Task<int>
-            GetActiveBookingsByAgencyAsync(
-                int agencyId)
+        public async Task<int> GetTotalBookingsByAgencyAsync(int agencyId)
         {
-            return await
-                GetTotalBookingsByAgencyAsync(
-                    agencyId);
+            return await _context.Bookings.CountAsync(b =>
+                b.Status == "Booked"
+                && b.Trip != null
+                && b.Trip.Bus != null
+                && b.Trip.Bus.Office != null
+                && b.Trip.Bus.Office.AgencyId == agencyId
+            );
         }
 
-        public async Task<double>
-            GetOccupancyRateByOfficeAsync(
-                int officeId)
+        public async Task<int> GetActiveBookingsByAgencyAsync(int agencyId)
         {
-            var trips =
-                await _context.Trips
-                    .Where(t =>
-                        t.Bus != null &&
-                        t.Bus.OfficeId == officeId)
-                    .Include(t => t.Bus)
-                    .AsNoTracking()
-                    .ToListAsync();
+            return await GetTotalBookingsByAgencyAsync(agencyId);
+        }
+
+        public async Task<double> GetOccupancyRateByOfficeAsync(int officeId)
+        {
+            var trips = await _context
+                .Trips.Where(t => t.Bus != null && t.Bus.OfficeId == officeId)
+                .Include(t => t.Bus)
+                .AsNoTracking()
+                .ToListAsync();
 
             if (!trips.Any())
             {
                 return 0;
             }
 
-            double totalCapacity =
-                trips.Sum(t =>
-                    t.Bus.Capacity);
+            double totalCapacity = trips.Sum(t => t.Bus.Capacity);
+            double bookedSeats = trips.Sum(t => t.Bus.Capacity - t.AvailableSeats);
 
-            double bookedSeats =
-                trips.Sum(t =>
-                    t.Bus.Capacity -
-                    t.AvailableSeats);
-
-            return
-                (bookedSeats / totalCapacity) * 100;
+            return (bookedSeats / totalCapacity) * 100;
         }
 
-        public async Task<double>
-            GetOccupancyRateByAgencyAsync(
-                int agencyId)
+        public async Task<double> GetOccupancyRateByAgencyAsync(int agencyId)
         {
-            var trips =
-                await _context.Trips
-                    .Where(t =>
-                        t.Bus != null &&
-                        t.Bus.Office != null &&
-                        t.Bus.Office.AgencyId == agencyId)
-                    .Include(t => t.Bus)
-                    .AsNoTracking()
-                    .ToListAsync();
+            var trips = await _context
+                .Trips.Where(t =>
+                    t.Bus != null && t.Bus.Office != null && t.Bus.Office.AgencyId == agencyId
+                )
+                .Include(t => t.Bus)
+                .AsNoTracking()
+                .ToListAsync();
 
             if (!trips.Any())
             {
                 return 0;
             }
 
-            double totalCapacity =
-                trips.Sum(t =>
-                    t.Bus.Capacity);
+            double totalCapacity = trips.Sum(t => t.Bus.Capacity);
+            double bookedSeats = trips.Sum(t => t.Bus.Capacity - t.AvailableSeats);
 
-            double bookedSeats =
-                trips.Sum(t =>
-                    t.Bus.Capacity -
-                    t.AvailableSeats);
-
-            return
-                (bookedSeats / totalCapacity) * 100;
+            return (bookedSeats / totalCapacity) * 100;
         }
 
-        public async Task<int>
-            GetMostBookedTripByOfficeAsync(
-                int officeId)
+        public async Task<int> GetMostBookedTripByOfficeAsync(int officeId)
         {
-            var result =
-                await _context.Bookings
-                    .Where(b =>
-                        b.Status == "Booked" &&
-                        b.Trip != null &&
-                        b.Trip.Bus != null &&
-                        b.Trip.Bus.OfficeId == officeId)
-                    .GroupBy(b => b.TripId)
-                    .OrderByDescending(g => g.Count())
-                    .Select(g => g.Key)
-                    .FirstOrDefaultAsync();
+            var result = await _context
+                .Bookings.Where(b =>
+                    b.Status == "Booked"
+                    && b.Trip != null
+                    && b.Trip.Bus != null
+                    && b.Trip.Bus.OfficeId == officeId
+                )
+                .GroupBy(b => b.TripId)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefaultAsync();
 
             return result ?? 0;
         }
 
-        public async Task<int>
-            GetMostBookedTripByAgencyAsync(
-                int agencyId)
+        public async Task<int> GetMostBookedTripByAgencyAsync(int agencyId)
         {
-            var result =
-                await _context.Bookings
-                    .Where(b =>
-                        b.Status == "Booked" &&
-                        b.Trip != null &&
-                        b.Trip.Bus != null &&
-                        b.Trip.Bus.Office != null &&
-                        b.Trip.Bus.Office.AgencyId == agencyId)
-                    .GroupBy(b => b.TripId)
-                    .OrderByDescending(g => g.Count())
-                    .Select(g => g.Key)
-                    .FirstOrDefaultAsync();
+            var result = await _context
+                .Bookings.Where(b =>
+                    b.Status == "Booked"
+                    && b.Trip != null
+                    && b.Trip.Bus != null
+                    && b.Trip.Bus.Office != null
+                    && b.Trip.Bus.Office.AgencyId == agencyId
+                )
+                .GroupBy(b => b.TripId)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefaultAsync();
 
             return result ?? 0;
         }
 
-        public async Task<string>
-            GetMostPopularRouteByOfficeAsync(
-                int officeId)
+        public async Task<string> GetMostPopularRouteByOfficeAsync(int officeId)
         {
-            var result =
-                await _context.Bookings
-                    .Where(b =>
-                        b.Status == "Booked" &&
-                        b.Trip != null &&
-                        b.Trip.Route != null &&
-                        b.Trip.Bus != null &&
-                        b.Trip.Bus.OfficeId == officeId)
-                    .GroupBy(b =>
-                        b.Trip!.Route!.FromCity +
-                        " - " +
-                        b.Trip.Route.ToCity)
-                    .OrderByDescending(g => g.Count())
-                    .Select(g => g.Key)
-                    .FirstOrDefaultAsync();
+            var result = await _context
+                .Bookings.Where(b =>
+                    b.Status == "Booked"
+                    && b.Trip != null
+                    && b.Trip.Route != null
+                    && b.Trip.Bus != null
+                    && b.Trip.Bus.OfficeId == officeId
+                )
+                .GroupBy(b => b.Trip!.Route!.FromCity + " - " + b.Trip.Route.ToCity)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefaultAsync();
 
             return result ?? string.Empty;
         }
 
-        public async Task<string>
-            GetMostPopularRouteByAgencyAsync(
-                int agencyId)
+        public async Task<string> GetMostPopularRouteByAgencyAsync(int agencyId)
         {
-            var result =
-                await _context.Bookings
-                    .Where(b =>
-                        b.Status == "Booked" &&
-                        b.Trip != null &&
-                        b.Trip.Route != null &&
-                        b.Trip.Bus != null &&
-                        b.Trip.Bus.Office != null &&
-                        b.Trip.Bus.Office.AgencyId == agencyId)
-                    .GroupBy(b =>
-                        b.Trip!.Route!.FromCity +
-                        " - " +
-                        b.Trip.Route.ToCity)
-                    .OrderByDescending(g => g.Count())
-                    .Select(g => g.Key)
-                    .FirstOrDefaultAsync();
+            var result = await _context
+                .Bookings.Where(b =>
+                    b.Status == "Booked"
+                    && b.Trip != null
+                    && b.Trip.Route != null
+                    && b.Trip.Bus != null
+                    && b.Trip.Bus.Office != null
+                    && b.Trip.Bus.Office.AgencyId == agencyId
+                )
+                .GroupBy(b => b.Trip!.Route!.FromCity + " - " + b.Trip.Route.ToCity)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefaultAsync();
 
             return result ?? string.Empty;
         }
