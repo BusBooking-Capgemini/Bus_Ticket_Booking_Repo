@@ -4,27 +4,28 @@ namespace Bus_Ticket_Booking.Mvc.ViewModels.Customer
 {
     public class CustomerProfileViewModel
     {
-        public int CustomerId { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
-            = string.Empty;
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
-            = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Phone is required")]
+        [RegularExpression(@"^[0-9]{10}$",
+            ErrorMessage = "Phone number must be 10 digits")]
         public string Phone { get; set; }
-            = string.Empty;
 
-        public string? Address { get; set; }
+        [Required(ErrorMessage = "Address is required")]
+        public string Address { get; set; }
 
-        public string? City { get; set; }
+        [Required(ErrorMessage = "City is required")]
+        public string City { get; set; }
 
-        public string? State { get; set; }
+        [Required(ErrorMessage = "State is required")]
+        public string State { get; set; }
 
-        public string? ZipCode { get; set; }
+        [Required(ErrorMessage = "Zip Code is required")]
+        public string ZipCode { get; set; }
     }
 }

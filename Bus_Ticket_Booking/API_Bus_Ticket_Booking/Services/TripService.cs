@@ -91,10 +91,10 @@ namespace API_Bus_Ticket_Booking.Services
             SearchTripsAsync(TripSearchDto dto)
         {
             var trips =
-                await _tripRepository.SearchAsync(
-                    dto.FromCity,
-                    dto.ToCity,
-                    dto.TripDate);
+    await _tripRepository.SearchAsync(
+        dto.FromCity,
+        dto.ToCity,
+        dto.TripDate);
 
             var result =
                 new List<TripResponseDto>();

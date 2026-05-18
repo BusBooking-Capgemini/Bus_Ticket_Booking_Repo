@@ -106,14 +106,11 @@ namespace API_Bus_Ticket_Booking.DTOs.Trip
 
     public class TripSearchDto
     {
-        [Required]
-        public string FromCity { get; set; }
+        public string? FromCity { get; set; }
 
-        [Required]
-        public string ToCity { get; set; }
+        public string? ToCity { get; set; }
 
-        [Required]
-        public DateTime TripDate { get; set; }
+        public DateTime? TripDate { get; set; }
     }
 
     public class SeatStatusDto

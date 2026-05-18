@@ -26,8 +26,8 @@ namespace Bus_Ticket_Booking.Mvc.Controllers
 
         [HttpPost]
         public async Task<IActionResult>
-            Search(
-                TripSearchViewModel model)
+    Search(
+        TripSearchViewModel model)
         {
             var trips =
                 await _tripService

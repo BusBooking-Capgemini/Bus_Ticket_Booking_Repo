@@ -50,9 +50,23 @@ namespace API_Bus_Ticket_Booking.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Search([FromQuery] TripSearchDto dto)
         {
-            if (!ModelState.IsValid)
+            if (
+
+    // neither date nor cities
+
+    (string.IsNullOrWhiteSpace(dto.FromCity)
+    ||
+    string.IsNullOrWhiteSpace(dto.ToCity))
+
+    &&
+
+    !dto.TripDate.HasValue
+)
             {
-                return BadRequest(ApiResponse<object>.Fail("Validation failed. Please check fromCity, toCity and tripDate.", 400));
+                return BadRequest(
+                    ApiResponse<object>.Fail(
+                        "Provide FromCity and ToCity OR TripDate.",
+                        400));
             }
 
             var trips = await _tripService.SearchTripsAsync(dto);

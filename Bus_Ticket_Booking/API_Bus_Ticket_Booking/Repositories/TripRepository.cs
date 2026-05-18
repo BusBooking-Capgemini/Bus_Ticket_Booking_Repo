@@ -47,19 +47,76 @@ namespace API_Bus_Ticket_Booking.Repositories
                     t => t.TripId == id);
         }
 
-        public async Task<List<Trip>> SearchAsync(
-            string fromCity,
-            string toCity,
-            DateTime tripDate)
+        public async Task<List<Trip>>
+    SearchAsync(
+        string? fromCity,
+        string? toCity,
+        DateTime? tripDate)
         {
-            return await _context.Trips
-                .Include(t => t.Bus)
-                .Include(t => t.Route)
-                .Where(t =>
-                    t.Route.FromCity.ToLower() == fromCity.ToLower() &&
-                    t.Route.ToCity.ToLower() == toCity.ToLower() &&
-                    t.TripDate.Date == tripDate.Date)
-                .ToListAsync();
+            var query =
+                _context.Trips
+
+                    .Include(t => t.Bus)
+
+                    .Include(t => t.Route)
+
+                    .Include(t => t.Driver1Driver)
+
+                    .Include(t => t.Driver2Driver)
+
+                    .AsQueryable();
+
+            // =========================
+            // FROM + TO FILTER
+            // =========================
+
+            if (!string.IsNullOrWhiteSpace(fromCity)
+                &&
+                !string.IsNullOrWhiteSpace(toCity))
+            {
+                query =
+                    query.Where(t =>
+
+                        t.Route.FromCity
+                            .ToLower()
+                            .Contains(fromCity.ToLower())
+
+                        &&
+
+                        t.Route.ToCity
+                            .ToLower()
+                            .Contains(toCity.ToLower()));
+            }
+
+            // =========================
+            // DATE FILTER
+            // =========================
+
+            if (tripDate.HasValue)
+            {
+                query =
+                    query.Where(t =>
+
+                        t.TripDate.Date
+                            >= tripDate.Value.Date);
+            }
+            else
+            {
+                query =
+                    query.Where(t =>
+
+                        t.TripDate.Date
+                            >= DateTime.Today);
+            }
+
+            // =========================
+            // ALWAYS FUTURE TRIPS
+            // =========================
+
+            query =
+                query.OrderBy(t => t.TripDate);
+
+            return await query.ToListAsync();
         }
 
         public async Task<List<Trip>> GetByRouteIdAsync(

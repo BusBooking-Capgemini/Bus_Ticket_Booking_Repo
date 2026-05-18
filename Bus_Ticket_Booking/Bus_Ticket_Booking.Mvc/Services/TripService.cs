@@ -64,15 +64,38 @@ namespace Bus_Ticket_Booking.Mvc.Services
         // =========================
 
         public async Task<List<TripViewModel>>
-            SearchTripsAsync(
-                TripSearchViewModel model)
+    SearchTripsAsync(
+        TripSearchViewModel model)
         {
+            var queryParams =
+                new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(
+                model.FromCity))
+            {
+                queryParams.Add(
+                    $"fromCity={model.FromCity}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                model.ToCity))
+            {
+                queryParams.Add(
+                    $"toCity={model.ToCity}");
+            }
+
+            if (model.TripDate.HasValue)
+            {
+                queryParams.Add(
+                    $"tripDate={model.TripDate.Value:yyyy-MM-dd}");
+            }
+
+            var query =
+                string.Join("&", queryParams);
+
             var response =
                 await _httpClient.GetAsync(
-                    $"{_baseUrl}trips/search" +
-                    $"?fromCity={model.FromCity}" +
-                    $"&toCity={model.ToCity}" +
-                    $"&tripDate={model.TripDate:yyyy-MM-dd}");
+                    $"{_baseUrl}trips/search?{query}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -85,8 +108,8 @@ namespace Bus_Ticket_Booking.Mvc.Services
 
             var result =
                 JsonConvert.DeserializeObject<
-                    ApiResponse<List<TripViewModel>>>
-                    (content);
+                    ApiResponse<List<TripViewModel>>>(
+                        content);
 
             return result?.Data
                    ?? new List<TripViewModel>();

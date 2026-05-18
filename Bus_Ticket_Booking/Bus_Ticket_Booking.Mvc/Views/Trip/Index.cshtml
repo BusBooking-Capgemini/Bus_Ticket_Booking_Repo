@@ -19,7 +19,7 @@
         <form asp-action="Search"
               method="post">
 
-            <div class="row">
+            <div class="row align-items-end">
 
                 <div class="col-md-4 mb-3">
 
@@ -68,11 +68,11 @@
                 </div>
 
 
-                <div class="col-md-1 d-flex
-                    align-items-end">
+                <div class="col-md-1 mb-3 d-flex">
 
                     <button type="submit"
-                            class="btn btn-primary w-100">
+                            class="btn btn-primary w-100 d-flex justify-content-center align-items-center"
+                            style="height: 38px;">
 
                         <i class="bi bi-search"></i>
 
@@ -101,8 +101,7 @@
 
                         <div class="card-body">
 
-                            <div class="d-flex
-                                justify-content-between">
+                            <div class="d-flex justify-content-between">
 
                                 <div>
 
@@ -187,6 +186,7 @@
                                     <h6>
 
                                         @trip.AvailableSeats
+
                                     </h6>
 
                                 </div>
@@ -194,13 +194,9 @@
                             </div>
 
 
-                            <div class="mt-4
-                                d-flex
-                                justify-content-between
-                                align-items-center">
+                            <div class="mt-4 d-flex justify-content-between align-items-center">
 
-                                <span class="badge
-                                    bg-primary">
+                                <span class="badge bg-primary">
 
                                     @trip.BusType
 

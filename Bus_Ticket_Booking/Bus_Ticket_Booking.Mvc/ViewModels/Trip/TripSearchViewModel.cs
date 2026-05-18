@@ -4,16 +4,10 @@ namespace Bus_Ticket_Booking.Mvc.ViewModels.Trip
 {
     public class TripSearchViewModel
     {
-        [Required]
-        public string FromCity { get; set; }
-            = string.Empty;
+        public string? FromCity { get; set; }
 
-        [Required]
-        public string ToCity { get; set; }
-            = string.Empty;
+        public string? ToCity { get; set; }
 
-        [Required]
-        public DateTime TripDate { get; set; }
-            = DateTime.Today;
+        public DateTime? TripDate { get; set; }
     }
 }
