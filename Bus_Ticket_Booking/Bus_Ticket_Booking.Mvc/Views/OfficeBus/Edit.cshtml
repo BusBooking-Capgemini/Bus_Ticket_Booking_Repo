@@ -6,83 +6,130 @@
 
 <div class="container py-5">
 
-    <div class="card shadow-sm border-0">
+    <div class="row justify-content-center">
 
-        <div class="card-body p-5">
+        <div class="col-md-8">
 
-            <h2 class="text-primary mb-4">
+            <div class="card shadow border-0">
 
-                Edit Bus
+                <div class="card-body p-5">
 
-            </h2>
+                    <h2 class="text-primary mb-4">
 
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger">
+                        Edit Bus
 
-                    @ViewBag.Error
+                    </h2>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+
+                            @ViewBag.Error
+
+                        </div>
+                    }
+
+                    <form asp-action="Edit"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <input asp-for="BusId"
+                               type="hidden" />
+
+                        <!-- REGISTRATION NUMBER -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Registration Number
+
+                            </label>
+
+                            <input asp-for="RegistrationNumber"
+                                   class="form-control"
+                                   placeholder="Enter registration number" />
+
+                            <span asp-validation-for="RegistrationNumber"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- CAPACITY -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Capacity
+
+                            </label>
+
+                            <input asp-for="Capacity"
+                                   type="number"
+                                   min="1"
+                                   class="form-control"
+                                   placeholder="Enter bus capacity" />
+
+                            <span asp-validation-for="Capacity"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- BUS TYPE -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Bus Type
+
+                            </label>
+
+                            <select asp-for="Type"
+                                    asp-items="Model.BusTypes"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Select Bus Type --
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="Type"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            Update Bus
+
+                        </button>
+
+                    </form>
 
                 </div>
-            }
 
-            <form asp-action="Edit"
-                  method="post">
-
-                <input asp-for="BusId"
-                       type="hidden" />
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        Registration Number
-
-                    </label>
-
-                    <input asp-for="RegistrationNumber"
-                           class="form-control" />
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        Capacity
-
-                    </label>
-
-                    <input asp-for="Capacity"
-                           class="form-control" />
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        Bus Type
-
-                    </label>
-
-                    <select asp-for="Type"
-                            asp-items="Model.BusTypes"
-                            class="form-select">
-                    </select>
-
-                </div>
-
-                <button type="submit"
-                        class="btn btn-primary w-100">
-
-                    Update Bus
-
-                </button>
-
-            </form>
+            </div>
 
         </div>
 
     </div>
 
 </div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

@@ -31,6 +31,10 @@
                 <input asp-for="TripId"
                        type="hidden" />
 
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
                 <div class="row">
 
                     <!-- BUS -->
@@ -43,13 +47,18 @@
 
                         <select asp-for="BusId"
                                 asp-items="Model.Buses"
-                                class="form-select">
+                                class="form-select"
+                                required>
 
                             <option value="">
                                 Select Bus
                             </option>
 
                         </select>
+
+                        <span asp-validation-for="BusId"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -62,7 +71,12 @@
                         </label>
 
                         <input asp-for="Fare"
-                               class="form-control" />
+                               class="form-control"
+                               required />
+
+                        <span asp-validation-for="Fare"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -76,7 +90,12 @@
 
                         <input asp-for="TripDate"
                                type="date"
-                               class="form-control" />
+                               class="form-control"
+                               required />
+
+                        <span asp-validation-for="TripDate"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -90,13 +109,18 @@
 
                         <select asp-for="BoardingAddressId"
                                 asp-items="Model.Addresses"
-                                class="form-select">
+                                class="form-select"
+                                required>
 
                             <option value="">
                                 Select Boarding Address
                             </option>
 
                         </select>
+
+                        <span asp-validation-for="BoardingAddressId"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -110,13 +134,18 @@
 
                         <select asp-for="DroppingAddressId"
                                 asp-items="Model.Addresses"
-                                class="form-select">
+                                class="form-select"
+                                required>
 
                             <option value="">
                                 Select Dropping Address
                             </option>
 
                         </select>
+
+                        <span asp-validation-for="DroppingAddressId"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -130,13 +159,18 @@
 
                         <select asp-for="Driver1DriverId"
                                 asp-items="Model.Drivers"
-                                class="form-select">
+                                class="form-select"
+                                required>
 
                             <option value="">
                                 Select Driver
                             </option>
 
                         </select>
+
+                        <span asp-validation-for="Driver1DriverId"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -150,13 +184,18 @@
 
                         <select asp-for="Driver2DriverId"
                                 asp-items="Model.Drivers"
-                                class="form-select">
+                                class="form-select"
+                                required>
 
                             <option value="">
                                 Select Driver
                             </option>
 
                         </select>
+
+                        <span asp-validation-for="Driver2DriverId"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -170,7 +209,12 @@
 
                         <input asp-for="DepartureTime"
                                type="datetime-local"
-                               class="form-control" />
+                               class="form-control"
+                               required />
+
+                        <span asp-validation-for="DepartureTime"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -184,7 +228,12 @@
 
                         <input asp-for="ArrivalTime"
                                type="datetime-local"
-                               class="form-control" />
+                               class="form-control"
+                               required />
+
+                        <span asp-validation-for="ArrivalTime"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -204,3 +253,11 @@
     </div>
 
 </div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

@@ -30,6 +30,10 @@
                     <form asp-action="Create"
                           method="post">
 
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
                         <div class="row">
 
                             <!-- ROUTE -->
@@ -49,6 +53,10 @@
                                     </option>
 
                                 </select>
+
+                                <span asp-validation-for="RouteId"
+                                      class="text-danger">
+                                </span>
 
                             </div>
 
@@ -70,6 +78,10 @@
 
                                 </select>
 
+                                <span asp-validation-for="BusId"
+                                      class="text-danger">
+                                </span>
+
                             </div>
 
                             <!-- BOARDING -->
@@ -89,6 +101,10 @@
                                     </option>
 
                                 </select>
+
+                                <span asp-validation-for="BoardingAddressId"
+                                      class="text-danger">
+                                </span>
 
                             </div>
 
@@ -110,6 +126,10 @@
 
                                 </select>
 
+                                <span asp-validation-for="DroppingAddressId"
+                                      class="text-danger">
+                                </span>
+
                             </div>
 
                             <!-- DRIVER 1 -->
@@ -129,6 +149,10 @@
                                     </option>
 
                                 </select>
+
+                                <span asp-validation-for="Driver1DriverId"
+                                      class="text-danger">
+                                </span>
 
                             </div>
 
@@ -150,6 +174,10 @@
 
                                 </select>
 
+                                <span asp-validation-for="Driver2DriverId"
+                                      class="text-danger">
+                                </span>
+
                             </div>
 
                             <!-- DEPARTURE -->
@@ -163,6 +191,10 @@
                                 <input asp-for="DepartureTime"
                                        type="datetime-local"
                                        class="form-control" />
+
+                                <span asp-validation-for="DepartureTime"
+                                      class="text-danger">
+                                </span>
 
                             </div>
 
@@ -178,6 +210,10 @@
                                        type="datetime-local"
                                        class="form-control" />
 
+                                <span asp-validation-for="ArrivalTime"
+                                      class="text-danger">
+                                </span>
+
                             </div>
 
                             <!-- FARE -->
@@ -190,6 +226,10 @@
 
                                 <input asp-for="Fare"
                                        class="form-control" />
+
+                                <span asp-validation-for="Fare"
+                                      class="text-danger">
+                                </span>
 
                             </div>
 
@@ -204,6 +244,10 @@
                                 <input asp-for="TripDate"
                                        type="date"
                                        class="form-control" />
+
+                                <span asp-validation-for="TripDate"
+                                      class="text-danger">
+                                </span>
 
                             </div>
 
@@ -227,3 +271,11 @@
     </div>
 
 </div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

@@ -7,37 +7,37 @@ namespace Bus_Ticket_Booking.Mvc.ViewModels.Trip
     {
         public int TripId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Bus is required")]
         public int BusId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Boarding address is required")]
         public int BoardingAddressId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Dropping address is required")]
         public int DroppingAddressId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Departure time is required")]
         public DateTime DepartureTime { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Arrival time is required")]
         public DateTime ArrivalTime { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Driver 1 is required")]
         public int Driver1DriverId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Driver 2 is required")]
         public int Driver2DriverId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Fare is required")]
+
+        [Range(1, 100000,
+            ErrorMessage = "Fare must be greater than 0")]
+
         public decimal Fare { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Trip date is required")]
         public DateTime TripDate { get; set; }
 
-
-        // =========================
-        // DROPDOWNS
-        // =========================
 
         public List<SelectListItem>
             Buses

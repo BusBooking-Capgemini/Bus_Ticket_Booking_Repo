@@ -6,134 +6,203 @@
 
 <div class="container py-5">
 
-    <div class="card shadow-sm border-0">
+    <div class="row justify-content-center">
 
-        <div class="card-body p-5">
+        <div class="col-md-10">
 
-            <h2 class="text-primary mb-4">
+            <div class="card shadow border-0">
 
-                Create Driver
+                <div class="card-body p-5">
 
-            </h2>
+                    <h2 class="text-primary mb-4">
 
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger">
+                        Create Driver
 
-                    @ViewBag.Error
+                    </h2>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+
+                            @ViewBag.Error
+
+                        </div>
+                    }
+
+                    <form asp-action="Create"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="row">
+
+                            <!-- DRIVER NAME -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Driver Name
+
+                                </label>
+
+                                <input asp-for="Name"
+                                       class="form-control"
+                                       placeholder="Enter driver name" />
+
+                                <span asp-validation-for="Name"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- LICENSE NUMBER -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    License Number
+
+                                </label>
+
+                                <input asp-for="LicenseNumber"
+                                       class="form-control"
+                                       placeholder="Enter license number" />
+
+                                <span asp-validation-for="LicenseNumber"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- PHONE -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Phone
+
+                                </label>
+
+                                <input asp-for="Phone"
+                                       class="form-control"
+                                       placeholder="Enter phone number" />
+
+                                <span asp-validation-for="Phone"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- ADDRESS -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Address
+
+                                </label>
+
+                                <input asp-for="Address"
+                                       class="form-control"
+                                       placeholder="Enter address" />
+
+                                <span asp-validation-for="Address"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- CITY -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+
+                                    City
+
+                                </label>
+
+                                <input asp-for="City"
+                                       class="form-control"
+                                       placeholder="Enter city" />
+
+                                <span asp-validation-for="City"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- STATE -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+
+                                    State
+
+                                </label>
+
+                                <input asp-for="State"
+                                       class="form-control"
+                                       placeholder="Enter state" />
+
+                                <span asp-validation-for="State"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- ZIP CODE -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+
+                                    Zip Code
+
+                                </label>
+
+                                <input asp-for="ZipCode"
+                                       class="form-control"
+                                       placeholder="Enter zip code" />
+
+                                <span asp-validation-for="ZipCode"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-success w-100 mt-3">
+
+                            Create Driver
+
+                        </button>
+
+                    </form>
 
                 </div>
-            }
 
-            <form asp-action="Create"
-                  method="post">
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-
-                            Driver Name
-
-                        </label>
-
-                        <input asp-for="Name"
-                               class="form-control" />
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-
-                            License Number
-
-                        </label>
-
-                        <input asp-for="LicenseNumber"
-                               class="form-control" />
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-
-                            Phone
-
-                        </label>
-
-                        <input asp-for="Phone"
-                               class="form-control" />
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-
-                            Address
-
-                        </label>
-
-                        <input asp-for="Address"
-                               class="form-control" />
-
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-
-                        <label class="form-label">
-
-                            City
-
-                        </label>
-
-                        <input asp-for="City"
-                               class="form-control" />
-
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-
-                        <label class="form-label">
-
-                            State
-
-                        </label>
-
-                        <input asp-for="State"
-                               class="form-control" />
-
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-
-                        <label class="form-label">
-
-                            Zip Code
-
-                        </label>
-
-                        <input asp-for="ZipCode"
-                               class="form-control" />
-
-                    </div>
-
-                </div>
-
-                <button type="submit"
-                        class="btn btn-success w-100 mt-3">
-
-                    Create Driver
-
-                </button>
-
-            </form>
+            </div>
 
         </div>
 
     </div>
 
 </div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}
