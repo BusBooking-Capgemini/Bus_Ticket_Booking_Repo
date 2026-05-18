@@ -18,6 +18,7 @@ namespace API_Bus_Ticket_Booking.Repositories
         {
             return await _context
                 .Trips.Include(t => t.Bus)
+                .Where(t => t.TripDate >= DateTime.Today)
                 .Include(t => t.Route)
                 .Include(t => t.Driver1Driver)
                 .Include(t => t.Driver2Driver)
