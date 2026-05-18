@@ -15,8 +15,20 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
 
         Task CreateSeatEntriesAsync(List<Booking> bookings);
         Task<bool> ExistsAsync(int id);
-        Task<bool> IsBusAvailableAsync(int busId, DateTime tripDate, DateTime departure, DateTime arrival, int excludeTripId);
-        Task<bool> IsDriverAvailableAsync(int driverId, DateTime tripDate, DateTime departure, DateTime arrival, int excludeTripId);
+        Task<bool> IsBusAvailableAsync(
+            int busId,
+            DateTime tripDate,
+            DateTime departure,
+            DateTime arrival,
+            int excludeTripId
+        );
+        Task<bool> IsDriverAvailableAsync(
+            int driverId,
+            DateTime tripDate,
+            DateTime departure,
+            DateTime arrival,
+            int excludeTripId
+        );
         Task<List<Booking>> GetBookingsByTripIdAsync(int tripId);
         Task<int> GetBusCapacityAsync(int busId);
         Task<Trip> CreateAsync(Trip trip);
