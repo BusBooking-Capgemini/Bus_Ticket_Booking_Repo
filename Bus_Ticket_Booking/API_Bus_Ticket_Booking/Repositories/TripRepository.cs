@@ -27,6 +27,13 @@ namespace API_Bus_Ticket_Booking.Repositories
 
                 .Include(t => t.Driver2Driver)
 
+                .Where(t =>
+                    t.TripDate.Date >= DateTime.Today)
+
+                .OrderBy(t => t.TripDate)
+
+                .ThenBy(t => t.DepartureTime)
+
                 .ToListAsync();
         }
 
