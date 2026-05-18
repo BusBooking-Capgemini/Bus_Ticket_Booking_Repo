@@ -6,7 +6,7 @@ namespace API_Bus_Ticket_Booking.Repositories.Interfaces
     {
         Task<List<Trip>> GetAllAsync();
         Task<Trip?> GetByIdAsync(int id);
-        Task<List<Trip>> SearchAsync(string? fromCity,string? toCity,DateTime? tripDate);
+        Task<List<Trip>> SearchAsync(string? fromCity, string? toCity, DateTime? tripDate);
         Task<List<Trip>> GetByRouteIdAsync(int routeId);
         Task<List<Trip>> GetByDateAsync(DateTime date);
         Task<List<Trip>> GetByBusIdAsync(int busId);
