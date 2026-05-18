@@ -35,6 +35,16 @@ namespace API_Bus_Ticket_Booking.Repositories
 
             var trip = await _context.Trips.FirstOrDefaultAsync(t => t.TripId == booking.TripId);
 
+            if (trip is null || trip.AvailableSeats <= 0)
+            {
+                throw new ConflictException("No available seats for this trip");
+            }
+
+            if (trip.TripDate < DateTime.Now)
+            {
+                throw new ConflictException("Cannot book a trip that has already departed");
+            }
+
             if (trip != null && trip.AvailableSeats > 0)
             {
                 trip.AvailableSeats -= 1;
