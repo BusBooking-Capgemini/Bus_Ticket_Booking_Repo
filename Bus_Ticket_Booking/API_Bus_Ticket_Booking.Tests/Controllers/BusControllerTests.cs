@@ -127,5 +127,82 @@ namespace TEST_Bus_Ticket_Booking.Controllers
 
             await action.Should().ThrowAsync<Exception>().WithMessage("Delete failed");
         }
+
+        // EDGE CASE TEST CASES
+
+        [Fact]
+        public async Task GetByCapacityRange_MinGreaterThanMax_ShouldThrowException()
+        {
+            _serviceMock
+                .Setup(x => x.GetBusesByCapacityRangeAsync(50, 10))
+                .ThrowsAsync(new Exception("Invalid capacity range"));
+
+            Func<Task> action = async () => await _controller.GetByCapacityRange(50, 10);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Invalid capacity range");
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public async Task GetById_InvalidId_ShouldThrowException(int id)
+        {
+            _serviceMock
+                .Setup(x => x.GetBusByIdAsync(id))
+                .ThrowsAsync(new Exception("Invalid bus id"));
+
+            Func<Task> action = async () => await _controller.GetById(id);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Invalid bus id");
+        }
+
+        [Fact]
+        public async Task Create_EmptyRegistration_ShouldThrowException()
+        {
+            var dto = BusTestData.GetBusRequestDto();
+            dto.RegistrationNumber = "";
+
+            _serviceMock
+                .Setup(x => x.CreateBusAsync(dto))
+                .ThrowsAsync(new Exception("Registration number is required"));
+
+            Func<Task> action = async () => await _controller.Create(dto);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Registration number is required");
+        }
+
+        [Fact]
+        public async Task GetByOffice_InvalidOfficeId_ShouldThrowException()
+        {
+            _serviceMock
+                .Setup(x => x.GetBusesByOfficeAsync(0))
+                .ThrowsAsync(new Exception("Invalid office id"));
+
+            Func<Task> action = async () => await _controller.GetByOffice(0);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Invalid office id");
+        }
+
+        [Fact]
+        public async Task GetByCapacityRange_BothZero_ShouldThrowException()
+        {
+            _serviceMock
+                .Setup(x => x.GetBusesByCapacityRangeAsync(0, 0))
+                .ThrowsAsync(new Exception("Capacity range cannot be zero"));
+
+            Func<Task> action = async () => await _controller.GetByCapacityRange(0, 0);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Capacity range cannot be zero");
+        }
     }
 }

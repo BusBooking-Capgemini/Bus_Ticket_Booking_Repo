@@ -81,6 +81,7 @@ namespace TEST_Bus_Ticket_Booking.Controllers
 
             createdResult.Should().NotBeNull();
             createdResult!.StatusCode.Should().Be(201);
+            TestHelper.GetPropertyValue<string>(createdResult.Value!, "message").Should().Be("Driver created successfully.");
         }
 
         // NEGATIVE TEST CASES
@@ -123,6 +124,83 @@ namespace TEST_Bus_Ticket_Booking.Controllers
             Func<Task> action = async () => await _controller.Delete(1);
 
             await action.Should().ThrowAsync<Exception>().WithMessage("Delete failed");
+        }
+
+        // EDGE CASE TEST CASES
+
+        [Fact]
+        public async Task SearchByName_EmptyString_ShouldThrowException()
+        {
+            _serviceMock
+                .Setup(x => x.GetDriversByNameAsync(""))
+                .ThrowsAsync(new Exception("Search name cannot be empty"));
+
+            Func<Task> action = async () => await _controller.SearchByName("");
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Search name cannot be empty");
+        }
+
+        [Fact]
+        public async Task GetByLicense_EmptyLicense_ShouldThrowException()
+        {
+            _serviceMock
+                .Setup(x => x.GetDriverByLicenseAsync(""))
+                .ThrowsAsync(new Exception("License number cannot be empty"));
+
+            Func<Task> action = async () => await _controller.GetByLicense("");
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("License number cannot be empty");
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public async Task GetById_InvalidId_ShouldThrowException(int id)
+        {
+            _serviceMock
+                .Setup(x => x.GetDriverByIdAsync(id))
+                .ThrowsAsync(new Exception("Invalid driver id"));
+
+            Func<Task> action = async () => await _controller.GetById(id);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Invalid driver id");
+        }
+
+        [Fact]
+        public async Task Create_EmptyLicense_ShouldThrowException()
+        {
+            var dto = DriverTestData.GetDriverRequestDto();
+            dto.LicenseNumber = "";
+
+            _serviceMock
+                .Setup(x => x.CreateDriverAsync(dto))
+                .ThrowsAsync(new Exception("License number is required"));
+
+            Func<Task> action = async () => await _controller.Create(dto);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("License number is required");
+        }
+
+        [Fact]
+        public async Task GetByOffice_InvalidOfficeId_ShouldThrowException()
+        {
+            _serviceMock
+                .Setup(x => x.GetDriversByOfficeAsync(0))
+                .ThrowsAsync(new Exception("Invalid office id"));
+
+            Func<Task> action = async () => await _controller.GetByOffice(0);
+
+            await action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage("Invalid office id");
         }
     }
 }
