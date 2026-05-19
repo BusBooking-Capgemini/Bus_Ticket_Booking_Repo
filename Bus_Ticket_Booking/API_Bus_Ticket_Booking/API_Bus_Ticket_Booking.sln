@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_Bus_Ticket_Booking", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEST_Bus_Ticket_Booking", "..\API_Bus_Ticket_Booking.Tests\TEST_Bus_Ticket_Booking.csproj", "{9F238B05-4958-6692-6470-336B333C2228}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusTicketBooking.Mvc", "..\BusTicketBooking.Mvc\BusTicketBooking.Mvc.csproj", "{AB342DFC-10FA-4729-92E7-81DEF7D383C7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bus_Ticket_Booking.Mvc", "..\Bus_Ticket_Booking.Mvc\Bus_Ticket_Booking.Mvc.csproj", "{29287C1C-B880-882F-065E-434AC28538F0}"
 EndProject
 Global
@@ -24,10 +22,6 @@ Global
 		{9F238B05-4958-6692-6470-336B333C2228}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F238B05-4958-6692-6470-336B333C2228}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F238B05-4958-6692-6470-336B333C2228}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB342DFC-10FA-4729-92E7-81DEF7D383C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB342DFC-10FA-4729-92E7-81DEF7D383C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB342DFC-10FA-4729-92E7-81DEF7D383C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB342DFC-10FA-4729-92E7-81DEF7D383C7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{29287C1C-B880-882F-065E-434AC28538F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29287C1C-B880-882F-065E-434AC28538F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29287C1C-B880-882F-065E-434AC28538F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
