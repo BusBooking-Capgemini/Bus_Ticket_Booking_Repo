@@ -261,7 +261,7 @@ Please ensure new features include corresponding unit tests in `API_Bus_Ticket_B
 
 ## 📄 License
 
-This project is available for educational and portfolio purposes. Add your preferred license (e.g., MIT) here.
+This project is available for educational and portfolio purposes.
 
 ---
 
