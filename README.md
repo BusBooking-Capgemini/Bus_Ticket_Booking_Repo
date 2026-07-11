@@ -268,8 +268,8 @@ This project is available for educational and portfolio purposes. Add your prefe
 ## 🙋 Author
 
 **Nikhil Kumar**
-📧 info.nikhil001@gmail.com | 🔗 [LinkedIn](https://linkedin.com/in/info-nikhil)
-**Arshdeep Singh**
-**Harsh Tanwar**
-**Mahesh**
-**Atul Attri**
+📧 info.nikhil001@gmail.com | 🔗 [LinkedIn](https://linkedin.com/in/info-nikhil)  
+**Arshdeep Singh**  
+**Harsh Tanwar**  
+**Mahesh**  
+**Atul Attri**  
